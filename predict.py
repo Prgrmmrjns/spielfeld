@@ -4,14 +4,10 @@ import os
 import pandas as pd
 import numpy as np
 from collections import defaultdict
-from sklearn.metrics import accuracy_score, log_loss
 from tabpfn_client import TabPFNClassifier
 
-TODAY = pd.Timestamp.now().normalize()
 TRAIN_START = pd.Timestamp("2021-01-01")
 MAX_TRAIN = 10000
-SHAP_BACKGROUND = 100
-SHAP_NSAMPLES = 100
 HOME_ADV = 65.0
 DATA = "results.csv"
 RAW_URL = "https://raw.githubusercontent.com/martj42/international_results/master/results.csv"
@@ -19,7 +15,7 @@ KO_START = pd.Timestamp("2026-06-28")
 WC_IMPORTANCE = 60.0
 KO_HOSTS = {"United States", "Mexico"}
 
-# Round of 32 — teams from FIFA bracket / group-stage results (combo 494).
+# Round of 32 — confirmed bracket (Sportschau / results.csv, June 2026).
 R32 = [
     (73, "2026-06-28", "South Africa", "Canada"),
     (74, "2026-06-29", "Germany", "Paraguay"),
@@ -27,15 +23,15 @@ R32 = [
     (76, "2026-06-29", "Brazil", "Japan"),
     (77, "2026-06-30", "France", "Sweden"),
     (78, "2026-06-30", "Ivory Coast", "Norway"),
-    (79, "2026-06-30", "Mexico", "Scotland"),
-    (80, "2026-07-01", "England", "South Korea"),
+    (79, "2026-06-30", "Mexico", "Ecuador"),
+    (80, "2026-07-01", "England", "DR Congo"),
     (81, "2026-07-01", "United States", "Bosnia and Herzegovina"),
     (82, "2026-07-01", "Belgium", "Senegal"),
-    (83, "2026-07-02", "Portugal", "Ghana"),
+    (83, "2026-07-02", "Portugal", "Croatia"),
     (84, "2026-07-02", "Spain", "Austria"),
-    (85, "2026-07-02", "Switzerland", "Iran"),
+    (85, "2026-07-02", "Switzerland", "Algeria"),
     (86, "2026-07-03", "Argentina", "Cape Verde"),
-    (87, "2026-07-03", "Colombia", "Ecuador"),
+    (87, "2026-07-03", "Colombia", "Ghana"),
     (88, "2026-07-03", "Australia", "Egypt"),
 ]
 
@@ -321,105 +317,8 @@ def train(pool):
     return clf
 
 
-def _attach_predictions(test, clf):
-    """Return test rows with predicted label and class probabilities."""
-    proba = clf.predict_proba(test[FEATURES].values)
-    out = test.copy()
-    out["predicted"] = clf.classes_[proba.argmax(1)]
-    for i, c in enumerate(clf.classes_):
-        out[f"p_{c}"] = proba[:, i]
-    return out
-
-
-def run_backtest(played):
-    """Backtest previous calendar month; return model, training pool, and scored test rows."""
-    month = (TODAY.to_period("M") - 1)
-    test = played[(played["date"] >= month.start_time) & (played["date"] < (month + 1).start_time)]
-    if not len(test):
-        return None
-    pool = played[played["date"] < month.start_time].tail(MAX_TRAIN)
-    clf = train(pool)
-    return {"month": month, "clf": clf, "train": pool, "scored": _attach_predictions(test, clf)}
-
-
-def _errors_export(scored):
-    cols = ["date", "home_team", "away_team", "tournament", "outcome", "predicted"]
-    cols += [c for c in scored.columns if c.startswith("p_")]
-    return scored.loc[scored["outcome"] != scored["predicted"], cols]
-
-
-def _compute_shap(clf, train, wrong):
-    """Kernel SHAP for misclassified rows (attribution toward the predicted class)."""
-    import shap
-
-    if not len(wrong):
-        return None
-    bg = shap.sample(train[FEATURES].values, min(SHAP_BACKGROUND, len(train)))
-    explainer = shap.KernelExplainer(clf.predict_proba, bg)
-    sv = np.asarray(explainer.shap_values(wrong[FEATURES].values, nsamples=SHAP_NSAMPLES))
-    if sv.ndim == 3:
-        pred_idx = [list(clf.classes_).index(p) for p in wrong["predicted"]]
-        sv = sv[np.arange(len(wrong)), :, pred_idx]
-
-    rows = []
-    for idx, (_, r) in enumerate(wrong.iterrows()):
-        for j, feat in enumerate(FEATURES):
-            rows.append({
-                "date": r["date"], "home_team": r["home_team"], "away_team": r["away_team"],
-                "actual": r["outcome"], "predicted": r["predicted"],
-                "feature": feat, "feature_value": r[feat], "shap_value": sv[idx, j],
-            })
-    return pd.DataFrame(rows)
-
-
-def export_backtest(bt, today_str):
-    """Write misclassified fixtures and SHAP values; return (errors_df, shap_df)."""
-    wrong = _errors_export(bt["scored"])
-    errors_path = f"backtest_errors_{today_str}.csv"
-    wrong.to_csv(errors_path, index=False)
-
-    shap_df = _compute_shap(bt["clf"], bt["train"], bt["scored"].loc[wrong.index])
-    shap_path = f"backtest_shap_{today_str}.csv"
-    if shap_df is not None:
-        shap_df.to_csv(shap_path, index=False)
-        print(f"Backtest errors -> {errors_path}")
-        print(f"Backtest SHAP   -> {shap_path}")
-    elif len(wrong):
-        print(f"Backtest errors -> {errors_path}")
-    return wrong, shap_df
-
-
-def print_backtest_report(bt, wrong, shap_df):
-    """Print backtest summary, wrong fixtures, and top SHAP drivers per error."""
-    scored, clf, month = bt["scored"], bt["clf"], bt["month"]
-    proba_cols = [f"p_{c}" for c in clf.classes_]
-    acc = accuracy_score(scored["outcome"], scored["predicted"])
-    ll = log_loss(scored["outcome"], scored[proba_cols].values, labels=clf.classes_)
-    print(f"\nBacktest {month} ({len(scored)} matches): accuracy {acc:.0%}, log-loss {ll:.3f}")
-    print(f"Misclassified: {len(wrong)} / {len(scored)}")
-
-    if not len(wrong):
-        return
-
-    print("\nWrong predictions:")
-    for r in wrong.itertuples():
-        print(f"  {r.date.date()}  {r.home_team:>18} vs {r.away_team:<18}  "
-              f"actual {r.outcome:<9}  predicted {r.predicted}")
-
-    if shap_df is None:
-        return
-
-    print("\nTop SHAP drivers (predicted class) per wrong fixture:")
-    for key, grp in shap_df.groupby(["date", "home_team", "away_team"], sort=False):
-        date, home, away = key
-        top = grp.reindex(grp["shap_value"].abs().sort_values(ascending=False).index).head(5)
-        print(f"\n  {pd.Timestamp(date).date()}  {home} vs {away}")
-        for t in top.itertuples():
-            print(f"    {t.feature:<22}  {t.shap_value:+.3f}  (value={t.feature_value:.3f})")
-
-
 def main():
-    """Backtest on the previous calendar month, then predict WC2026 knockout fixtures."""
+    """Train on recent matches and predict WC2026 knockout fixtures."""
     parser = argparse.ArgumentParser()
     parser.add_argument("--refresh", action="store_true", help="Re-download dataset from source")
     args = parser.parse_args()
@@ -432,19 +331,13 @@ def main():
     feats = build_features(df)
     played = feats[feats["outcome"].notna()]
 
-    today_str = pd.Timestamp.now().strftime("%Y%m%d")
-    bt = run_backtest(played)
-    if bt:
-        wrong, shap_df = export_backtest(bt, today_str)
-        print_backtest_report(bt, wrong, shap_df)
-
     clf = train(played.tail(MAX_TRAIN))
     out = predict_ko_bracket(clf, df)
     out = out[["date", "home_team", "away_team", "predicted", "p_home_win", "p_draw", "p_away_win"]]
 
     out.to_csv("predictions.csv", index=False)
 
-    print(f"\nWC2026 knockout ({len(out)} matches, from {KO_START.date()}) -> {filename}\n")
+    print(f"\nWC2026 knockout ({len(out)} matches, from {KO_START.date()}) -> predictions.csv\n")
     for r in out.itertuples():
         print(f"  {r.date.date()}  {r.home_team:>20} vs {r.away_team:<20}  "
               f"-> {r.predicted:<9}  H {r.p_home_win:4.0%} | D {r.p_draw:4.0%} | A {r.p_away_win:4.0%}")

@@ -2,4 +2,3 @@ tabpfn-client
 pandas
 numpy
 scikit-learn
-shap
