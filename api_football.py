@@ -70,12 +70,7 @@ class ApiFootball:
     def enabled(self) -> bool:
         return bool(self.api_key)
 
-    def _load_cache(self) -> dict:
-        if self.cache_path.exists():
-            try:
-                return json.loads(self.cache_path.read_text(encoding="utf-8"))
-            except Exception:
-                pass
+    def _empty_cache(self) -> dict:
         return {
             "teams": {},          # api_team_id -> {id,name,...}
             "name_to_id": {},     # normalized openliga/api name -> api_team_id
@@ -85,6 +80,19 @@ class ApiFootball:
             "lineups": {},        # str(fixture_id) -> lineup payload
             "last_xi": {},        # str(team_id) -> {fixture_id, formation, players:[...], source}
         }
+
+    def _load_cache(self) -> dict:
+        base = self._empty_cache()
+        if self.cache_path.exists():
+            try:
+                loaded = json.loads(self.cache_path.read_text(encoding="utf-8"))
+                if isinstance(loaded, dict):
+                    base.update({k: v for k, v in loaded.items() if v is not None})
+            except Exception:
+                pass
+        for key in self._empty_cache():
+            base.setdefault(key, {})
+        return base
 
     def save(self):
         self.cache_path.write_text(json.dumps(self.cache, ensure_ascii=False, indent=2), encoding="utf-8")

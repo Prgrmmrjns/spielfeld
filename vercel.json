@@ -1,8 +1,13 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": null,
-  "installCommand": "npm --prefix web install",
-  "buildCommand": "node web/scripts/refresh-lineups.mjs && npm --prefix web run build && rm -rf .vercel && mv web/.vercel .vercel",
+  "installCommand": "pip install -r requirements.txt",
+  "buildCommand": "python scripts/refresh_lineups.py || true",
+  "functions": {
+    "app/main.py": {
+      "maxDuration": 60
+    }
+  },
   "crons": [
     {
       "path": "/api/refresh-lineups",

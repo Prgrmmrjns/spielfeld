@@ -9,13 +9,6 @@ predictions.csv
 api_football_cache.json
 *.egg-info/
 .DS_Store
-web/node_modules/
-web/.nuxt/
-web/.output/
-web/dist/
-web/.data/
-web/.vercel/
 .vercel/
 .env
 node_modules/
-web/pnpm-lock.yaml

@@ -54,7 +54,7 @@ jobs:
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add web/public/data/predictions.json web/app/data/predictions.json web/server/data/predictions.json || true
+          git add app/data/predictions.json public/data/predictions.json public/explanations || true
           if git diff --staged --quiet; then
             echo 'No prediction changes'
           else

@@ -22,7 +22,7 @@ LEAGUE = "bl1"
 CACHE = "bundesliga_results.csv"
 API = "https://api.openligadb.de"
 IMPORTANCE = 45.0
-EXPLAIN_DIR = Path("web/public/explanations")
+EXPLAIN_DIR = Path("public/explanations")
 os.environ.setdefault("TABPFN_NO_BROWSER", "1")
 os.environ.setdefault("TABPFN_CLIENT_NO_BROWSER", "1")
 
@@ -664,12 +664,11 @@ def write_prediction_payload(payload, json_path="predictions.json"):
     text = json.dumps(payload, ensure_ascii=False, indent=2)
     Path(json_path).write_text(text, encoding="utf-8")
     for dest in (
-        Path("web/public/data/predictions.json"),
-        Path("web/app/data/predictions.json"),
-        Path("web/server/data/predictions.json"),
+        Path("app/data/predictions.json"),
+        Path("public/data/predictions.json"),
     ):
-        if dest.parent.is_dir():
-            dest.write_text(text, encoding="utf-8")
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        dest.write_text(text, encoding="utf-8")
 
 
 def main():
