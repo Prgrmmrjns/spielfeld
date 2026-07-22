@@ -2,5 +2,11 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": null,
   "installCommand": "npm --prefix web install",
-  "buildCommand": "npm --prefix web run build && rm -rf .vercel && mv web/.vercel .vercel"
+  "buildCommand": "node web/scripts/refresh-lineups.mjs && npm --prefix web run build && rm -rf .vercel && mv web/.vercel .vercel",
+  "crons": [
+    {
+      "path": "/api/refresh-lineups",
+      "schedule": "0 * * * *"
+    }
+  ]
 }

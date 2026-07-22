@@ -5,6 +5,13 @@ type TopFeature = {
   shap: number
 }
 
+type XiPlayer = { id?: number, name?: string, number?: number, pos?: string }
+type XiSide = {
+  source?: string
+  formation?: string | null
+  players?: XiPlayer[]
+}
+
 type Prediction = {
   date: string
   home_team: string
@@ -17,6 +24,10 @@ type Prediction = {
   p_home_win: number
   p_draw: number
   p_away_win: number
+  lineups?: {
+    home?: XiSide
+    away?: XiSide
+  } | null
   explanation?: {
     plot: string
     method: string
@@ -65,6 +76,19 @@ const tipLabel = computed(() => {
   if (props.match.predicted === 'away_win') return props.match.away_short
   return 'Draw'
 })
+
+function sourceLabel(source?: string) {
+  if (source === 'confirmed') return 'Confirmed XI'
+  if (source === 'last_xi') return 'Last starting XI'
+  if (source === 'squad_estimate') return 'Squad estimate'
+  return 'XI pending'
+}
+
+function playerLine(p: XiPlayer) {
+  const num = p.number != null ? `${p.number} ` : ''
+  const pos = p.pos ? ` (${p.pos})` : ''
+  return `${num}${p.name || '—'}${pos}`
+}
 </script>
 
 <template>
@@ -78,14 +102,14 @@ const tipLabel = computed(() => {
         <div class="sticky top-0 z-10 flex items-start justify-between gap-4 border-b border-white/10 bg-[#101912]/95 px-5 py-4 backdrop-blur md:px-6">
           <div>
             <p class="text-xs uppercase tracking-[0.18em] text-white/45">
-              SHAP explanation
+              Match detail
             </p>
             <h3 class="mt-1 font-[family-name:var(--font-display)] text-3xl tracking-[0.06em] text-white">
               {{ match.home_short }} vs {{ match.away_short }}
             </h3>
             <p class="mt-1 text-sm text-white/60">
               Tip <span class="text-[var(--accent)]">{{ tipLabel }}</span>
-              · {{ match.explanation?.method || 'unavailable' }}
+              · {{ match.explanation?.method || 'SHAP unavailable' }}
             </p>
           </div>
           <button
@@ -98,6 +122,30 @@ const tipLabel = computed(() => {
         </div>
 
         <div class="space-y-6 px-5 py-5 md:px-6">
+          <div
+            v-if="match.lineups?.home?.players?.length || match.lineups?.away?.players?.length"
+            class="grid gap-6 md:grid-cols-2"
+          >
+            <div v-for="side in [
+              { key: 'home', team: match.home_team, short: match.home_short, data: match.lineups?.home },
+              { key: 'away', team: match.away_team, short: match.away_short, data: match.lineups?.away }
+            ]" :key="side.key">
+              <p class="text-xs uppercase tracking-[0.18em] text-white/45">
+                {{ side.short }} · {{ sourceLabel(side.data?.source) }}
+                <span v-if="side.data?.formation" class="text-white/30"> · {{ side.data.formation }}</span>
+              </p>
+              <ol class="mt-3 space-y-1.5 text-sm text-white/80">
+                <li
+                  v-for="(p, i) in (side.data?.players || [])"
+                  :key="`${side.key}-${p.id || p.name || i}`"
+                  class="border-t border-white/8 py-1.5 first:border-t-0 first:pt-0"
+                >
+                  {{ playerLine(p) }}
+                </li>
+              </ol>
+            </div>
+          </div>
+
           <div v-if="match.explanation?.plot" class="overflow-hidden bg-white">
             <img
               :src="match.explanation.plot"
@@ -105,7 +153,7 @@ const tipLabel = computed(() => {
               class="h-auto w-full"
             >
           </div>
-          <div v-else class="py-10 text-center text-white/50">
+          <div v-else class="py-6 text-center text-white/50">
             No SHAP plot for this matchup. Re-run <code class="text-[var(--accent)]">python predict.py</code>.
           </div>
 

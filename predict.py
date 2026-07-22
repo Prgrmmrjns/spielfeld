@@ -89,6 +89,8 @@ FEATURES = [
     "home_streak", "away_streak", "home_rest", "away_rest",
     "home_played", "away_played",
     "h2h_n", "h2h_home_winrate", "h2h_draw_rate", "h2h_gd",
+    "home_xi_strength", "away_xi_strength", "xi_strength_diff",
+    "home_xi_confirmed", "away_xi_confirmed",
 ]
 
 FEATURE_LABELS = {
@@ -119,6 +121,11 @@ FEATURE_LABELS = {
     "h2h_home_winrate": "H2H home win rate",
     "h2h_draw_rate": "H2H draw rate",
     "h2h_gd": "H2H goal diff",
+    "home_xi_strength": "Home XI strength",
+    "away_xi_strength": "Away XI strength",
+    "xi_strength_diff": "XI strength gap",
+    "home_xi_confirmed": "Home XI confirmed",
+    "away_xi_confirmed": "Away XI confirmed",
 }
 
 
@@ -271,11 +278,14 @@ def _h2h_feats(home, away, h2h):
             np.mean([g if h == home else -g for h, g, _ in m]))
 
 
-def _feature_row(home, away, date, elo, res, last_date, h2h):
+def _feature_row(home, away, date, elo, res, last_date, h2h, xi=None):
     he, hf5, hf10, hwr, hgf, hga, hgd, hstk, hn = _team_feats(home, elo, res)
     ae, af5, af10, awr, agf, aga, agd, astk, an = _team_feats(away, elo, res)
     nm, h2h_wr, h2h_dr, h2h_gd = _h2h_feats(home, away, h2h)
     hv, av = squad_value(home), squad_value(away)
+    xi = xi or {}
+    hxs = float(xi.get("home_xi_strength", hv / 50.0))
+    axs = float(xi.get("away_xi_strength", av / 50.0))
     return {
         "elo_diff": he + HOME_ADV - ae, "home_elo": he, "away_elo": ae,
         "value_diff": hv - av, "home_squad_value": hv, "away_squad_value": av,
@@ -288,6 +298,9 @@ def _feature_row(home, away, date, elo, res, last_date, h2h):
         "away_rest": min((date - last_date[away]).days, 90) if away in last_date else 30,
         "home_played": hn, "away_played": an,
         "h2h_n": nm, "h2h_home_winrate": h2h_wr, "h2h_draw_rate": h2h_dr, "h2h_gd": h2h_gd,
+        "home_xi_strength": hxs, "away_xi_strength": axs, "xi_strength_diff": hxs - axs,
+        "home_xi_confirmed": float(xi.get("home_xi_confirmed", 0)),
+        "away_xi_confirmed": float(xi.get("away_xi_confirmed", 0)),
     }
 
 
@@ -329,15 +342,167 @@ def build_state(df):
     return elo, res, last_date, h2h
 
 
-def build_features(df):
+def build_features(df, xi_by_index=None):
     elo, res, last_date, h2h = _init_state()
     rows = []
     for r in df.itertuples():
-        rows.append(_feature_row(r.home_team, r.away_team, r.date, elo, res, last_date, h2h))
+        xi = (xi_by_index or {}).get(r.Index) or (xi_by_index or {}).get(int(r.Index))
+        rows.append(_feature_row(r.home_team, r.away_team, r.date, elo, res, last_date, h2h, xi=xi))
         if not pd.isna(r.home_score) and not pd.isna(r.away_score):
             _update_state(r.home_team, r.away_team, r.date, r.home_score, r.away_score,
                           elo, res, last_date, h2h)
     return df.join(pd.DataFrame(rows, index=df.index))
+
+
+def build_xi_feature_map(df, af):
+    """Chronological last-XI features from API-Football cache (no leakage)."""
+    if af is None or not af.enabled:
+        return {}
+    # Map finished fixture lineups onto openliga rows via team+date
+    season = int(pd.Timestamp.now().year if pd.Timestamp.now().month >= 7 else pd.Timestamp.now().year - 1)
+    try:
+        af.ensure_teams(season)
+        af.ensure_teams(season - 1)
+        af.sync_recent_lineups([season - 1, season], max_fetches=int(os.getenv("AF_LINEUP_FETCHES", "50")))
+    except Exception as exc:
+        print(f"API-Football sync warning: {exc}")
+
+    # Precompute strength for each cached lineup side, keyed by team_id + fixture date
+    last_xi_strength = {}  # team_id -> strength from last seen finished lineup
+    # Sort fixtures from cache
+    dated = []
+    for season_key, fixtures in (af.cache.get("fixtures") or {}).items():
+        for fx in fixtures:
+            dated.append(fx)
+    dated.sort(key=lambda x: x.get("date") or "")
+
+    strength_as_of = []  # list of (date, team_id, strength, confirmed)
+    for fx in dated:
+        fid = fx.get("id")
+        lu = af.cache.get("lineups", {}).get(str(fid)) if fid else None
+        if not lu:
+            continue
+        fdate = pd.to_datetime(fx.get("date"), utc=True).tz_localize(None)
+        for block in lu:
+            tid = block.get("team_id")
+            players = block.get("startXI") or []
+            if not tid or not players:
+                continue
+            st = af.xi_strength(players, season=int(str(fx.get("date", "2024")[:4])) if fx.get("date") else season)
+            strength_as_of.append((fdate, int(tid), st, 1.0))
+            last_xi_strength[int(tid)] = st
+
+    strength_as_of.sort(key=lambda x: x[0])
+
+    # For each training row, take latest strength strictly before kickoff
+    out = {}
+    ptr = 0
+    running = {}  # team_id -> (strength, confirmed)
+    # Walk df in date order
+    order = list(df.sort_values("date").index)
+    events = strength_as_of
+    ei = 0
+    for idx in order:
+        row = df.loc[idx]
+        kick = row["date"]
+        while ei < len(events) and events[ei][0] < kick:
+            _, tid, st, conf = events[ei]
+            running[tid] = (st, conf)
+            ei += 1
+        hid = af.resolve_team_id(row["home_team"])
+        aid = af.resolve_team_id(row["away_team"])
+        hv = squad_value(row["home_team"]) / 50.0
+        av = squad_value(row["away_team"]) / 50.0
+        hxs, hc = running.get(hid, (hv, 0.0)) if hid else (hv, 0.0)
+        axs, ac = running.get(aid, (av, 0.0)) if aid else (av, 0.0)
+        # Historical confirmed lineups used as last-XI going forward → mark as last (0)
+        # Only mark confirmed=1 for actual same-match XI (not available pre-match in training)
+        out[idx] = {
+            "home_xi_strength": float(hxs),
+            "away_xi_strength": float(axs),
+            "home_xi_confirmed": 0.0,
+            "away_xi_confirmed": 0.0,
+        }
+    return out
+
+
+def attach_live_lineups(rows, af, season: int):
+    """Attach starting XI (confirmed or last XI) to prediction rows."""
+    if af is None:
+        for r in rows:
+            r["lineups"] = None
+        return rows
+    try:
+        af.ensure_teams(season)
+        af.ensure_fixtures(season)
+        # pull stats for involved teams (bounded)
+        team_ids = set()
+        for r in rows:
+            hid = af.resolve_team_id(r["home_team"])
+            aid = af.resolve_team_id(r["away_team"])
+            if hid:
+                team_ids.add(hid)
+            if aid:
+                team_ids.add(aid)
+        if team_ids and os.getenv("AF_FETCH_PLAYER_STATS", "1") != "0":
+            af.enrich_player_stats_for_teams(list(team_ids)[:18], season, max_pages_per_team=2)
+    except Exception as exc:
+        print(f"API-Football live prep warning: {exc}")
+
+    for r in rows:
+        fx = None
+        try:
+            fx = af.find_fixture(r["home_team"], r["away_team"], r["date"], season=season)
+        except Exception:
+            fx = None
+        hid = af.resolve_team_id(r["home_team"])
+        aid = af.resolve_team_id(r["away_team"])
+        try:
+            packed = af.lineup_for_fixture(fx.get("id") if fx else None, hid, aid)
+        except Exception as exc:
+            print(f"  lineup fetch failed for {r['home_short']}: {exc}")
+            packed = {"home": {"source": "unknown", "players": []}, "away": {"source": "unknown", "players": []}}
+
+        h_players = packed["home"].get("players") or []
+        a_players = packed["away"].get("players") or []
+        hxs = af.xi_strength(h_players, season) if h_players else squad_value(r["home_team"]) / 50.0
+        axs = af.xi_strength(a_players, season) if a_players else squad_value(r["away_team"]) / 50.0
+        hc = 1.0 if packed["home"].get("source") == "confirmed" else 0.0
+        ac = 1.0 if packed["away"].get("source") == "confirmed" else 0.0
+
+        # overwrite model features used at predict-time if present
+        if "features" in r:
+            r["features"]["home_xi_strength"] = float(hxs)
+            r["features"]["away_xi_strength"] = float(axs)
+            r["features"]["xi_strength_diff"] = float(hxs - axs)
+            r["features"]["home_xi_confirmed"] = hc
+            r["features"]["away_xi_confirmed"] = ac
+
+        r["lineups"] = {
+            "api_fixture_id": packed.get("fixture_id") or (fx.get("id") if fx else None),
+            "home": {
+                "source": packed["home"].get("source"),
+                "formation": packed["home"].get("formation"),
+                "players": [
+                    {"id": p.get("id"), "name": p.get("name"), "number": p.get("number"), "pos": p.get("pos")}
+                    for p in h_players
+                ],
+                "strength": float(hxs),
+            },
+            "away": {
+                "source": packed["away"].get("source"),
+                "formation": packed["away"].get("formation"),
+                "players": [
+                    {"id": p.get("id"), "name": p.get("name"), "number": p.get("number"), "pos": p.get("pos")}
+                    for p in a_players
+                ],
+                "strength": float(axs),
+            },
+        }
+        src = f"{packed['home'].get('source')}/{packed['away'].get('source')}"
+        print(f"  XI {r['home_short']} vs {r['away_short']}: {src} (strength {hxs:.1f}-{axs:.1f})")
+    af.save()
+    return rows
 
 
 def train(pool):
@@ -366,11 +531,14 @@ def train(pool):
     return clf
 
 
-def predict_matchday(clf, history, fixtures):
+def predict_matchday(clf, history, fixtures, xi_live=None):
     state = build_state(history[history["outcome"].notna()])
     batch, meta = [], []
     for r in fixtures.itertuples():
-        batch.append(_feature_row(r.home_team, r.away_team, r.date, *state))
+        xi = None
+        if xi_live is not None:
+            xi = xi_live.get(int(r.match_id)) if not pd.isna(r.match_id) else None
+        batch.append(_feature_row(r.home_team, r.away_team, r.date, *state, xi=xi))
         meta.append(r)
 
     X = pd.DataFrame(batch)[FEATURES]
@@ -492,13 +660,28 @@ def explain_matchups(clf, train_X, fixture_X, rows, out_dir=EXPLAIN_DIR, budget=
     return rows
 
 
+def write_prediction_payload(payload, json_path="predictions.json"):
+    text = json.dumps(payload, ensure_ascii=False, indent=2)
+    Path(json_path).write_text(text, encoding="utf-8")
+    for dest in (
+        Path("web/public/data/predictions.json"),
+        Path("web/app/data/predictions.json"),
+        Path("web/server/data/predictions.json"),
+    ):
+        if dest.parent.is_dir():
+            dest.write_text(text, encoding="utf-8")
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--refresh", action="store_true", help="Re-download Bundesliga history")
     parser.add_argument("--json", default="predictions.json", help="JSON output path")
     parser.add_argument("--csv", default="predictions.csv", help="CSV output path")
     parser.add_argument("--skip-shap", action="store_true", help="Skip SHAP plot generation")
+    parser.add_argument("--skip-lineups", action="store_true", help="Skip API-Football lineup enrichment")
     args = parser.parse_args()
+
+    from api_football import ApiFootball
 
     history = load_history(refresh=args.refresh)
     played = history[history["outcome"].notna()]
@@ -510,17 +693,54 @@ def main():
     meta, fixtures = fetch_next_matchday()
     print(f"Next matchday: {meta['matchday_name']} (Saison {meta['season']}/{meta['season'] + 1}) — {len(fixtures)} fixtures")
 
-    feats = build_features(played)
+    af = ApiFootball()
+    if af.enabled and not args.skip_lineups:
+        print("API-Football: syncing squads/lineups…")
+    elif not af.enabled:
+        print("API-Football: no API_FOOTBALL_KEY — using club-value XI proxies only.")
+
+    xi_map = build_xi_feature_map(played, af if (af.enabled and not args.skip_lineups) else None)
+    feats = build_features(played, xi_by_index=xi_map)
     train_pool = feats.tail(MAX_TRAIN)
     clf = train(train_pool)
-    rows, fixture_X = predict_matchday(clf, history, fixtures)
+
+    # Precompute live XI features for upcoming fixtures, then predict with them
+    xi_live = {}
+    if af.enabled and not args.skip_lineups:
+        tmp_rows = [{
+            "match_id": int(r.match_id) if not pd.isna(r.match_id) else None,
+            "date": r.date.isoformat(),
+            "home_team": r.home_team,
+            "away_team": r.away_team,
+            "home_short": r.home_short,
+            "away_short": r.away_short,
+            "features": {},
+        } for r in fixtures.itertuples()]
+        print("Resolving starting XIs (confirmed or last XI)…")
+        attach_live_lineups(tmp_rows, af, meta["season"])
+        for tr in tmp_rows:
+            if tr.get("match_id") is not None and tr.get("features"):
+                xi_live[tr["match_id"]] = {
+                    "home_xi_strength": tr["features"].get("home_xi_strength"),
+                    "away_xi_strength": tr["features"].get("away_xi_strength"),
+                    "home_xi_confirmed": tr["features"].get("home_xi_confirmed"),
+                    "away_xi_confirmed": tr["features"].get("away_xi_confirmed"),
+                }
+        lineup_by_match = {tr["match_id"]: tr.get("lineups") for tr in tmp_rows}
+    else:
+        lineup_by_match = {}
+
+    rows, fixture_X = predict_matchday(clf, history, fixtures, xi_live=xi_live or None)
+    for r in rows:
+        if r.get("match_id") in lineup_by_match:
+            r["lineups"] = lineup_by_match[r["match_id"]]
     model_name = getattr(clf, "model_name_", type(clf).__name__)
 
     if not args.skip_shap:
         print("\nGenerating SHAP explanations…")
         rows = explain_matchups(clf, train_pool, fixture_X, rows)
 
-    out = pd.DataFrame([{k: v for k, v in r.items() if k not in ("features", "explanation")} for r in rows])
+    out = pd.DataFrame([{k: v for k, v in r.items() if k not in ("features", "explanation", "lineups")} for r in rows])
     out.to_csv(args.csv, index=False)
     payload = {
         "league": "Bundesliga",
@@ -530,31 +750,22 @@ def main():
         "generated_at": pd.Timestamp.now(tz="UTC").isoformat(),
         "model": model_name,
         "train_matches": int(len(played)),
+        "lineups_provider": "api-football" if af.enabled and not args.skip_lineups else None,
         "xai": {
             "library": "tabpfn-extensions interpretability / shapiq",
             "docs": "https://docs.priorlabs.ai/capabilities/interpretability",
         },
         "predictions": rows,
     }
-    with open(args.json, "w", encoding="utf-8") as f:
-        json.dump(payload, f, ensure_ascii=False, indent=2)
-
-    # Keep Nuxt copies in sync (static public + build-time imports).
-    payload_text = json.dumps(payload, ensure_ascii=False, indent=2)
-    for dest in (
-        Path("web/public/data/predictions.json"),
-        Path("web/app/data/predictions.json"),
-        Path("web/server/data/predictions.json"),
-    ):
-        if dest.parent.is_dir():
-            dest.write_text(payload_text, encoding="utf-8")
-
-
+    write_prediction_payload(payload, args.json)
 
     print(f"\n{len(rows)} predictions -> {args.csv}, {args.json}\n")
     for r in rows:
+        src = ""
+        if r.get("lineups"):
+            src = f"  XI:{r['lineups']['home']['source']}/{r['lineups']['away']['source']}"
         print(f"  {r['date'][:16]}  {r['home_team']:>24} vs {r['away_team']:<24}  "
-              f"-> {r['predicted']:<9}  H {r['p_home_win']:4.0%} | D {r['p_draw']:4.0%} | A {r['p_away_win']:4.0%}")
+              f"-> {r['predicted']:<9}  H {r['p_home_win']:4.0%} | D {r['p_draw']:4.0%} | A {r['p_away_win']:4.0%}{src}")
 
 
 if __name__ == "__main__":

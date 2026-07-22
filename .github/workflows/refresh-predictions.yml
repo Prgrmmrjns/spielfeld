@@ -1,0 +1,63 @@
+name: Refresh Bundesliga predictions
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Hourly Fri–Mon (UTC) around Bundesliga match windows
+    - cron: '15 * * * 5-1'
+  push:
+    branches: [main]
+    paths:
+      - 'predict.py'
+      - 'api_football.py'
+      - '.github/workflows/refresh-predictions.yml'
+
+concurrency:
+  group: refresh-predictions
+  cancel-in-progress: true
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements-ml.txt
+
+      - name: Restore API-Football cache
+        uses: actions/cache@v4
+        with:
+          path: api_football_cache.json
+          key: api-football-cache-${{ github.run_id }}
+          restore-keys: |
+            api-football-cache-
+
+      - name: Run predictions (TabPFN + API-Football XIs)
+        env:
+          TABPFN_API_KEY: ${{ secrets.TABPFN_API_KEY }}
+          TABPFN_TOKEN: ${{ secrets.TABPFN_API_KEY }}
+          API_FOOTBALL_KEY: ${{ secrets.API_FOOTBALL_KEY }}
+          TABPFN_NO_BROWSER: '1'
+          AF_LINEUP_FETCHES: '30'
+          AF_FETCH_PLAYER_STATS: '1'
+        run: python predict.py --skip-shap
+
+      - name: Commit updated predictions
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add web/public/data/predictions.json web/app/data/predictions.json web/server/data/predictions.json || true
+          if git diff --staged --quiet; then
+            echo 'No prediction changes'
+          else
+            git commit -m "chore: refresh matchday predictions and lineups"
+            git push
+          fi

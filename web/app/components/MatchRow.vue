@@ -1,4 +1,10 @@
 <script setup lang="ts">
+type XiPlayer = { id?: number, name?: string, number?: number, pos?: string }
+type XiSide = {
+  source?: 'confirmed' | 'last_xi' | 'squad_estimate' | 'unknown' | string
+  formation?: string | null
+  players?: XiPlayer[]
+}
 type Prediction = {
   date: string
   home_team: string
@@ -11,6 +17,10 @@ type Prediction = {
   p_home_win: number
   p_draw: number
   p_away_win: number
+  lineups?: {
+    home?: XiSide
+    away?: XiSide
+  } | null
   explanation?: {
     plot: string
     method: string
@@ -60,6 +70,19 @@ const bars = computed(() => [
   { key: 'D', label: 'Draw', value: props.match.p_draw, tone: 'bg-white/55' },
   { key: 'A', label: 'Away', value: props.match.p_away_win, tone: 'bg-pitch-400' }
 ])
+
+const xiLabel = computed(() => {
+  const h = props.match.lineups?.home?.source
+  const a = props.match.lineups?.away?.source
+  if (!h && !a) return null
+  const label = (s?: string) => {
+    if (s === 'confirmed') return 'confirmed'
+    if (s === 'last_xi') return 'last XI'
+    if (s === 'squad_estimate') return 'squad est.'
+    return 'pending'
+  }
+  return `${label(h)} · ${label(a)}`
+})
 </script>
 
 <template>
@@ -78,7 +101,7 @@ const bars = computed(() => [
             {{ kickoff }}
           </p>
           <p class="text-xs uppercase tracking-[0.16em] text-[var(--accent)] opacity-0 transition group-hover:opacity-100">
-            View SHAP
+            View detail
           </p>
         </div>
         <div class="flex items-center gap-3">
@@ -105,6 +128,12 @@ const bars = computed(() => [
             loading="lazy"
           >
         </div>
+        <p
+          v-if="xiLabel"
+          class="mt-3 text-xs uppercase tracking-[0.14em] text-white/40"
+        >
+          XI {{ xiLabel }}
+        </p>
       </div>
 
       <div>

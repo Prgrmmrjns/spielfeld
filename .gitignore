@@ -6,6 +6,7 @@ venv/
 bundesliga_results.csv
 predictions.csv
 /predictions.json
+api_football_cache.json
 *.egg-info/
 .DS_Store
 web/node_modules/

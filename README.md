@@ -10,13 +10,37 @@ cd Spielfeld
 pip install -r requirements-ml.txt
 ```
 
-Optional: put `TABPFN_API_KEY` or `TABPFN_TOKEN` in a `.env` file to use the Prior Labs TabPFN client. Without it, the script falls back to a calibrated `HistGradientBoostingClassifier`.
+Put secrets in `.env`:
+
+| Variable | Purpose |
+|---|---|
+| `TABPFN_API_KEY` / `TABPFN_TOKEN` | Prior Labs TabPFN (falls back to HistGradientBoosting) |
+| `API_FOOTBALL_KEY` | [API-Football](https://www.api-football.com/) squads / starting XIs (league 78) |
+
+## Starting XIs (API-Football)
+
+No scraping. Lineups come from API-Football:
+
+1. **Confirmed** `/fixtures/lineups` when published
+2. Else **last starting XI** from that club’s most recent finished match
+3. Else a weak squad estimate (Python path only)
+
+Refresh paths:
+
+- **Every Vercel deploy** — `web/scripts/refresh-lineups.mjs` runs before `nuxt build` (needs `API_FOOTBALL_KEY` in Vercel env)
+- **Hourly cron** — `GET /api/refresh-lineups` (live response; UI also polls `/api/lineups` every 15 min)
+- **Full model + XI rebuild** — GitHub Action `.github/workflows/refresh-predictions.yml` (needs `TABPFN_API_KEY` + `API_FOOTBALL_KEY` secrets)
+
+```bash
+# local lineup-only refresh of baked JSON
+npm --prefix web run refresh-lineups
+```
 
 ## Vercel
 
-The Nuxt app is in `web/`. Root `vercel.json` installs/builds with **npm** (avoids corepack/pnpm issues on Vercel) and skips Python ML deps.
+The Nuxt app is in `web/`. Root `vercel.json` installs/builds with **npm** and runs the lineup refresh before build.
 
-Preferred: set Vercel **Root Directory** to `web`. If it stays at repo root, `vercel.json` still builds Nuxt and moves Nitro’s `.vercel` output into place.
+Set project env `API_FOOTBALL_KEY`. Preferred Root Directory can stay at repo root so `vercel.json` applies (cron + buildCommand).
 
 ## Predict next matchday
 
@@ -24,29 +48,29 @@ Preferred: set Vercel **Root Directory** to `web`. If it stays at repo root, `ve
 python predict.py
 # or refresh history from OpenLigaDB:
 python predict.py --refresh
+python predict.py --skip-shap          # faster
+python predict.py --skip-lineups       # no API-Football
 ```
 
 This will:
 
 1. Load Bundesliga results from OpenLigaDB (cached as `bundesliga_results.csv`)
-2. Build leakage-safe features (ELO, form, H2H, rest days, squad value)
-3. Fetch the upcoming Spieltag fixtures
-4. Write `predictions.csv` and `predictions.json`
-5. Generate SHAP waterfall plots per fixture into `web/public/explanations/` ([Prior Labs interpretability](https://docs.priorlabs.ai/capabilities/interpretability))
+2. Build leakage-safe features (ELO, form, H2H, rest days, squad value, XI strength)
+3. Resolve starting XIs via API-Football (confirmed or last XI)
+4. Fetch the upcoming Spieltag fixtures and write `predictions.csv` / `predictions.json`
+5. Generate SHAP waterfall plots into `web/public/explanations/`
 
-`predictions.json` is also copied to `web/public/data/predictions.json` automatically.
-
-Skip SHAP with `python predict.py --skip-shap`.
+`predictions.json` is copied to `web/app|server|public/data/predictions.json`.
 
 ## Nuxt web app
 
 ```bash
 cd web
-pnpm install
-pnpm dev
+npm install
+npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000). The `/api/predictions` route serves `public/data/predictions.json`.
+Open [http://localhost:3000](http://localhost:3000). Predictions are embedded at build time; live XIs merge from `/api/lineups`.
 
 ## Features
 
@@ -58,5 +82,7 @@ Open [http://localhost:3000](http://localhost:3000). The `/api/predictions` rout
 | `h2h_*` | Head-to-head win/draw/goal-diff stats |
 | `home_rest` / `away_rest` | Days since last match |
 | `value_diff` | Approximate Transfermarkt squad-value gap |
+| `home_xi_strength` / `away_xi_strength` / `xi_strength_diff` | API-Football XI strength |
+| `home_xi_confirmed` / `away_xi_confirmed` | 1 if published lineup, else 0 |
 
-Data source: [OpenLigaDB](https://www.openligadb.de/) (`bl1`).
+Data: [OpenLigaDB](https://www.openligadb.de/) (`bl1`) + [API-Football](https://www.api-football.com/).

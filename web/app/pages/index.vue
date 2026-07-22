@@ -1,7 +1,16 @@
 <script setup lang="ts">
 import payload from '~/data/predictions.json'
 
+type XiPlayer = { id?: number, name?: string, number?: number, pos?: string }
+type XiSide = {
+  source?: string
+  formation?: string | null
+  players?: XiPlayer[]
+  strength?: number | null
+}
+
 type Prediction = {
+  match_id?: number
   date: string
   home_team: string
   away_team: string
@@ -13,6 +22,11 @@ type Prediction = {
   p_home_win: number
   p_draw: number
   p_away_win: number
+  lineups?: {
+    api_fixture_id?: number | null
+    home?: XiSide
+    away?: XiSide
+  } | null
   explanation?: {
     plot: string
     method: string
@@ -28,20 +42,45 @@ type PredictionPayload = {
   matchday: number
   matchday_name: string
   generated_at: string
+  lineups_refreshed_at?: string
+  lineups_provider?: string | null
   model: string
   train_matches: number
   predictions: Prediction[]
 }
 
-// Embedded at build time — no runtime fetch (avoids Vercel SSR URL issues).
-const data = computed(() => payload as PredictionPayload)
+const data = ref(payload as PredictionPayload)
 const pending = ref(false)
 const error = ref<Error | null>(null)
+const lineupsLiveAt = ref<string | null>(null)
 
-function refresh() {
-  // Static embed; redeploy after regenerating predictions.
-  error.value = null
+async function mergeLiveLineups() {
+  if (!import.meta.client) return
+  try {
+    const res = await $fetch<{
+      refreshed_at?: string
+      lineups?: Record<string, Prediction['lineups']>
+    }>('/api/lineups')
+    if (!res?.lineups) return
+    data.value = {
+      ...data.value,
+      predictions: data.value.predictions.map((m) => {
+        const live = res.lineups?.[String(m.match_id)]
+        return live ? { ...m, lineups: live } : m
+      })
+    }
+    lineupsLiveAt.value = res.refreshed_at || new Date().toISOString()
+  } catch {
+    // keep baked lineups
+  }
 }
+
+onMounted(() => {
+  mergeLiveLineups()
+  // Refresh lineups while the page is open (pre-match window).
+  const id = window.setInterval(mergeLiveLineups, 15 * 60 * 1000)
+  onBeforeUnmount(() => window.clearInterval(id))
+})
 
 const selected = ref<Prediction | null>(null)
 const modalOpen = computed({
@@ -52,8 +91,9 @@ const modalOpen = computed({
 })
 
 const generatedLabel = computed(() => {
-  if (!data.value?.generated_at) return ''
-  const d = new Date(data.value.generated_at)
+  const stamp = lineupsLiveAt.value || data.value?.lineups_refreshed_at || data.value?.generated_at
+  if (!stamp) return ''
+  const d = new Date(stamp)
   if (Number.isNaN(d.getTime())) return ''
   return new Intl.DateTimeFormat('en-GB', {
     dateStyle: 'medium',
@@ -94,7 +134,7 @@ const generatedLabel = computed(() => {
           SPIELFELD
         </h1>
         <p class="animate-rise animate-rise-delay-2 mt-5 max-w-xl text-lg text-white/70 md:text-xl">
-          Probability tips for the next Bundesliga matchday, trained on recent league form, ELO, and head-to-head.
+          Probability tips for the next Bundesliga matchday — form, ELO, and live starting XIs from API-Football.
         </p>
         <div class="animate-rise animate-rise-delay-3 mt-8 flex flex-wrap items-center gap-3">
           <a
@@ -113,7 +153,7 @@ const generatedLabel = computed(() => {
               Matchday tips
             </h2>
             <p class="mt-2 max-w-xl text-white/60">
-              Click a matchup for SHAP drivers behind the tip.
+              Click a matchup for starting XI and SHAP drivers. Unconfirmed sides use the last starting XI.
             </p>
           </div>
           <div class="text-right text-sm text-white/45">
@@ -121,7 +161,7 @@ const generatedLabel = computed(() => {
               {{ data.model }} · {{ data.train_matches }} training matches
             </p>
             <p v-if="generatedLabel">
-              Updated {{ generatedLabel }}
+              Lineups {{ generatedLabel }}
             </p>
           </div>
         </div>
