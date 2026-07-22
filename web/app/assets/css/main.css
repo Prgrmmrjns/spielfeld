@@ -1,0 +1,101 @@
+@import "tailwindcss";
+@import "@nuxt/ui";
+@import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap");
+
+@theme static {
+  --font-sans: "DM Sans", sans-serif;
+  --font-display: "Bebas Neue", sans-serif;
+
+  --color-pitch-50: #f2fbf4;
+  --color-pitch-100: #e0f5e6;
+  --color-pitch-200: #c2e9cd;
+  --color-pitch-300: #92d6a8;
+  --color-pitch-400: #5aba78;
+  --color-pitch-500: #359e56;
+  --color-pitch-600: #247f42;
+  --color-pitch-700: #1e6537;
+  --color-pitch-800: #1b502e;
+  --color-pitch-900: #174227;
+  --color-pitch-950: #0b2414;
+
+  --color-ink-50: #f6f7f8;
+  --color-ink-100: #ebeef1;
+  --color-ink-200: #d4dae1;
+  --color-ink-300: #aeb9c6;
+  --color-ink-400: #8293a6;
+  --color-ink-500: #63768b;
+  --color-ink-600: #4e5e72;
+  --color-ink-700: #404d5d;
+  --color-ink-800: #38424e;
+  --color-ink-900: #323943;
+  --color-ink-950: #1a1f26;
+}
+
+:root {
+  --bg-deep: #0f1712;
+  --bg-mid: #17241b;
+  --accent: #d4ff3f;
+  --accent-soft: rgba(212, 255, 63, 0.14);
+  --line: rgba(255, 255, 255, 0.08);
+}
+
+html,
+body {
+  background: var(--bg-deep);
+  color: #f3f7f2;
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes bar-fill {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes pulse-glow {
+  0%,
+  100% {
+    opacity: 0.45;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+.animate-rise {
+  animation: rise-in 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.animate-rise-delay-1 {
+  animation-delay: 0.1s;
+}
+
+.animate-rise-delay-2 {
+  animation-delay: 0.2s;
+}
+
+.animate-rise-delay-3 {
+  animation-delay: 0.3s;
+}
+
+.prob-bar {
+  transform-origin: left center;
+  animation: bar-fill 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.hero-glow {
+  animation: pulse-glow 5s ease-in-out infinite;
+}

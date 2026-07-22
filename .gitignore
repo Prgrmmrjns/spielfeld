@@ -1,0 +1,16 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+.tabpfn/
+bundesliga_results.csv
+predictions.csv
+/predictions.json
+*.egg-info/
+.DS_Store
+web/node_modules/
+web/.nuxt/
+web/.output/
+web/dist/
+web/.data/
+.env

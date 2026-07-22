@@ -1,68 +1,82 @@
-"""Predict international football fixtures with TabPFN on engineered features."""
+"""Predict Bundesliga next-matchday outcomes with TabPFN on engineered features."""
 import argparse
+import json
 import os
-import pandas as pd
-import numpy as np
 from collections import defaultdict
-from tabpfn_client import TabPFNClassifier
+from pathlib import Path
 
-TRAIN_START = pd.Timestamp("2021-01-01")
+import matplotlib
+
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import requests
+from sklearn.calibration import CalibratedClassifierCV
+from sklearn.ensemble import HistGradientBoostingClassifier
+
+TRAIN_START = pd.Timestamp("2019-07-01")
 MAX_TRAIN = 10000
 HOME_ADV = 65.0
-DATA = "results.csv"
-RAW_URL = "https://raw.githubusercontent.com/martj42/international_results/master/results.csv"
-KO_START = pd.Timestamp("2026-06-28")
-WC_IMPORTANCE = 60.0
-KO_HOSTS = {"United States", "Mexico"}
+LEAGUE = "bl1"
+CACHE = "bundesliga_results.csv"
+API = "https://api.openligadb.de"
+IMPORTANCE = 45.0
+EXPLAIN_DIR = Path("web/public/explanations")
+os.environ.setdefault("TABPFN_NO_BROWSER", "1")
+os.environ.setdefault("TABPFN_CLIENT_NO_BROWSER", "1")
 
-# Round of 32 — confirmed bracket (Sportschau / results.csv, June 2026).
-R32 = [
-    (73, "2026-06-28", "South Africa", "Canada"),
-    (74, "2026-06-29", "Germany", "Paraguay"),
-    (75, "2026-06-29", "Netherlands", "Morocco"),
-    (76, "2026-06-29", "Brazil", "Japan"),
-    (77, "2026-06-30", "France", "Sweden"),
-    (78, "2026-06-30", "Ivory Coast", "Norway"),
-    (79, "2026-06-30", "Mexico", "Ecuador"),
-    (80, "2026-07-01", "England", "DR Congo"),
-    (81, "2026-07-01", "United States", "Bosnia and Herzegovina"),
-    (82, "2026-07-01", "Belgium", "Senegal"),
-    (83, "2026-07-02", "Portugal", "Croatia"),
-    (84, "2026-07-02", "Spain", "Austria"),
-    (85, "2026-07-02", "Switzerland", "Algeria"),
-    (86, "2026-07-03", "Argentina", "Cape Verde"),
-    (87, "2026-07-03", "Colombia", "Ghana"),
-    (88, "2026-07-03", "Australia", "Egypt"),
-]
 
-LATER_ROUNDS = [
-    [(89, "2026-07-04", "W74", "W77"), (90, "2026-07-04", "W73", "W75"),
-     (91, "2026-07-05", "W76", "W78"), (92, "2026-07-05", "W79", "W80"),
-     (93, "2026-07-06", "W83", "W84"), (94, "2026-07-06", "W81", "W82"),
-     (95, "2026-07-07", "W86", "W88"), (96, "2026-07-07", "W85", "W87")],
-    [(97, "2026-07-09", "W89", "W90"), (98, "2026-07-10", "W93", "W94"),
-     (99, "2026-07-11", "W91", "W92"), (100, "2026-07-11", "W95", "W96")],
-    [(101, "2026-07-14", "W97", "W98"), (102, "2026-07-15", "W99", "W100")],
-    [(103, "2026-07-18", "L101", "L102")],
-    [(104, "2026-07-19", "W101", "W102")],
-]
+def load_dotenv(path=".env"):
+    """Load KEY=VALUE pairs from a local .env without requiring python-dotenv."""
+    p = Path(path)
+    if not p.is_file():
+        # Also accept a sibling workspace .env when running from a local clone.
+        for candidate in (Path("/workspace/.env"), Path(__file__).resolve().parent / ".env"):
+            if candidate.is_file():
+                p = candidate
+                break
+        else:
+            return
+    for line in p.read_text(encoding="utf-8").splitlines():
+        line = line.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        key, value = line.split("=", 1)
+        key, value = key.strip(), value.strip().strip('"').strip("'")
+        if key and key not in os.environ:
+            os.environ[key] = value
 
-KO_ROUND_NAMES = ["Round of 32", "Round of 16", "Quarter-final", "Semi-final", "Third place", "Final"]
 
-# WC2026 squad totals (€m), source: Transfermarkt, June 2026.
+load_dotenv()
+# tabpfn-client reads TABPFN_TOKEN; accept TABPFN_API_KEY as an alias.
+if not os.getenv("TABPFN_TOKEN") and os.getenv("TABPFN_API_KEY"):
+    os.environ["TABPFN_TOKEN"] = os.environ["TABPFN_API_KEY"]
+
+SHAP_BUDGET = int(os.getenv("SHAP_BUDGET", "64"))
+SHAP_BACKGROUND = int(os.getenv("SHAP_BACKGROUND", "48"))
+
+# Approximate squad market values (€m). Unknown clubs use the median.
 SQUAD_VALUE = {
-    "France": 1520.0, "England": 1360.0, "Spain": 1220.0, "Portugal": 1010.0,
-    "Germany": 947.0, "Brazil": 928.2, "Argentina": 807.5, "Netherlands": 754.2,
-    "Norway": 589.9, "Belgium": 547.5, "Ivory Coast": 522.1, "Senegal": 478.1,
-    "Turkey": 473.7, "Morocco": 447.7, "Sweden": 406.08, "Croatia": 387.3,
-    "United States": 385.65, "Ecuador": 368.7, "Uruguay": 359.3, "Switzerland": 332.5,
-    "Colombia": 302.35, "Japan": 270.85, "Algeria": 256.9, "Austria": 245.2,
-    "Ghana": 234.35, "Canada": 198.65, "Mexico": 191.85, "Czech Republic": 188.18,
-    "Scotland": 170.25, "Paraguay": 153.65, "Bosnia and Herzegovina": 146.4,
-    "DR Congo": 143.9, "South Korea": 139.05, "Egypt": 116.48, "Uzbekistan": 85.13,
-    "Australia": 77.45, "Tunisia": 69.95, "Haiti": 55.9, "Cape Verde": 54.5,
-    "South Africa": 49.25, "Saudi Arabia": 40.68, "Panama": 34.55, "New Zealand": 34.3,
-    "Iran": 32.05, "Curaçao": 25.78, "Iraq": 21.2, "Jordan": 20.3, "Qatar": 19.93,
+    "FC Bayern München": 950.0,
+    "Bayer 04 Leverkusen": 620.0,
+    "Borussia Dortmund": 540.0,
+    "RB Leipzig": 480.0,
+    "VfB Stuttgart": 380.0,
+    "Eintracht Frankfurt": 340.0,
+    "VfL Wolfsburg": 260.0,
+    "SC Freiburg": 220.0,
+    "TSG Hoffenheim": 210.0,
+    "Borussia Mönchengladbach": 200.0,
+    "1. FC Union Berlin": 180.0,
+    "SV Werder Bremen": 170.0,
+    "1. FC Köln": 150.0,
+    "1. FSV Mainz 05": 150.0,
+    "FC Augsburg": 130.0,
+    "Hamburger SV": 140.0,
+    "FC Schalke 04": 120.0,
+    "SC Paderborn 07": 55.0,
+    "SV 07 Elversberg": 40.0,
 }
 SQUAD_VALUE_DEFAULT = float(np.median(list(SQUAD_VALUE.values())))
 
@@ -75,56 +89,161 @@ FEATURES = [
     "home_streak", "away_streak", "home_rest", "away_rest",
     "home_played", "away_played",
     "h2h_n", "h2h_home_winrate", "h2h_draw_rate", "h2h_gd",
-    "neutral", "importance",
 ]
+
+FEATURE_LABELS = {
+    "elo_diff": "ELO gap",
+    "home_elo": "Home ELO",
+    "away_elo": "Away ELO",
+    "value_diff": "Squad value gap",
+    "home_squad_value": "Home squad value",
+    "away_squad_value": "Away squad value",
+    "form5_diff": "Form (5) gap",
+    "form10_diff": "Form (10) gap",
+    "home_form5": "Home form (5)",
+    "away_form5": "Away form (5)",
+    "home_winrate": "Home win rate",
+    "away_winrate": "Away win rate",
+    "home_gf5": "Home goals for (5)",
+    "away_gf5": "Away goals for (5)",
+    "home_ga5": "Home goals against (5)",
+    "away_ga5": "Away goals against (5)",
+    "gd10_diff": "Goal diff (10) gap",
+    "home_streak": "Home streak",
+    "away_streak": "Away streak",
+    "home_rest": "Home rest days",
+    "away_rest": "Away rest days",
+    "home_played": "Home matches played",
+    "away_played": "Away matches played",
+    "h2h_n": "H2H meetings",
+    "h2h_home_winrate": "H2H home win rate",
+    "h2h_draw_rate": "H2H draw rate",
+    "h2h_gd": "H2H goal diff",
+}
 
 
 def squad_value(team):
-    """Total squad market value in €m (Transfermarkt WC2026); median for unknown teams."""
     return SQUAD_VALUE.get(team, SQUAD_VALUE_DEFAULT)
 
 
-def importance(t):
-    """Map tournament name to an ELO K-factor weight; higher means bigger rating swings."""
-    t = t.lower()
-    if "world cup" in t and "qual" not in t:
-        return 60.0
-    if "confederations" in t:
-        return 50.0
-    if any(k in t for k in [
-        "uefa euro", "copa am", "african cup", "asian cup",
-        "gold cup", "nations league", "oceania nations"
-        ]):
-        return 45.0
-    if "qualif" in t:
-        return 35.0
-    if "friendly" in t:
-        return 20.0
-    return 30.0
+def _final_score(match):
+    results = match.get("matchResults") or []
+    end = next((r for r in results if r.get("resultTypeID") == 2), None)
+    if end is None and results:
+        end = max(results, key=lambda r: r.get("resultOrderID", 0))
+    if end is None:
+        return None, None
+    return end.get("pointsTeam1"), end.get("pointsTeam2")
 
 
-def load_data(refresh=False):
-    """Load and lightly clean the results CSV, downloading it if missing or refresh=True."""
-    if refresh or not os.path.exists(DATA):
-        df = pd.read_csv(RAW_URL)
-        df.to_csv(DATA, index=False)
+def _season_years(through=None):
+    """Seasons to pull for training history (OpenLigaDB uses start year)."""
+    now = pd.Timestamp.now()
+    end = through if through is not None else (now.year if now.month >= 7 else now.year - 1)
+    return list(range(2019, end + 1))
+
+
+def fetch_season(season):
+    url = f"{API}/getmatchdata/{LEAGUE}/{season}"
+    r = requests.get(url, timeout=60)
+    r.raise_for_status()
+    return r.json()
+
+
+def matches_to_frame(matches):
+    rows = []
+    for m in matches:
+        hs, aws = _final_score(m)
+        rows.append({
+            "date": m.get("matchDateTimeUTC") or m.get("matchDateTime"),
+            "home_team": m["team1"]["teamName"],
+            "away_team": m["team2"]["teamName"],
+            "home_score": hs,
+            "away_score": aws,
+            "neutral": 0,
+            "match_id": m.get("matchID"),
+            "matchday": (m.get("group") or {}).get("groupOrderID"),
+            "matchday_name": (m.get("group") or {}).get("groupName"),
+            "finished": bool(m.get("matchIsFinished")),
+            "home_icon": m["team1"].get("teamIconUrl"),
+            "away_icon": m["team2"].get("teamIconUrl"),
+            "home_short": m["team1"].get("shortName") or m["team1"]["teamName"],
+            "away_short": m["team2"].get("shortName") or m["team2"]["teamName"],
+            "season": m.get("leagueSeason"),
+        })
+    return pd.DataFrame(rows)
+
+
+def load_history(refresh=False):
+    if not refresh and os.path.exists(CACHE):
+        df = pd.read_csv(CACHE)
     else:
-        df = pd.read_csv(DATA)
-    df["date"] = pd.to_datetime(df["date"])
+        frames = []
+        for season in _season_years():
+            try:
+                frames.append(matches_to_frame(fetch_season(season)))
+            except requests.HTTPError:
+                continue
+        df = pd.concat(frames, ignore_index=True) if frames else pd.DataFrame()
+        df.to_csv(CACHE, index=False)
+
+    df["date"] = pd.to_datetime(df["date"], utc=True).dt.tz_localize(None)
     df = df.sort_values("date").reset_index(drop=True)
-    df["neutral"] = df["neutral"].astype(str).str.upper().eq("TRUE").astype(int)
     df["home_score"] = pd.to_numeric(df["home_score"], errors="coerce")
     df["away_score"] = pd.to_numeric(df["away_score"], errors="coerce")
     df["outcome"] = np.select(
         [df["home_score"] > df["away_score"], df["home_score"] < df["away_score"]],
         ["home_win", "away_win"], default="draw")
-    df.loc[df["home_score"].isna(), "outcome"] = np.nan
-    df["importance"] = df["tournament"].apply(importance)
+    df.loc[df["home_score"].isna() | ~df["finished"].astype(bool), "outcome"] = np.nan
     return df[df["date"] >= TRAIN_START].reset_index(drop=True)
 
 
+def fetch_current_group():
+    r = requests.get(f"{API}/getcurrentgroup/{LEAGUE}", timeout=30)
+    r.raise_for_status()
+    return r.json()
+
+
+def fetch_next_matchday():
+    """Return fixtures for the upcoming (or current unfinished) matchday."""
+    group = fetch_current_group()
+    order = int(group["groupOrderID"])
+    season = int(pd.Timestamp.now().year if pd.Timestamp.now().month >= 7 else pd.Timestamp.now().year - 1)
+
+    # Prefer the season that has the next unfinished match.
+    next_match = requests.get(f"{API}/getnextmatchbyleagueshortcut/{LEAGUE}", timeout=30)
+    next_match.raise_for_status()
+    nm = next_match.json()
+    if nm:
+        season = int(nm.get("leagueSeason") or season)
+        order = int((nm.get("group") or {}).get("groupOrderID") or order)
+
+    matches = fetch_season_matchday(season, order)
+    # If current group is fully finished, try the following matchday.
+    if matches and all(m.get("matchIsFinished") for m in matches) and order < 34:
+        nxt = fetch_season_matchday(season, order + 1)
+        if nxt:
+            order += 1
+            matches = nxt
+
+    meta = {
+        "season": season,
+        "matchday": order,
+        "matchday_name": (matches[0].get("group") or {}).get("groupName") if matches else group.get("groupName"),
+    }
+    fixtures = matches_to_frame(matches)
+    fixtures["date"] = pd.to_datetime(fixtures["date"], utc=True).dt.tz_localize(None)
+    return meta, fixtures.sort_values("date").reset_index(drop=True)
+
+
+def fetch_season_matchday(season, matchday):
+    url = f"{API}/getmatchdata/{LEAGUE}/{season}/{matchday}"
+    r = requests.get(url, timeout=60)
+    r.raise_for_status()
+    return r.json()
+
+
 def _team_feats(team, elo, res):
-    """Return pre-match stats for a team from accumulated state."""
     r = res[team]
     if not r:
         return elo[team], 1.3, 1.3, 0.33, 1.0, 1.0, 0.0, 0.0, 0
@@ -152,14 +271,13 @@ def _h2h_feats(home, away, h2h):
             np.mean([g if h == home else -g for h, g, _ in m]))
 
 
-def _feature_row(home, away, date, neutral, importance, elo, res, last_date, h2h):
-    adj = HOME_ADV * (1 - neutral)
+def _feature_row(home, away, date, elo, res, last_date, h2h):
     he, hf5, hf10, hwr, hgf, hga, hgd, hstk, hn = _team_feats(home, elo, res)
     ae, af5, af10, awr, agf, aga, agd, astk, an = _team_feats(away, elo, res)
     nm, h2h_wr, h2h_dr, h2h_gd = _h2h_feats(home, away, h2h)
     hv, av = squad_value(home), squad_value(away)
-    row = {
-        "elo_diff": he + adj - ae, "home_elo": he, "away_elo": ae,
+    return {
+        "elo_diff": he + HOME_ADV - ae, "home_elo": he, "away_elo": ae,
         "value_diff": hv - av, "home_squad_value": hv, "away_squad_value": av,
         "form5_diff": hf5 - af5, "form10_diff": hf10 - af10,
         "home_form5": hf5, "away_form5": af5,
@@ -171,14 +289,9 @@ def _feature_row(home, away, date, neutral, importance, elo, res, last_date, h2h
         "home_played": hn, "away_played": an,
         "h2h_n": nm, "h2h_home_winrate": h2h_wr, "h2h_draw_rate": h2h_dr, "h2h_gd": h2h_gd,
     }
-    if importance is not None:
-        row["neutral"] = neutral
-        row["importance"] = importance
-    return row
 
 
 def _elo_margin_multiplier(goal_diff):
-    """FIFA-style goal-difference weight: bigger wins/losses move ELO more."""
     gd = abs(int(goal_diff))
     if gd <= 1:
         return 1.0
@@ -187,23 +300,12 @@ def _elo_margin_multiplier(goal_diff):
     return (11 + gd) / 8
 
 
-def _ko_result_scores(home, away, winner, proba_row, classes):
-    """Synthetic KO scoreline; margin scales with prediction confidence."""
-    hi = list(classes).index("home_win")
-    ai = list(classes).index("away_win")
-    margin = max(1, min(5, int(1 + abs(proba_row[hi] - proba_row[ai]) * 4)))
-    if winner == home:
-        return margin, 0
-    return 0, margin
-
-
-def _update_state(home, away, date, home_score, away_score, neutral, imp, elo, res, last_date, h2h):
-    adj = HOME_ADV * (1 - neutral)
+def _update_state(home, away, date, home_score, away_score, elo, res, last_date, h2h):
     he, ae = elo[home], elo[away]
     gd = int(home_score) - int(away_score)
-    exp = 1 / (1 + 10 ** ((ae - he - adj) / 400))
+    exp = 1 / (1 + 10 ** ((ae - he - HOME_ADV) / 400))
     s = 1.0 if gd > 0 else (0.0 if gd < 0 else 0.5)
-    delta = imp * _elo_margin_multiplier(gd) * (s - exp)
+    delta = IMPORTANCE * _elo_margin_multiplier(gd) * (s - exp)
     elo[home] += delta
     elo[away] -= delta
     res[home].append((3 if gd > 0 else (1 if gd == 0 else 0), home_score, away_score, gd > 0))
@@ -217,130 +319,235 @@ def _init_state():
     return (defaultdict(lambda: 1500.0), defaultdict(list), {}, defaultdict(list))
 
 
-def _apply_result(home, away, date, home_score, away_score, neutral, imp, state):
-    elo, res, last_date, h2h = state
-    _update_state(home, away, date, home_score, away_score, neutral, imp, elo, res, last_date, h2h)
-
-
 def build_state(df):
-    """Replay all scored matches and return mutable feature state."""
-    state = _init_state()
-    elo, res, last_date, h2h = state
+    elo, res, last_date, h2h = _init_state()
     for r in df.itertuples():
-        if np.isnan(r.home_score):
+        if pd.isna(r.home_score) or pd.isna(r.away_score):
             continue
         _update_state(r.home_team, r.away_team, r.date, r.home_score, r.away_score,
-                      r.neutral, r.importance, elo, res, last_date, h2h)
-    return state
+                      elo, res, last_date, h2h)
+    return elo, res, last_date, h2h
 
 
 def build_features(df):
-    """One chronological pass: every feature uses only matches before kickoff."""
     elo, res, last_date, h2h = _init_state()
     rows = []
     for r in df.itertuples():
-        rows.append(_feature_row(r.home_team, r.away_team, r.date, r.neutral, None,
-                                 elo, res, last_date, h2h))
-        if not np.isnan(r.home_score):
+        rows.append(_feature_row(r.home_team, r.away_team, r.date, elo, res, last_date, h2h))
+        if not pd.isna(r.home_score) and not pd.isna(r.away_score):
             _update_state(r.home_team, r.away_team, r.date, r.home_score, r.away_score,
-                          r.neutral, r.importance, elo, res, last_date, h2h)
+                          elo, res, last_date, h2h)
     return df.join(pd.DataFrame(rows, index=df.index))
 
 
-def _ko_resolve(team, winners, losers):
-    if team.startswith("W"):
-        return winners[int(team[1:])]
-    if team.startswith("L"):
-        return losers[int(team[1:])]
-    return team
-
-
-def _ko_rounds():
-    """Yield (round_name, fixtures) where each fixture is (match_id, date, home, away)."""
-    yield KO_ROUND_NAMES[0], [(m, pd.Timestamp(d), h, a) for m, d, h, a in R32]
-    for name, fixtures in zip(KO_ROUND_NAMES[1:], LATER_ROUNDS):
-        yield name, [(m, pd.Timestamp(d), h, a) for m, d, h, a in fixtures]
-
-
-def _ko_neutral(home):
-    """KO fixtures are neutral except when USA or Mexico are the designated home team."""
-    return 0 if home in KO_HOSTS else 1
-
-
-def _ko_winner(home, away, pred, proba_row, classes):
-    if pred != "draw":
-        return home if pred == "home_win" else away
-    hi, ai = list(classes).index("home_win"), list(classes).index("away_win")
-    return home if proba_row[hi] >= proba_row[ai] else away
-
-
-def predict_ko_bracket(clf, df=None):
-    """Simulate the full WC2026 knockout bracket, updating state between rounds."""
-    state = build_state(df if df is not None else load_data())
-    winners, losers = {}, {}
-    rows = []
-
-    for round_name, fixtures in _ko_rounds():
-        batch, meta = [], []
-        for mid, date, home_ref, away_ref in fixtures:
-            home = _ko_resolve(home_ref, winners, losers)
-            away = _ko_resolve(away_ref, winners, losers)
-            neutral = _ko_neutral(home)
-            batch.append(_feature_row(home, away, date, neutral, WC_IMPORTANCE, *state))
-            meta.append((mid, date, home, away, round_name, neutral))
-
-        proba = clf.predict_proba(pd.DataFrame(batch)[FEATURES].values)
-        for i, (mid, date, home, away, round_name, neutral) in enumerate(meta):
-            pred = clf.classes_[proba[i].argmax()]
-            winner = _ko_winner(home, away, pred, proba[i], clf.classes_)
-            loser = away if winner == home else home
-            winners[mid] = winner
-            losers[mid] = loser
-            hs, aws = _ko_result_scores(home, away, winner, proba[i], clf.classes_)
-            _apply_result(home, away, date, hs, aws, neutral, WC_IMPORTANCE, state)
-            rows.append({
-                "match_id": mid, "round": round_name, "date": date,
-                "home_team": home, "away_team": away, "predicted": pred,
-                "p_home_win": proba[i, list(clf.classes_).index("home_win")],
-                "p_draw": proba[i, list(clf.classes_).index("draw")],
-                "p_away_win": proba[i, list(clf.classes_).index("away_win")],
-                "predicted_winner": winner,
-            })
-
-    return pd.DataFrame(rows)
-
-
 def train(pool):
-    """Fit TabPFN on the feature matrix; ignore_pretraining_limits allows >1000 rows."""
-    clf = TabPFNClassifier(ignore_pretraining_limits=True, random_state=42)
-    clf.fit(pool[FEATURES].values, pool["outcome"].values)
+    """Prefer TabPFN when authenticated; otherwise use a local gradient boosting model."""
+    X, y = pool[FEATURES].values, pool["outcome"].values
+    token = os.getenv("TABPFN_TOKEN") or os.getenv("TABPFN_API_KEY")
+    if token:
+        try:
+            from tabpfn_client import TabPFNClassifier, set_access_token
+            import tabpfn_client.constants as tabpfn_constants
+
+            os.environ["TABPFN_TOKEN"] = token
+            tabpfn_constants.TABPFN_TOKEN = token
+            set_access_token(token)
+            print("Training with TabPFN…")
+            clf = TabPFNClassifier(ignore_pretraining_limits=True, random_state=42)
+            clf.fit(X, y)
+            clf.model_name_ = "TabPFN"
+            return clf
+        except Exception as exc:
+            print(f"TabPFN unavailable ({exc}); falling back to HistGradientBoosting.")
+    base = HistGradientBoostingClassifier(max_depth=5, learning_rate=0.06, max_iter=150, random_state=42)
+    clf = CalibratedClassifierCV(base, method="isotonic", cv=3)
+    clf.fit(X, y)
+    clf.model_name_ = "HistGradientBoosting"
     return clf
 
 
+def predict_matchday(clf, history, fixtures):
+    state = build_state(history[history["outcome"].notna()])
+    batch, meta = [], []
+    for r in fixtures.itertuples():
+        batch.append(_feature_row(r.home_team, r.away_team, r.date, *state))
+        meta.append(r)
+
+    X = pd.DataFrame(batch)[FEATURES]
+    proba = clf.predict_proba(X.values)
+    classes = list(clf.classes_)
+    rows = []
+    for i, r in enumerate(meta):
+        pred = classes[int(proba[i].argmax())]
+        rows.append({
+            "match_id": int(r.match_id) if not pd.isna(r.match_id) else None,
+            "date": r.date.isoformat(),
+            "home_team": r.home_team,
+            "away_team": r.away_team,
+            "home_short": r.home_short,
+            "away_short": r.away_short,
+            "home_icon": r.home_icon,
+            "away_icon": r.away_icon,
+            "predicted": pred,
+            "p_home_win": float(proba[i, classes.index("home_win")]),
+            "p_draw": float(proba[i, classes.index("draw")]),
+            "p_away_win": float(proba[i, classes.index("away_win")]),
+            "features": {name: float(X.iloc[i][name]) for name in FEATURES},
+        })
+    return rows, X
+
+
+def _top_shap_features(sv, n=8):
+    """Extract first-order Shapley contributions ranked by absolute impact."""
+    items = []
+    for key, value in sv.dict_values.items():
+        if not isinstance(key, tuple) or len(key) != 1:
+            continue
+        idx = key[0]
+        name = FEATURES[idx]
+        items.append({
+            "feature": name,
+            "label": FEATURE_LABELS.get(name, name),
+            "shap": float(value),
+        })
+    items.sort(key=lambda d: abs(d["shap"]), reverse=True)
+    return items[:n]
+
+
+def explain_matchups(clf, train_X, fixture_X, rows, out_dir=EXPLAIN_DIR, budget=SHAP_BUDGET):
+    """Build SHAP waterfall plots for each fixture (TabPFN shapiq or shap fallback)."""
+    out_dir = Path(out_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    labels = np.array([FEATURE_LABELS.get(f, f) for f in FEATURES])
+    bg = train_X[FEATURES].sample(n=min(SHAP_BACKGROUND, len(train_X)), random_state=42)
+    classes = list(clf.classes_)
+    model_name = getattr(clf, "model_name_", type(clf).__name__)
+
+    for i, row in enumerate(rows):
+        mid = row["match_id"] or i
+        plot_path = out_dir / f"{mid}.png"
+        x = fixture_X.iloc[[i]][FEATURES]
+        class_index = classes.index(row["predicted"])
+        print(f"  SHAP {row['home_short']} vs {row['away_short']} ({row['predicted']})…")
+
+        try:
+            if model_name == "TabPFN":
+                from tabpfn_extensions.interpretability.shapiq import (
+                    get_tabpfn_imputation_explainer,
+                )
+                explainer = get_tabpfn_imputation_explainer(
+                    model=clf,
+                    data=bg,
+                    index="SV",
+                    max_order=1,
+                    class_index=class_index,
+                )
+                sv = explainer.explain(x.values, budget=budget)
+                ax = sv.plot_waterfall(feature_names=labels, show=False, max_display=10)
+                fig = ax.figure if hasattr(ax, "figure") else plt.gcf()
+                top = _top_shap_features(sv)
+                baseline = float(getattr(sv, "baseline_value", 0.0))
+            else:
+                import shap
+
+                # CalibratedClassifierCV wraps HistGradientBoosting — explain predicted class prob.
+                def predict_fn(data):
+                    return clf.predict_proba(data)[:, class_index]
+
+                explainer = shap.Explainer(predict_fn, bg.values)
+                explanation = explainer(x.values)
+                plt.figure(figsize=(8, 5))
+                shap.plots.waterfall(explanation[0], max_display=10, show=False)
+                fig = plt.gcf()
+                values = explanation.values[0]
+                top = sorted(
+                    [{
+                        "feature": FEATURES[j],
+                        "label": FEATURE_LABELS.get(FEATURES[j], FEATURES[j]),
+                        "shap": float(values[j]),
+                    } for j in range(len(FEATURES))],
+                    key=lambda d: abs(d["shap"]),
+                    reverse=True,
+                )[:8]
+                baseline = float(getattr(explanation, "base_values", [0])[0])
+
+            fig.suptitle(
+                f"{row['home_short']} vs {row['away_short']} → {row['predicted'].replace('_', ' ')}",
+                fontsize=11,
+            )
+            fig.savefig(plot_path, bbox_inches="tight", dpi=140, facecolor="white")
+            plt.close("all")
+            row["explanation"] = {
+                "plot": f"/explanations/{mid}.png",
+                "method": "shapiq SV waterfall" if model_name == "TabPFN" else "shap waterfall",
+                "class": row["predicted"],
+                "baseline": baseline,
+                "top_features": top,
+            }
+        except Exception as exc:
+            plt.close("all")
+            print(f"    explanation failed: {exc}")
+            row["explanation"] = None
+
+    return rows
+
+
 def main():
-    """Train on recent matches and predict WC2026 knockout fixtures."""
     parser = argparse.ArgumentParser()
-    parser.add_argument("--refresh", action="store_true", help="Re-download dataset from source")
+    parser.add_argument("--refresh", action="store_true", help="Re-download Bundesliga history")
+    parser.add_argument("--json", default="predictions.json", help="JSON output path")
+    parser.add_argument("--csv", default="predictions.csv", help="CSV output path")
+    parser.add_argument("--skip-shap", action="store_true", help="Skip SHAP plot generation")
     args = parser.parse_args()
 
-    df = load_data(refresh=args.refresh)
-    latest_date = df[df["date"].notna()]["date"].max()
-    print(f"Latest game in dataset: {latest_date.date()}")
-    print(f"Data freshness: {pd.Timestamp.now() - latest_date}")
+    history = load_history(refresh=args.refresh)
+    played = history[history["outcome"].notna()]
+    latest = played["date"].max() if len(played) else None
+    print(f"Training matches: {len(played)}")
+    if latest is not None:
+        print(f"Latest finished game: {latest.date()}")
 
-    feats = build_features(df)
-    played = feats[feats["outcome"].notna()]
+    meta, fixtures = fetch_next_matchday()
+    print(f"Next matchday: {meta['matchday_name']} (Saison {meta['season']}/{meta['season'] + 1}) — {len(fixtures)} fixtures")
 
-    clf = train(played.tail(MAX_TRAIN))
-    out = predict_ko_bracket(clf, df)
-    out = out[["date", "home_team", "away_team", "predicted", "p_home_win", "p_draw", "p_away_win"]]
+    feats = build_features(played)
+    train_pool = feats.tail(MAX_TRAIN)
+    clf = train(train_pool)
+    rows, fixture_X = predict_matchday(clf, history, fixtures)
+    model_name = getattr(clf, "model_name_", type(clf).__name__)
 
-    out.to_csv("predictions.csv", index=False)
+    if not args.skip_shap:
+        print("\nGenerating SHAP explanations…")
+        rows = explain_matchups(clf, train_pool, fixture_X, rows)
 
-    print(f"\nWC2026 knockout ({len(out)} matches, from {KO_START.date()}) -> predictions.csv\n")
-    for r in out.itertuples():
-        print(f"  {r.date.date()}  {r.home_team:>20} vs {r.away_team:<20}  "
-              f"-> {r.predicted:<9}  H {r.p_home_win:4.0%} | D {r.p_draw:4.0%} | A {r.p_away_win:4.0%}")
+    out = pd.DataFrame([{k: v for k, v in r.items() if k not in ("features", "explanation")} for r in rows])
+    out.to_csv(args.csv, index=False)
+    payload = {
+        "league": "Bundesliga",
+        "season": f"{meta['season']}/{meta['season'] + 1}",
+        "matchday": meta["matchday"],
+        "matchday_name": meta["matchday_name"],
+        "generated_at": pd.Timestamp.now(tz="UTC").isoformat(),
+        "model": model_name,
+        "train_matches": int(len(played)),
+        "xai": {
+            "library": "tabpfn-extensions interpretability / shapiq",
+            "docs": "https://docs.priorlabs.ai/capabilities/interpretability",
+        },
+        "predictions": rows,
+    }
+    with open(args.json, "w", encoding="utf-8") as f:
+        json.dump(payload, f, ensure_ascii=False, indent=2)
+
+    # Keep the Nuxt public copy in sync when present.
+    public_json = Path("web/public/data/predictions.json")
+    if public_json.parent.is_dir():
+        public_json.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+
+    print(f"\n{len(rows)} predictions -> {args.csv}, {args.json}\n")
+    for r in rows:
+        print(f"  {r['date'][:16]}  {r['home_team']:>24} vs {r['away_team']:<24}  "
+              f"-> {r['predicted']:<9}  H {r['p_home_win']:4.0%} | D {r['p_draw']:4.0%} | A {r['p_away_win']:4.0%}")
 
 
 if __name__ == "__main__":
