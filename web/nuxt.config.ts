@@ -17,7 +17,8 @@ export default defineNuxtConfig({
   },
 
   routeRules: {
-    '/api/**': { cors: true }
+    '/api/**': { cors: true },
+    '/data/**': { headers: { 'cache-control': 'public, max-age=60, stale-while-revalidate=300' } }
   },
 
   compatibilityDate: '2026-06-30',

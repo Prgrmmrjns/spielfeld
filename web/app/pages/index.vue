@@ -31,7 +31,8 @@ type PredictionPayload = {
   predictions: Prediction[]
 }
 
-const { data, error, pending, refresh } = await useFetch<PredictionPayload>('/api/predictions')
+// Prefer the static public asset (works on Vercel CDN). API bundles the same JSON.
+const { data, error, pending, refresh } = await useFetch<PredictionPayload>('/data/predictions.json')
 
 const selected = ref<Prediction | null>(null)
 const modalOpen = computed({
