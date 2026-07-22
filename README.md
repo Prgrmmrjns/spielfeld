@@ -14,9 +14,9 @@ Optional: put `TABPFN_API_KEY` or `TABPFN_TOKEN` in a `.env` file to use the Pri
 
 ## Vercel
 
-The Nuxt app is in `web/`. Deploy settings are in root `vercel.json` (install/build only the web app; ML Python deps are not installed on Vercel).
+The Nuxt app is in `web/`. Root `vercel.json` installs/builds with **npm** (avoids corepack/pnpm issues on Vercel) and skips Python ML deps.
 
-In the Vercel project, prefer **Root Directory = `web`**. If Root Directory stays at the repo root, `vercel.json` still builds Nuxt and moves the Nitro `.vercel` output into place.
+Preferred: set Vercel **Root Directory** to `web`. If it stays at repo root, `vercel.json` still builds Nuxt and moves Nitro’s `.vercel` output into place.
 
 ## Predict next matchday
 

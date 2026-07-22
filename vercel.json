@@ -1,6 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": null,
-  "installCommand": "corepack enable && pnpm --dir web install",
-  "buildCommand": "pnpm --dir web build && rm -rf .vercel && mv web/.vercel .vercel"
+  "installCommand": "npm --prefix web install",
+  "buildCommand": "npm --prefix web run build && rm -rf .vercel && mv web/.vercel .vercel"
 }

@@ -3,9 +3,11 @@
   "private": true,
   "description": "Bundesliga matchday predictions — Nuxt app lives in web/",
   "scripts": {
-    "dev": "pnpm --dir web dev",
-    "build": "pnpm --dir web build",
-    "preview": "pnpm --dir web preview"
+    "dev": "npm --prefix web run dev",
+    "build": "npm --prefix web run build",
+    "preview": "npm --prefix web run preview"
   },
-  "packageManager": "pnpm@11.13.1"
+  "engines": {
+    "node": ">=22"
+  }
 }

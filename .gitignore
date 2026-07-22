@@ -17,3 +17,4 @@ web/.vercel/
 .vercel/
 .env
 node_modules/
+web/pnpm-lock.yaml
