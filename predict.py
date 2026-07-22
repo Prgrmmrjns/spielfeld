@@ -539,10 +539,17 @@ def main():
     with open(args.json, "w", encoding="utf-8") as f:
         json.dump(payload, f, ensure_ascii=False, indent=2)
 
-    # Keep the Nuxt public copy in sync when present.
-    public_json = Path("web/public/data/predictions.json")
-    if public_json.parent.is_dir():
-        public_json.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+    # Keep Nuxt copies in sync (static public + build-time imports).
+    payload_text = json.dumps(payload, ensure_ascii=False, indent=2)
+    for dest in (
+        Path("web/public/data/predictions.json"),
+        Path("web/app/data/predictions.json"),
+        Path("web/server/data/predictions.json"),
+    ):
+        if dest.parent.is_dir():
+            dest.write_text(payload_text, encoding="utf-8")
+
+
 
     print(f"\n{len(rows)} predictions -> {args.csv}, {args.json}\n")
     for r in rows:

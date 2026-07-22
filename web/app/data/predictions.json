@@ -1,0 +1,834 @@
+{
+  "league": "Bundesliga",
+  "season": "2026/2027",
+  "matchday": 1,
+  "matchday_name": "1. Spieltag",
+  "generated_at": "2026-07-22T09:46:54.120880+00:00",
+  "model": "TabPFN",
+  "train_matches": 2142,
+  "xai": {
+    "library": "tabpfn-extensions interpretability / shapiq",
+    "docs": "https://docs.priorlabs.ai/capabilities/interpretability"
+  },
+  "predictions": [
+    {
+      "match_id": 83156,
+      "date": "2026-08-28T18:30:00",
+      "home_team": "FC Bayern München",
+      "away_team": "VfB Stuttgart",
+      "home_short": "Bayern",
+      "away_short": "Stuttgart",
+      "home_icon": "https://upload.wikimedia.org/wikipedia/commons/1/1f/Logo_FC_Bayern_M%C3%BCnchen_%282002%E2%80%932017%29.svg",
+      "away_icon": "https://i.imgur.com/v0tkpNx.png",
+      "predicted": "home_win",
+      "p_home_win": 0.7710946798324585,
+      "p_draw": 0.15140730142593384,
+      "p_away_win": 0.07749804854393005,
+      "features": {
+        "elo_diff": 313.6480085214623,
+        "home_elo": 1968.0010394554208,
+        "away_elo": 1719.3530309339585,
+        "value_diff": 570.0,
+        "home_squad_value": 950.0,
+        "away_squad_value": 380.0,
+        "form5_diff": 1.4000000000000001,
+        "form10_diff": 1.0,
+        "home_form5": 2.6,
+        "away_form5": 1.2,
+        "home_winrate": 0.8,
+        "away_winrate": 0.4,
+        "home_gf5": 3.4,
+        "away_gf5": 2.2,
+        "home_ga5": 1.8,
+        "away_ga5": 2.2,
+        "gd10_diff": 1.5,
+        "home_streak": 15.0,
+        "away_streak": 4.0,
+        "home_rest": 90.0,
+        "away_rest": 90.0,
+        "home_played": 238.0,
+        "away_played": 204.0,
+        "h2h_n": 12.0,
+        "h2h_home_winrate": 0.75,
+        "h2h_draw_rate": 0.16666666666666666,
+        "h2h_gd": 2.1666666666666665
+      },
+      "explanation": {
+        "plot": "/explanations/83156.png",
+        "method": "shapiq SV waterfall",
+        "class": "home_win",
+        "baseline": 0.44928357005119324,
+        "top_features": [
+          {
+            "feature": "value_diff",
+            "label": "Squad value gap",
+            "shap": 0.2107903299052349
+          },
+          {
+            "feature": "elo_diff",
+            "label": "ELO gap",
+            "shap": 0.04024936369625628
+          },
+          {
+            "feature": "home_played",
+            "label": "Home matches played",
+            "shap": 0.02838834224020726
+          },
+          {
+            "feature": "home_elo",
+            "label": "Home ELO",
+            "shap": 0.017074389333653267
+          },
+          {
+            "feature": "h2h_home_winrate",
+            "label": "H2H home win rate",
+            "shap": 0.014367942961338108
+          },
+          {
+            "feature": "h2h_n",
+            "label": "H2H meetings",
+            "shap": 0.007732768005266545
+          },
+          {
+            "feature": "home_squad_value",
+            "label": "Home squad value",
+            "shap": 0.0031309942405814972
+          },
+          {
+            "feature": "away_elo",
+            "label": "Away ELO",
+            "shap": -0.0
+          }
+        ]
+      }
+    },
+    {
+      "match_id": 83158,
+      "date": "2026-08-29T13:30:00",
+      "home_team": "RB Leipzig",
+      "away_team": "Borussia Mönchengladbach",
+      "home_short": "Leipzig",
+      "away_short": "Gladbach",
+      "home_icon": "https://i.imgur.com/Rpwsjz1.png",
+      "away_icon": "https://i.imgur.com/KSIk0Eu.png",
+      "predicted": "home_win",
+      "p_home_win": 0.6687610149383545,
+      "p_draw": 0.20553869009017944,
+      "p_away_win": 0.12570028007030487,
+      "features": {
+        "elo_diff": 172.21222476274602,
+        "home_elo": 1657.784206703892,
+        "away_elo": 1550.571981941146,
+        "value_diff": 280.0,
+        "home_squad_value": 480.0,
+        "away_squad_value": 200.0,
+        "form5_diff": 0.19999999999999996,
+        "form10_diff": 0.8,
+        "home_form5": 1.8,
+        "away_form5": 1.6,
+        "home_winrate": 0.7,
+        "away_winrate": 0.3,
+        "home_gf5": 2.0,
+        "away_gf5": 1.4,
+        "home_ga5": 2.2,
+        "away_ga5": 0.8,
+        "gd10_diff": 0.5,
+        "home_streak": 0.0,
+        "away_streak": 1.0,
+        "home_rest": 90.0,
+        "away_rest": 90.0,
+        "home_played": 238.0,
+        "away_played": 238.0,
+        "h2h_n": 14.0,
+        "h2h_home_winrate": 0.5,
+        "h2h_draw_rate": 0.21428571428571427,
+        "h2h_gd": 0.42857142857142855
+      },
+      "explanation": {
+        "plot": "/explanations/83158.png",
+        "method": "shapiq SV waterfall",
+        "class": "home_win",
+        "baseline": 0.44928357005119324,
+        "top_features": [
+          {
+            "feature": "value_diff",
+            "label": "Squad value gap",
+            "shap": 0.11270879207357594
+          },
+          {
+            "feature": "away_played",
+            "label": "Away matches played",
+            "shap": -0.04581966930578038
+          },
+          {
+            "feature": "home_played",
+            "label": "Home matches played",
+            "shap": 0.041955997297128414
+          },
+          {
+            "feature": "home_form5",
+            "label": "Home form (5)",
+            "shap": 0.03743168872288465
+          },
+          {
+            "feature": "h2h_draw_rate",
+            "label": "H2H draw rate",
+            "shap": 0.029150228021783242
+          },
+          {
+            "feature": "home_streak",
+            "label": "Home streak",
+            "shap": 0.024129245213612722
+          },
+          {
+            "feature": "away_winrate",
+            "label": "Away win rate",
+            "shap": 0.0198264212810862
+          },
+          {
+            "feature": "elo_diff",
+            "label": "ELO gap",
+            "shap": -0.0
+          }
+        ]
+      }
+    },
+    {
+      "match_id": 83161,
+      "date": "2026-08-29T13:30:00",
+      "home_team": "1. FSV Mainz 05",
+      "away_team": "SC Paderborn 07",
+      "home_short": "Mainz",
+      "away_short": "Paderborn",
+      "home_icon": "https://upload.wikimedia.org/wikipedia/commons/9/9e/Logo_Mainz_05.svg",
+      "away_icon": "https://upload.wikimedia.org/wikipedia/commons/e/e3/SC_Paderborn_07_Logo.svg",
+      "predicted": "home_win",
+      "p_home_win": 0.6617290377616882,
+      "p_draw": 0.21133168041706085,
+      "p_away_win": 0.1269392967224121,
+      "features": {
+        "elo_diff": 401.4771215551675,
+        "home_elo": 1598.8094739262697,
+        "away_elo": 1262.3323523711022,
+        "value_diff": 95.0,
+        "home_squad_value": 150.0,
+        "away_squad_value": 55.0,
+        "form5_diff": 1.2,
+        "form10_diff": 1.2999999999999998,
+        "home_form5": 1.4,
+        "away_form5": 0.2,
+        "home_winrate": 0.5,
+        "away_winrate": 0.0,
+        "home_gf5": 1.6,
+        "away_gf5": 1.0,
+        "home_ga5": 1.4,
+        "away_ga5": 2.6,
+        "gd10_diff": 1.7999999999999998,
+        "home_streak": 1.0,
+        "away_streak": 0.0,
+        "home_rest": 90.0,
+        "away_rest": 90.0,
+        "home_played": 238.0,
+        "away_played": 34.0,
+        "h2h_n": 2.0,
+        "h2h_home_winrate": 1.0,
+        "h2h_draw_rate": 0.0,
+        "h2h_gd": 1.5
+      },
+      "explanation": {
+        "plot": "/explanations/83161.png",
+        "method": "shapiq SV waterfall",
+        "class": "home_win",
+        "baseline": 0.44928357005119324,
+        "top_features": [
+          {
+            "feature": "elo_diff",
+            "label": "ELO gap",
+            "shap": 0.0663364742480722
+          },
+          {
+            "feature": "value_diff",
+            "label": "Squad value gap",
+            "shap": 0.036100941166202494
+          },
+          {
+            "feature": "home_played",
+            "label": "Home matches played",
+            "shap": 0.0329507167042959
+          },
+          {
+            "feature": "away_squad_value",
+            "label": "Away squad value",
+            "shap": 0.02985596951236072
+          },
+          {
+            "feature": "home_form5",
+            "label": "Home form (5)",
+            "shap": 0.02127632400717871
+          },
+          {
+            "feature": "away_gf5",
+            "label": "Away goals for (5)",
+            "shap": 0.013481820098578082
+          },
+          {
+            "feature": "away_played",
+            "label": "Away matches played",
+            "shap": 0.012448854612738161
+          },
+          {
+            "feature": "home_elo",
+            "label": "Home ELO",
+            "shap": -0.0
+          }
+        ]
+      }
+    },
+    {
+      "match_id": 83162,
+      "date": "2026-08-29T13:30:00",
+      "home_team": "1. FC Union Berlin",
+      "away_team": "Eintracht Frankfurt",
+      "home_short": "Union Berlin",
+      "away_short": "Frankfurt",
+      "home_icon": "https://assets.dfb.de/uploads/000/018/232/small_union-Berlin.jpg",
+      "away_icon": "https://i.imgur.com/X8NFkOb.png",
+      "predicted": "away_win",
+      "p_home_win": 0.3164941668510437,
+      "p_draw": 0.27208709716796875,
+      "p_away_win": 0.41141873598098755,
+      "features": {
+        "elo_diff": 15.278762324372565,
+        "home_elo": 1480.6939822394575,
+        "away_elo": 1530.415219915085,
+        "value_diff": -160.0,
+        "home_squad_value": 180.0,
+        "away_squad_value": 340.0,
+        "form5_diff": 0.9999999999999999,
+        "form10_diff": 0.10000000000000009,
+        "home_form5": 1.4,
+        "away_form5": 0.4,
+        "home_winrate": 0.3,
+        "away_winrate": 0.2,
+        "home_gf5": 1.8,
+        "away_gf5": 1.4,
+        "home_ga5": 1.4,
+        "away_ga5": 2.2,
+        "gd10_diff": -0.3,
+        "home_streak": 3.0,
+        "away_streak": 1.0,
+        "home_rest": 90.0,
+        "away_rest": 90.0,
+        "home_played": 238.0,
+        "away_played": 238.0,
+        "h2h_n": 14.0,
+        "h2h_home_winrate": 0.35714285714285715,
+        "h2h_draw_rate": 0.2857142857142857,
+        "h2h_gd": -0.21428571428571427
+      },
+      "explanation": {
+        "plot": "/explanations/83162.png",
+        "method": "shapiq SV waterfall",
+        "class": "away_win",
+        "baseline": 0.27860110998153687,
+        "top_features": [
+          {
+            "feature": "value_diff",
+            "label": "Squad value gap",
+            "shap": 0.08687694971138565
+          },
+          {
+            "feature": "away_played",
+            "label": "Away matches played",
+            "shap": 0.05119668357101632
+          },
+          {
+            "feature": "home_played",
+            "label": "Home matches played",
+            "shap": -0.043101793332564406
+          },
+          {
+            "feature": "elo_diff",
+            "label": "ELO gap",
+            "shap": 0.013880699247857977
+          },
+          {
+            "feature": "h2h_gd",
+            "label": "H2H goal diff",
+            "shap": 0.009182069286780609
+          },
+          {
+            "feature": "form5_diff",
+            "label": "Form (5) gap",
+            "shap": 0.008175226560615001
+          },
+          {
+            "feature": "home_elo",
+            "label": "Home ELO",
+            "shap": 0.006752332217939864
+          },
+          {
+            "feature": "away_elo",
+            "label": "Away ELO",
+            "shap": -0.0
+          }
+        ]
+      }
+    },
+    {
+      "match_id": 83163,
+      "date": "2026-08-29T13:30:00",
+      "home_team": "1. FC Köln",
+      "away_team": "TSG Hoffenheim",
+      "home_short": "Köln",
+      "away_short": "Hoffenheim",
+      "home_icon": "https://upload.wikimedia.org/wikipedia/commons/0/01/1._FC_Koeln_Logo_2014%E2%80%93.svg",
+      "away_icon": "https://i.imgur.com/gF0PfEl.png",
+      "predicted": "away_win",
+      "p_home_win": 0.281985878944397,
+      "p_draw": 0.265044242143631,
+      "p_away_win": 0.45296990871429443,
+      "features": {
+        "elo_diff": -133.28919756490723,
+        "home_elo": 1410.802637771596,
+        "away_elo": 1609.0918353365032,
+        "value_diff": -60.0,
+        "home_squad_value": 150.0,
+        "away_squad_value": 210.0,
+        "form5_diff": -1.6,
+        "form10_diff": -0.7,
+        "home_form5": 0.4,
+        "away_form5": 2.0,
+        "home_winrate": 0.1,
+        "away_winrate": 0.4,
+        "home_gf5": 1.2,
+        "away_gf5": 1.6,
+        "home_ga5": 2.6,
+        "away_ga5": 1.8,
+        "gd10_diff": -0.09999999999999998,
+        "home_streak": 0.0,
+        "away_streak": 0.0,
+        "home_rest": 90.0,
+        "away_rest": 90.0,
+        "home_played": 204.0,
+        "away_played": 238.0,
+        "h2h_n": 12.0,
+        "h2h_home_winrate": 0.16666666666666666,
+        "h2h_draw_rate": 0.25,
+        "h2h_gd": -1.0
+      },
+      "explanation": {
+        "plot": "/explanations/83163.png",
+        "method": "shapiq SV waterfall",
+        "class": "away_win",
+        "baseline": 0.27860110998153687,
+        "top_features": [
+          {
+            "feature": "away_played",
+            "label": "Away matches played",
+            "shap": 0.07264997961758918
+          },
+          {
+            "feature": "value_diff",
+            "label": "Squad value gap",
+            "shap": 0.055823375036377
+          },
+          {
+            "feature": "elo_diff",
+            "label": "ELO gap",
+            "shap": 0.0398933317783755
+          },
+          {
+            "feature": "home_elo",
+            "label": "Home ELO",
+            "shap": 0.029419952695635982
+          },
+          {
+            "feature": "home_played",
+            "label": "Home matches played",
+            "shap": -0.02082011835390509
+          },
+          {
+            "feature": "form5_diff",
+            "label": "Form (5) gap",
+            "shap": -0.013108049040528647
+          },
+          {
+            "feature": "form10_diff",
+            "label": "Form (10) gap",
+            "shap": 0.010615767615821326
+          },
+          {
+            "feature": "away_elo",
+            "label": "Away ELO",
+            "shap": -0.0
+          }
+        ]
+      }
+    },
+    {
+      "match_id": 83164,
+      "date": "2026-08-29T13:30:00",
+      "home_team": "SV 07 Elversberg",
+      "away_team": "Bayer 04 Leverkusen",
+      "home_short": "Elversberg",
+      "away_short": "Leverkusen",
+      "home_icon": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/SV_Elversberg_Logo.svg/500px-SV_Elversberg_Logo.svg.png",
+      "away_icon": "https://www.bundesliga-reisefuehrer.de/sites/default/files/B04_Standard_Logo_RGB.png",
+      "predicted": "away_win",
+      "p_home_win": 0.11179231852293015,
+      "p_draw": 0.1673177182674408,
+      "p_away_win": 0.7208899259567261,
+      "features": {
+        "elo_diff": -121.36378587022682,
+        "home_elo": 1500.0,
+        "away_elo": 1686.3637858702268,
+        "value_diff": -580.0,
+        "home_squad_value": 40.0,
+        "away_squad_value": 620.0,
+        "form5_diff": -0.09999999999999987,
+        "form10_diff": -0.30000000000000004,
+        "home_form5": 1.3,
+        "away_form5": 1.4,
+        "home_winrate": 0.33,
+        "away_winrate": 0.4,
+        "home_gf5": 1.0,
+        "away_gf5": 1.8,
+        "home_ga5": 1.0,
+        "away_ga5": 1.6,
+        "gd10_diff": -0.5,
+        "home_streak": 0.0,
+        "away_streak": 1.0,
+        "home_rest": 30.0,
+        "away_rest": 90.0,
+        "home_played": 0.0,
+        "away_played": 238.0,
+        "h2h_n": 0.0,
+        "h2h_home_winrate": 0.5,
+        "h2h_draw_rate": 0.25,
+        "h2h_gd": 0.0
+      },
+      "explanation": {
+        "plot": "/explanations/83164.png",
+        "method": "shapiq SV waterfall",
+        "class": "away_win",
+        "baseline": 0.27860110998153687,
+        "top_features": [
+          {
+            "feature": "value_diff",
+            "label": "Squad value gap",
+            "shap": 0.2003868068982732
+          },
+          {
+            "feature": "away_played",
+            "label": "Away matches played",
+            "shap": 0.0728263213528775
+          },
+          {
+            "feature": "home_played",
+            "label": "Home matches played",
+            "shap": 0.044199457452298474
+          },
+          {
+            "feature": "elo_diff",
+            "label": "ELO gap",
+            "shap": 0.03815522687374162
+          },
+          {
+            "feature": "home_squad_value",
+            "label": "Home squad value",
+            "shap": 0.03498961095568876
+          },
+          {
+            "feature": "away_squad_value",
+            "label": "Away squad value",
+            "shap": 0.03234411205752015
+          },
+          {
+            "feature": "h2h_n",
+            "label": "H2H meetings",
+            "shap": 0.01951912585903265
+          },
+          {
+            "feature": "home_elo",
+            "label": "Home ELO",
+            "shap": -0.0
+          }
+        ]
+      }
+    },
+    {
+      "match_id": 83157,
+      "date": "2026-08-29T16:30:00",
+      "home_team": "Borussia Dortmund",
+      "away_team": "Hamburger SV",
+      "home_short": "Dortmund",
+      "away_short": "HSV",
+      "home_icon": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/67/Borussia_Dortmund_logo.svg/960px-Borussia_Dortmund_logo.svg.png",
+      "away_icon": "https://upload.wikimedia.org/wikipedia/commons/f/f7/Hamburger_SV_logo.svg",
+      "predicted": "home_win",
+      "p_home_win": 0.7736893892288208,
+      "p_draw": 0.1522228717803955,
+      "p_away_win": 0.07408776134252548,
+      "features": {
+        "elo_diff": 342.5163557819824,
+        "home_elo": 1787.0430192500642,
+        "away_elo": 1509.5266634680818,
+        "value_diff": 400.0,
+        "home_squad_value": 540.0,
+        "away_squad_value": 140.0,
+        "form5_diff": 0.40000000000000013,
+        "form10_diff": 0.9000000000000001,
+        "home_form5": 1.8,
+        "away_form5": 1.4,
+        "home_winrate": 0.7,
+        "away_winrate": 0.3,
+        "home_gf5": 2.0,
+        "away_gf5": 1.6,
+        "home_ga5": 1.0,
+        "away_ga5": 1.8,
+        "gd10_diff": 1.5,
+        "home_streak": 2.0,
+        "away_streak": 3.0,
+        "home_rest": 90.0,
+        "away_rest": 90.0,
+        "home_played": 238.0,
+        "away_played": 34.0,
+        "h2h_n": 2.0,
+        "h2h_home_winrate": 0.5,
+        "h2h_draw_rate": 0.5,
+        "h2h_gd": 0.5
+      },
+      "explanation": {
+        "plot": "/explanations/83157.png",
+        "method": "shapiq SV waterfall",
+        "class": "home_win",
+        "baseline": 0.44928357005119324,
+        "top_features": [
+          {
+            "feature": "value_diff",
+            "label": "Squad value gap",
+            "shap": 0.14973142784699395
+          },
+          {
+            "feature": "elo_diff",
+            "label": "ELO gap",
+            "shap": 0.04288847370451508
+          },
+          {
+            "feature": "home_played",
+            "label": "Home matches played",
+            "shap": 0.033332526765583126
+          },
+          {
+            "feature": "away_squad_value",
+            "label": "Away squad value",
+            "shap": 0.028424667204246995
+          },
+          {
+            "feature": "away_played",
+            "label": "Away matches played",
+            "shap": 0.027651526649045893
+          },
+          {
+            "feature": "home_squad_value",
+            "label": "Home squad value",
+            "shap": 0.023901466507950685
+          },
+          {
+            "feature": "form10_diff",
+            "label": "Form (10) gap",
+            "shap": 0.018471826395059038
+          },
+          {
+            "feature": "home_elo",
+            "label": "Home ELO",
+            "shap": -0.0
+          }
+        ]
+      }
+    },
+    {
+      "match_id": 83159,
+      "date": "2026-08-30T13:30:00",
+      "home_team": "SC Freiburg",
+      "away_team": "SV Werder Bremen",
+      "home_short": "Freiburg",
+      "away_short": "Bremen",
+      "home_icon": "https://i.imgur.com/r3mvi0h.png",
+      "away_icon": "https://upload.wikimedia.org/wikipedia/commons/b/be/SV-Werder-Bremen-Logo.svg",
+      "predicted": "home_win",
+      "p_home_win": 0.5406441688537598,
+      "p_draw": 0.2559795379638672,
+      "p_away_win": 0.20337626338005066,
+      "features": {
+        "elo_diff": 214.49895618334403,
+        "home_elo": 1581.6886390810898,
+        "away_elo": 1432.1896828977458,
+        "value_diff": 50.0,
+        "home_squad_value": 220.0,
+        "away_squad_value": 170.0,
+        "form5_diff": 0.5999999999999999,
+        "form10_diff": 0.3999999999999999,
+        "home_form5": 1.4,
+        "away_form5": 0.8,
+        "home_winrate": 0.4,
+        "away_winrate": 0.3,
+        "home_gf5": 1.8,
+        "away_gf5": 1.0,
+        "home_ga5": 2.0,
+        "away_ga5": 1.6,
+        "gd10_diff": 0.30000000000000004,
+        "home_streak": 1.0,
+        "away_streak": 0.0,
+        "home_rest": 90.0,
+        "away_rest": 90.0,
+        "home_played": 238.0,
+        "away_played": 204.0,
+        "h2h_n": 12.0,
+        "h2h_home_winrate": 0.5833333333333334,
+        "h2h_draw_rate": 0.25,
+        "h2h_gd": 0.9166666666666666
+      },
+      "explanation": {
+        "plot": "/explanations/83159.png",
+        "method": "shapiq SV waterfall",
+        "class": "home_win",
+        "baseline": 0.44928357005119324,
+        "top_features": [
+          {
+            "feature": "home_played",
+            "label": "Home matches played",
+            "shap": 0.04345999410058557
+          },
+          {
+            "feature": "away_played",
+            "label": "Away matches played",
+            "shap": -0.03322530982508591
+          },
+          {
+            "feature": "home_elo",
+            "label": "Home ELO",
+            "shap": 0.025714797510422625
+          },
+          {
+            "feature": "away_squad_value",
+            "label": "Away squad value",
+            "shap": 0.020523653696632907
+          },
+          {
+            "feature": "away_gf5",
+            "label": "Away goals for (5)",
+            "shap": 0.015515721929078683
+          },
+          {
+            "feature": "value_diff",
+            "label": "Squad value gap",
+            "shap": 0.010747490124559757
+          },
+          {
+            "feature": "away_elo",
+            "label": "Away ELO",
+            "shap": 0.008568014284027321
+          },
+          {
+            "feature": "elo_diff",
+            "label": "ELO gap",
+            "shap": -0.0
+          }
+        ]
+      }
+    },
+    {
+      "match_id": 83160,
+      "date": "2026-08-30T15:30:00",
+      "home_team": "FC Augsburg",
+      "away_team": "FC Schalke 04",
+      "home_short": "Augsburg",
+      "away_short": "Schalke",
+      "home_icon": "https://i.imgur.com/sdE62e2.png",
+      "away_icon": "https://upload.wikimedia.org/wikipedia/commons/9/97/FC_Schalke_04_Logo.png",
+      "predicted": "home_win",
+      "p_home_win": 0.5006682872772217,
+      "p_draw": 0.2651815414428711,
+      "p_away_win": 0.2341502159833908,
+      "features": {
+        "elo_diff": 180.88274901800082,
+        "home_elo": 1537.5805165790553,
+        "away_elo": 1421.6977675610544,
+        "value_diff": 10.0,
+        "home_squad_value": 130.0,
+        "away_squad_value": 120.0,
+        "form5_diff": 0.6000000000000001,
+        "form10_diff": 0.09999999999999987,
+        "home_form5": 2.0,
+        "away_form5": 1.4,
+        "home_winrate": 0.3,
+        "away_winrate": 0.3,
+        "home_gf5": 1.8,
+        "away_gf5": 1.8,
+        "home_ga5": 1.6,
+        "away_ga5": 3.0,
+        "gd10_diff": 0.7,
+        "home_streak": 0.0,
+        "away_streak": 0.0,
+        "home_rest": 90.0,
+        "away_rest": 90.0,
+        "home_played": 238.0,
+        "away_played": 102.0,
+        "h2h_n": 6.0,
+        "h2h_home_winrate": 0.3333333333333333,
+        "h2h_draw_rate": 0.3333333333333333,
+        "h2h_gd": 0.3333333333333333
+      },
+      "explanation": {
+        "plot": "/explanations/83160.png",
+        "method": "shapiq SV waterfall",
+        "class": "home_win",
+        "baseline": 0.44928357005119324,
+        "top_features": [
+          {
+            "feature": "home_played",
+            "label": "Home matches played",
+            "shap": 0.04262845964672912
+          },
+          {
+            "feature": "away_squad_value",
+            "label": "Away squad value",
+            "shap": 0.024966888738471204
+          },
+          {
+            "feature": "elo_diff",
+            "label": "ELO gap",
+            "shap": 0.017795718182453773
+          },
+          {
+            "feature": "home_squad_value",
+            "label": "Home squad value",
+            "shap": -0.017013819686410192
+          },
+          {
+            "feature": "value_diff",
+            "label": "Squad value gap",
+            "shap": -0.015290353032401355
+          },
+          {
+            "feature": "home_rest",
+            "label": "Home rest days",
+            "shap": -0.009130849425587381
+          },
+          {
+            "feature": "gd10_diff",
+            "label": "Goal diff (10) gap",
+            "shap": 0.00741332460674361
+          },
+          {
+            "feature": "home_elo",
+            "label": "Home ELO",
+            "shap": -0.0
+          }
+        ]
+      }
+    }
+  ]
+}

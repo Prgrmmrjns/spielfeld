@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import payload from '~/data/predictions.json'
+
 type Prediction = {
   date: string
   home_team: string
@@ -31,8 +33,15 @@ type PredictionPayload = {
   predictions: Prediction[]
 }
 
-// Prefer the static public asset (works on Vercel CDN). API bundles the same JSON.
-const { data, error, pending, refresh } = await useFetch<PredictionPayload>('/data/predictions.json')
+// Embedded at build time — no runtime fetch (avoids Vercel SSR URL issues).
+const data = computed(() => payload as PredictionPayload)
+const pending = ref(false)
+const error = ref<Error | null>(null)
+
+function refresh() {
+  // Static embed; redeploy after regenerating predictions.
+  error.value = null
+}
 
 const selected = ref<Prediction | null>(null)
 const modalOpen = computed({
@@ -94,14 +103,6 @@ const generatedLabel = computed(() => {
           >
             See tips
           </a>
-          <button
-            type="button"
-            class="inline-flex items-center border border-white/20 px-5 py-3 text-sm font-semibold uppercase tracking-[0.14em] text-white/80 transition hover:border-white/40 hover:text-white"
-            :disabled="pending"
-            @click="refresh()"
-          >
-            Refresh
-          </button>
         </div>
       </section>
 
@@ -129,7 +130,7 @@ const generatedLabel = computed(() => {
           Loading predictions…
         </div>
         <div v-else-if="error" class="py-16 text-red-300">
-          Could not load predictions. Run <code class="text-[var(--accent)]">python predict.py</code> then refresh.
+          Could not load predictions.
         </div>
         <div v-else-if="data?.predictions?.length" class="divide-y divide-transparent">
           <MatchRow
@@ -139,6 +140,9 @@ const generatedLabel = computed(() => {
             :index="index"
             @select="selected = $event"
           />
+        </div>
+        <div v-else class="py-16 text-white/50">
+          No fixtures in the current prediction set.
         </div>
       </section>
     </main>
