@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>About — Spielfeld</title>
+  <meta name="description" content="How Spielfeld builds Bundesliga tips: training data, TabPFN, ShapIQ, and lineup lab." />
+  <link rel="icon" href="/favicon.ico" />
+  <link rel="stylesheet" href="/css/main.css?v=about1" />
+</head>
+<body>
+  <div class="page">
+    <div class="bg" aria-hidden="true">
+      <div class="bg-grad"></div>
+      <div class="hero-glow"></div>
+      <div class="bg-grid"></div>
+    </div>
+
+    <div class="wrap">
+      <header class="site-header">
+        <div class="brand-lockup">
+          <a class="brand" href="/">SPIELFELD</a>
+          <p class="eyebrow">About · how the tips work</p>
+        </div>
+        <nav class="site-nav">
+          <a href="/">Tips</a>
+          <a class="on" href="/about">About</a>
+        </nav>
+      </header>
+
+      <main class="about">
+        <section class="about-hero animate-rise">
+          <h1>How Spielfeld works</h1>
+        </section>
+
+        <section class="about-grid">
+          <article class="about-card animate-rise">
+            <h2>What you see</h2>
+            <p>
+              For the next Bundesliga Spieltag we show a tip for each match —
+              home win, draw, or away win — with percentages. Open a match for the pitch board,
+              player swaps, and ShapIQ drivers.
+            </p>
+          </article>
+
+          <article class="about-card animate-rise delay-1">
+            <h2>How much data?</h2>
+            <p>
+              The current model was trained on
+              <strong>{{ payload.train_matches or "—" }} finished Bundesliga matches</strong>
+              (from OpenLigaDB results, seasons from 2019/20 onward, capped for training size).
+            </p>
+            <p>
+              Model in use: <strong>{{ payload.model or "—" }}</strong>.
+              Predictions generated: <strong>{{ payload.generated_at or "—" }}</strong>.
+              Lineups provider: <strong>{{ payload.lineups_provider or "—" }}</strong>.
+            </p>
+            <p>
+              <strong>Player information is in the model.</strong>
+              Each tip uses starting-XI features: whole-XI strength, GK/DEF/MID/FWD lines,
+              top-player edge, and matchups such as home attack vs away defence.
+              {% if payload.uses_player_xi %}This run was built with those player-XI inputs on.{% endif %}
+            </p>
+            <p class="muted">
+              Match history is still results + engineered features — not raw tracking data —
+              but who is expected to play feeds the probability, not only the lab UI.
+            </p>
+          </article>
+
+          <article class="about-card animate-rise">
+            <h2>What is TabPFN?</h2>
+            <p>
+              <strong>TabPFN</strong> is a “tabular prior-data fitted network”: a model family built for
+              spreadsheet-style data (rows of matches, columns of features). Think of it as a strong
+              modern classifier for tables — here, home / draw / away.
+            </p>
+            <p>
+              We engineer features such as ELO-style ratings, recent form, goals, rest days,
+              head-to-head, squad value, and <strong>player XI lines / matchups</strong>.
+              TabPFN (when a token is available) learns the mapping from those features to
+              result probabilities. If TabPFN is unavailable we fall back to a local
+              gradient-boosting model — still with the same player-XI features.
+            </p>
+          </article>
+
+          <article class="about-card animate-rise delay-1">
+            <h2>What is ShapIQ?</h2>
+            <p>
+              <strong>ShapIQ</strong> (built on the <em>shapiq</em> library) explains a tip in units of
+              contribution: which features pushed the probability up or down for the tipped result.
+            </p>
+            <p>
+              On the ShapIQ tab you get:
+            </p>
+            <ul>
+              <li><strong>Match drivers</strong> — team-level factors (ELO gap, squad value, form, …)</li>
+              <li><strong>Players who start</strong> — how XI quality is shared across names</li>
+              <li><strong>Line vs line</strong> — attack vs defence, midfield battle, star edge, etc.</li>
+              <li><strong>Spieltag what-if</strong> — nudge the home XI quality edge across all fixtures</li>
+            </ul>
+            <p class="muted">
+              Player / interaction layers are derived from the current XIs and the tip’s ShapIQ budget.
+              They are transparent what-if attributions, not a second full retrain per click.
+            </p>
+          </article>
+
+          <article class="about-card animate-rise">
+            <h2>Lineups &amp; Best XI</h2>
+            <p>
+              Before tipping a matchday we resolve an XI per side. Prefer API-Football confirmed /
+              last XIs when a key is set; otherwise published 2025–27 squad lists
+              (footballsquads / Wikipedia) and an estimated eleven. Those player ratings go into
+              the prediction features, then into the pitch lab.
+            </p>
+            <p>
+              <strong>Best XI</strong> rebuilds the side from the strongest available players
+              (best GK + top outfield). The tip can move when the XI strength gap changes.
+              If the board is already optimal you will see “already strongest by rating”.
+            </p>
+            <p class="muted">
+              Squad-list strengths are estimates, not Transfermarkt. Confirmed matchday lineups
+              win when API-Football is configured.
+            </p>
+          </article>
+
+          <article class="about-card animate-rise delay-1">
+            <h2>Limits (be honest)</h2>
+            <ul>
+              <li>Tips are probabilities, not certainties — football is noisy.</li>
+              <li>Training uses historical results + engineered features; injuries, tactics, and
+                  referees are only partly captured.</li>
+              <li>Squad-estimate XIs can miss who actually starts on Saturday.</li>
+              <li>Lab swaps use a local sensitivity / ShapIQ approx — not a full model retrain
+                  on every click.</li>
+            </ul>
+          </article>
+        </section>
+
+        <p class="about-back"><a class="cta" href="/">← Back to matchday tips</a></p>
+      </main>
+    </div>
+  </div>
+</body>
+</html>

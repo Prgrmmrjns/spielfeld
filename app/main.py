@@ -26,6 +26,9 @@ if public_dir.is_dir():
     css_dir = public_dir / "css"
     if css_dir.is_dir():
         app.mount("/css", StaticFiles(directory=str(css_dir)), name="css")
+    js_dir = public_dir / "js"
+    if js_dir.is_dir():
+        app.mount("/js", StaticFiles(directory=str(js_dir)), name="js")
     explanations = public_dir / "explanations"
     if explanations.is_dir():
         app.mount("/explanations", StaticFiles(directory=str(explanations)), name="explanations")
@@ -86,6 +89,10 @@ def _xi_label(match: dict) -> str | None:
             return "last XI"
         if s == "squad_estimate":
             return "squad est."
+        if s == "wiki_squad":
+            return "wiki 25–27"
+        if s == "squad_2026":
+            return "squad 25–27"
         return "pending"
 
     return f"{lab(h)} · {lab(a)}"
@@ -107,6 +114,16 @@ async def index(request: Request):
             "payload": payload,
             "payload_json": json.dumps(payload, ensure_ascii=False),
         },
+    )
+
+
+@app.get("/about", response_class=HTMLResponse)
+async def about(request: Request):
+    payload = load_predictions()
+    return templates.TemplateResponse(
+        request,
+        "about.html",
+        {"payload": payload},
     )
 
 

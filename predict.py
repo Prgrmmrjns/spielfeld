@@ -91,6 +91,13 @@ FEATURES = [
     "h2h_n", "h2h_home_winrate", "h2h_draw_rate", "h2h_gd",
     "home_xi_strength", "away_xi_strength", "xi_strength_diff",
     "home_xi_confirmed", "away_xi_confirmed",
+    # XI lines + player-derived units
+    "home_gk", "away_gk", "home_def", "away_def",
+    "home_mid", "away_mid", "home_fwd", "away_fwd",
+    "home_attack", "away_attack", "home_defense", "away_defense",
+    "home_star", "away_star", "star_gap",
+    # Cross-team interactions (who plays vs who)
+    "gk_gap", "midfield_battle", "att_vs_def", "def_vs_att", "bench_gap",
 ]
 
 FEATURE_LABELS = {
@@ -126,6 +133,26 @@ FEATURE_LABELS = {
     "xi_strength_diff": "XI strength gap",
     "home_xi_confirmed": "Home XI confirmed",
     "away_xi_confirmed": "Away XI confirmed",
+    "home_gk": "Home goalkeeper",
+    "away_gk": "Away goalkeeper",
+    "home_def": "Home defence line",
+    "away_def": "Away defence line",
+    "home_mid": "Home midfield",
+    "away_mid": "Away midfield",
+    "home_fwd": "Home forwards",
+    "away_fwd": "Away forwards",
+    "home_attack": "Home attack unit",
+    "away_attack": "Away attack unit",
+    "home_defense": "Home defensive unit",
+    "away_defense": "Away defensive unit",
+    "home_star": "Home top player",
+    "away_star": "Away top player",
+    "star_gap": "Star player gap",
+    "gk_gap": "Goalkeeper gap",
+    "midfield_battle": "Midfield battle",
+    "att_vs_def": "Home attack vs away defence",
+    "def_vs_att": "Home defence vs away attack",
+    "bench_gap": "Bench quality gap",
 }
 
 
@@ -278,6 +305,17 @@ def _h2h_feats(home, away, h2h):
             np.mean([g if h == home else -g for h, g, _ in m]))
 
 
+def _spread_xi(total: float) -> dict:
+    """Heuristic line split when only an aggregate XI strength is known."""
+    t = float(total or 0.0)
+    return {
+        "gk": 0.09 * t, "def": 0.32 * t, "mid": 0.34 * t, "fwd": 0.25 * t,
+        "attack": 0.25 * t + 0.45 * 0.34 * t,
+        "defense": 0.32 * t + 0.7 * 0.09 * t,
+        "star": t / 11.0 if t else 0.0,
+    }
+
+
 def _feature_row(home, away, date, elo, res, last_date, h2h, xi=None):
     he, hf5, hf10, hwr, hgf, hga, hgd, hstk, hn = _team_feats(home, elo, res)
     ae, af5, af10, awr, agf, aga, agd, astk, an = _team_feats(away, elo, res)
@@ -286,6 +324,22 @@ def _feature_row(home, away, date, elo, res, last_date, h2h, xi=None):
     xi = xi or {}
     hxs = float(xi.get("home_xi_strength", hv / 50.0))
     axs = float(xi.get("away_xi_strength", av / 50.0))
+    hs = _spread_xi(hxs)
+    as_ = _spread_xi(axs)
+    # Prefer explicit XI detail keys when provided (live lineups / API).
+    def g(key, default):
+        v = xi.get(key)
+        return float(v) if v is not None else float(default)
+
+    h_gk, a_gk = g("home_gk", hs["gk"]), g("away_gk", as_["gk"])
+    h_def, a_def = g("home_def", hs["def"]), g("away_def", as_["def"])
+    h_mid, a_mid = g("home_mid", hs["mid"]), g("away_mid", as_["mid"])
+    h_fwd, a_fwd = g("home_fwd", hs["fwd"]), g("away_fwd", as_["fwd"])
+    h_att = g("home_attack", hs["attack"])
+    a_att = g("away_attack", as_["attack"])
+    h_defense = g("home_defense", hs["defense"])
+    a_defense = g("away_defense", as_["defense"])
+    h_star, a_star = g("home_star", hs["star"]), g("away_star", as_["star"])
     return {
         "elo_diff": he + HOME_ADV - ae, "home_elo": he, "away_elo": ae,
         "value_diff": hv - av, "home_squad_value": hv, "away_squad_value": av,
@@ -301,6 +355,18 @@ def _feature_row(home, away, date, elo, res, last_date, h2h, xi=None):
         "home_xi_strength": hxs, "away_xi_strength": axs, "xi_strength_diff": hxs - axs,
         "home_xi_confirmed": float(xi.get("home_xi_confirmed", 0)),
         "away_xi_confirmed": float(xi.get("away_xi_confirmed", 0)),
+        "home_gk": h_gk, "away_gk": a_gk,
+        "home_def": h_def, "away_def": a_def,
+        "home_mid": h_mid, "away_mid": a_mid,
+        "home_fwd": h_fwd, "away_fwd": a_fwd,
+        "home_attack": h_att, "away_attack": a_att,
+        "home_defense": h_defense, "away_defense": a_defense,
+        "home_star": h_star, "away_star": a_star, "star_gap": h_star - a_star,
+        "gk_gap": g("gk_gap", h_gk - a_gk),
+        "midfield_battle": g("midfield_battle", h_mid - a_mid),
+        "att_vs_def": g("att_vs_def", h_att - a_defense),
+        "def_vs_att": g("def_vs_att", h_defense - a_att),
+        "bench_gap": float(xi.get("bench_gap", 0.0)),
     }
 
 
@@ -426,6 +492,85 @@ def build_xi_feature_map(df, af):
     return out
 
 
+def _xi_bundle_from_sides(home_side, away_side, hc=0.0, ac=0.0):
+    """Full player-derived XI + interaction feature bundle for model input."""
+    from app.shap_iq import xi_detail_features
+
+    home_side = home_side or {}
+    away_side = away_side or {}
+    detail = xi_detail_features(
+        home_side.get("players"),
+        away_side.get("players"),
+        home_pool=home_side.get("pool"),
+        away_pool=away_side.get("pool"),
+        home_fallback=home_side.get("strength"),
+        away_fallback=away_side.get("strength"),
+    )
+    detail["home_xi_confirmed"] = float(hc)
+    detail["away_xi_confirmed"] = float(ac)
+    return detail
+
+
+def build_wiki_team_sides(team_names):
+    from wiki_squads import WikiSquads
+
+    wiki = WikiSquads()
+    out = {}
+    for team in sorted(set(team_names)):
+        try:
+            side = wiki.side_for_team(team)
+        except Exception as exc:
+            print(f"  wiki XI skip {team}: {exc}")
+            side = None
+        if side and side.get("players"):
+            out[team] = side
+    return out
+
+
+def fill_xi_map_with_wiki(df, xi_map):
+    """Attach player-derived XI features for training (squad XI when no historical lineup)."""
+    sides = build_wiki_team_sides(set(df["home_team"]) | set(df["away_team"]))
+    out = dict(xi_map or {})
+    for idx, row in df.iterrows():
+        h, a = sides.get(row["home_team"]), sides.get(row["away_team"])
+        if not h or not a:
+            continue
+        wiki_xi = _xi_bundle_from_sides(h, a, 0.0, 0.0)
+        prev = out.get(idx) or {}
+        if "att_vs_def" not in prev:
+            # Keep API aggregate strengths when present; fill line/interaction from players
+            merged = dict(wiki_xi)
+            for k in ("home_xi_strength", "away_xi_strength", "home_xi_confirmed", "away_xi_confirmed"):
+                if prev.get(k) is not None:
+                    merged[k] = float(prev[k])
+            merged["xi_strength_diff"] = float(merged["home_xi_strength"] - merged["away_xi_strength"])
+            out[idx] = merged
+        else:
+            out[idx] = {**wiki_xi, **prev}
+    print(f"Player XI features on {sum(1 for v in out.values() if 'att_vs_def' in v)}/{len(df)} training rows")
+    return out
+
+
+def attach_wiki_lineups(rows):
+    """Estimated starting XIs from footballsquads / Wikipedia — used when API-Football is off."""
+    sides = build_wiki_team_sides([r["home_team"] for r in rows] + [r["away_team"] for r in rows])
+    for r in rows:
+        h = sides.get(r["home_team"])
+        a = sides.get(r["away_team"])
+        if not h or not a:
+            print(f"  wiki XI missing for {r.get('home_short')} vs {r.get('away_short')}")
+            continue
+        detail = _xi_bundle_from_sides(h, a, 0.0, 0.0)
+        r.setdefault("features", {}).update(detail)
+        r["lineups"] = {"home": h, "away": a}
+        print(
+            f"  XI {r.get('home_short')} vs {r.get('away_short')}: "
+            f"{h.get('source')}/{a.get('source')} "
+            f"(strength {detail['home_xi_strength']:.1f}-{detail['away_xi_strength']:.1f})"
+        )
+    return rows
+
+
 def attach_live_lineups(rows, af, season: int):
     """Attach starting XI (confirmed or last XI) to prediction rows."""
     if af is None:
@@ -470,38 +615,91 @@ def attach_live_lineups(rows, af, season: int):
         hc = 1.0 if packed["home"].get("source") == "confirmed" else 0.0
         ac = 1.0 if packed["away"].get("source") == "confirmed" else 0.0
 
-        # overwrite model features used at predict-time if present
-        if "features" in r:
-            r["features"]["home_xi_strength"] = float(hxs)
-            r["features"]["away_xi_strength"] = float(axs)
-            r["features"]["xi_strength_diff"] = float(hxs - axs)
-            r["features"]["home_xi_confirmed"] = hc
-            r["features"]["away_xi_confirmed"] = ac
-
         r["lineups"] = {
             "api_fixture_id": packed.get("fixture_id") or (fx.get("id") if fx else None),
-            "home": {
-                "source": packed["home"].get("source"),
-                "formation": packed["home"].get("formation"),
-                "players": [
-                    {"id": p.get("id"), "name": p.get("name"), "number": p.get("number"), "pos": p.get("pos")}
-                    for p in h_players
-                ],
-                "strength": float(hxs),
-            },
-            "away": {
-                "source": packed["away"].get("source"),
-                "formation": packed["away"].get("formation"),
-                "players": [
-                    {"id": p.get("id"), "name": p.get("name"), "number": p.get("number"), "pos": p.get("pos")}
-                    for p in a_players
-                ],
-                "strength": float(axs),
-            },
+            "home": af.serialize_side(packed["home"], season),
+            "away": af.serialize_side(packed["away"], season),
         }
+        # Keep aggregate strength in sync with serialized players
+        r["lineups"]["home"]["strength"] = float(hxs)
+        r["lineups"]["away"]["strength"] = float(axs)
+        try:
+            from app.shap_iq import xi_detail_features
+            detail = xi_detail_features(
+                r["lineups"]["home"].get("players"),
+                r["lineups"]["away"].get("players"),
+                home_pool=r["lineups"]["home"].get("pool"),
+                away_pool=r["lineups"]["away"].get("pool"),
+                home_fallback=hxs,
+                away_fallback=axs,
+            )
+        except Exception:
+            detail = {
+                "home_xi_strength": float(hxs),
+                "away_xi_strength": float(axs),
+                "xi_strength_diff": float(hxs - axs),
+            }
+        if "features" in r:
+            r["features"].update(detail)
+            r["features"]["home_xi_confirmed"] = hc
+            r["features"]["away_xi_confirmed"] = ac
         src = f"{packed['home'].get('source')}/{packed['away'].get('source')}"
         print(f"  XI {r['home_short']} vs {r['away_short']}: {src} (strength {hxs:.1f}-{axs:.1f})")
     af.save()
+    return rows
+
+
+def attach_xi_sensitivity(clf, rows, fixture_X, delta: float = 3.0):
+    """Finite-difference win-prob response to ±XI strength (for the XI lab)."""
+    if not rows:
+        return rows
+    X = fixture_X[FEATURES].to_numpy(dtype=float, copy=True)
+    base = clf.predict_proba(X)
+    raw_classes = getattr(clf, "classes_", None)
+    classes = list(raw_classes) if raw_classes is not None else []
+    if len(classes) != base.shape[1]:
+        # sklearn calibrators may omit classes_ until after predict_proba
+        classes = ["away_win", "draw", "home_win"]
+        if len(classes) != base.shape[1]:
+            classes = [str(i) for i in range(base.shape[1])]
+    hi = FEATURES.index("home_xi_strength")
+    ai = FEATURES.index("away_xi_strength")
+    di = FEATURES.index("xi_strength_diff")
+
+    def pack(proba_row):
+        def get(label, fallback_i):
+            if label in classes:
+                return float(proba_row[classes.index(label)])
+            return float(proba_row[fallback_i])
+        return {
+            "p_home_win": get("home_win", min(2, len(proba_row) - 1)),
+            "p_draw": get("draw", min(1, len(proba_row) - 1)),
+            "p_away_win": get("away_win", 0),
+        }
+
+    for i, row in enumerate(rows):
+        b = pack(base[i])
+        xh = X[i:i + 1].copy()
+        xh[0, hi] += delta
+        xh[0, di] += delta
+        ph = pack(clf.predict_proba(xh)[0])
+        xa = X[i:i + 1].copy()
+        xa[0, ai] += delta
+        xa[0, di] -= delta
+        pa = pack(clf.predict_proba(xa)[0])
+        row["xi_sensitivity"] = {
+            "delta": delta,
+            "home_strength": {
+                "p_home_win": ph["p_home_win"] - b["p_home_win"],
+                "p_draw": ph["p_draw"] - b["p_draw"],
+                "p_away_win": ph["p_away_win"] - b["p_away_win"],
+            },
+            "away_strength": {
+                "p_home_win": pa["p_home_win"] - b["p_home_win"],
+                "p_draw": pa["p_draw"] - b["p_draw"],
+                "p_away_win": pa["p_away_win"] - b["p_away_win"],
+            },
+        }
     return rows
 
 
@@ -565,7 +763,7 @@ def predict_matchday(clf, history, fixtures, xi_live=None):
     return rows, X
 
 
-def _top_shap_features(sv, n=8):
+def _top_shap_features(sv, n=16):
     """Extract first-order Shapley contributions ranked by absolute impact."""
     items = []
     for key, value in sv.dict_values.items():
@@ -611,7 +809,7 @@ def explain_matchups(clf, train_X, fixture_X, rows, out_dir=EXPLAIN_DIR, budget=
                     class_index=class_index,
                 )
                 sv = explainer.explain(x.values, budget=budget)
-                ax = sv.plot_waterfall(feature_names=labels, show=False, max_display=10)
+                ax = sv.plot_waterfall(feature_names=labels, show=False, max_display=16)
                 fig = ax.figure if hasattr(ax, "figure") else plt.gcf()
                 top = _top_shap_features(sv)
                 baseline = float(getattr(sv, "baseline_value", 0.0))
@@ -625,7 +823,7 @@ def explain_matchups(clf, train_X, fixture_X, rows, out_dir=EXPLAIN_DIR, budget=
                 explainer = shap.Explainer(predict_fn, bg.values)
                 explanation = explainer(x.values)
                 plt.figure(figsize=(8, 5))
-                shap.plots.waterfall(explanation[0], max_display=10, show=False)
+                shap.plots.waterfall(explanation[0], max_display=16, show=False)
                 fig = plt.gcf()
                 values = explanation.values[0]
                 top = sorted(
@@ -647,7 +845,7 @@ def explain_matchups(clf, train_X, fixture_X, rows, out_dir=EXPLAIN_DIR, budget=
             plt.close("all")
             row["explanation"] = {
                 "plot": f"/explanations/{mid}.png",
-                "method": "shapiq SV waterfall" if model_name == "TabPFN" else "shap waterfall",
+                "method": "ShapIQ SV waterfall" if model_name == "TabPFN" else "ShapIQ waterfall",
                 "class": row["predicted"],
                 "baseline": baseline,
                 "top_features": top,
@@ -693,41 +891,48 @@ def main():
     print(f"Next matchday: {meta['matchday_name']} (Saison {meta['season']}/{meta['season'] + 1}) — {len(fixtures)} fixtures")
 
     af = ApiFootball()
-    if af.enabled and not args.skip_lineups:
+    use_api = bool(af.enabled and not args.skip_lineups)
+    if use_api:
         print("API-Football: syncing squads/lineups…")
-    elif not af.enabled:
-        print("API-Football: no API_FOOTBALL_KEY — using club-value XI proxies only.")
+    else:
+        print("Lineups: footballsquads / Wikipedia estimated XIs (player strengths in the model).")
 
-    xi_map = build_xi_feature_map(played, af if (af.enabled and not args.skip_lineups) else None)
+    xi_map = build_xi_feature_map(played, af if use_api else None)
+    print("Building player XI features for training…")
+    xi_map = fill_xi_map_with_wiki(played, xi_map)
     feats = build_features(played, xi_by_index=xi_map)
     train_pool = feats.tail(MAX_TRAIN)
     clf = train(train_pool)
 
-    # Precompute live XI features for upcoming fixtures, then predict with them
-    xi_live = {}
-    if af.enabled and not args.skip_lineups:
-        tmp_rows = [{
-            "match_id": int(r.match_id) if not pd.isna(r.match_id) else None,
-            "date": r.date.isoformat(),
-            "home_team": r.home_team,
-            "away_team": r.away_team,
-            "home_short": r.home_short,
-            "away_short": r.away_short,
-            "features": {},
-        } for r in fixtures.itertuples()]
-        print("Resolving starting XIs (confirmed or last XI)…")
+    # Live XI features from players who are expected to start — always before predict
+    tmp_rows = [{
+        "match_id": int(r.match_id) if not pd.isna(r.match_id) else None,
+        "date": r.date.isoformat(),
+        "home_team": r.home_team,
+        "away_team": r.away_team,
+        "home_short": r.home_short,
+        "away_short": r.away_short,
+        "features": {},
+    } for r in fixtures.itertuples()]
+    print("Resolving starting XIs for prediction…")
+    if use_api:
         attach_live_lineups(tmp_rows, af, meta["season"])
-        for tr in tmp_rows:
-            if tr.get("match_id") is not None and tr.get("features"):
-                xi_live[tr["match_id"]] = {
-                    "home_xi_strength": tr["features"].get("home_xi_strength"),
-                    "away_xi_strength": tr["features"].get("away_xi_strength"),
-                    "home_xi_confirmed": tr["features"].get("home_xi_confirmed"),
-                    "away_xi_confirmed": tr["features"].get("away_xi_confirmed"),
-                }
-        lineup_by_match = {tr["match_id"]: tr.get("lineups") for tr in tmp_rows}
+        # Fill gaps / add pools from squad lists
+        missing = [r for r in tmp_rows if not (r.get("lineups") or {}).get("home", {}).get("players")]
+        if missing:
+            attach_wiki_lineups(missing)
     else:
-        lineup_by_match = {}
+        attach_wiki_lineups(tmp_rows)
+
+    xi_live = {}
+    lineup_by_match = {}
+    for tr in tmp_rows:
+        mid = tr.get("match_id")
+        if mid is None:
+            continue
+        lineup_by_match[mid] = tr.get("lineups")
+        if tr.get("features"):
+            xi_live[mid] = {k: float(tr["features"][k]) for k in FEATURES if k in tr["features"]}
 
     rows, fixture_X = predict_matchday(clf, history, fixtures, xi_live=xi_live or None)
     for r in rows:
@@ -735,12 +940,19 @@ def main():
             r["lineups"] = lineup_by_match[r["match_id"]]
     model_name = getattr(clf, "model_name_", type(clf).__name__)
 
+    print("Estimating XI strength → win-prob sensitivity…")
+    try:
+        attach_xi_sensitivity(clf, rows, fixture_X)
+    except Exception as exc:
+        print(f"  xi sensitivity skipped: {exc}")
+
     if not args.skip_shap:
-        print("\nGenerating SHAP explanations…")
+        print("\nGenerating ShapIQ explanations…")
         rows = explain_matchups(clf, train_pool, fixture_X, rows)
 
     out = pd.DataFrame([{k: v for k, v in r.items() if k not in ("features", "explanation", "lineups")} for r in rows])
     out.to_csv(args.csv, index=False)
+    provider = "api-football" if use_api else "footballsquads/wikipedia"
     payload = {
         "league": "Bundesliga",
         "season": f"{meta['season']}/{meta['season'] + 1}",
@@ -749,9 +961,10 @@ def main():
         "generated_at": pd.Timestamp.now(tz="UTC").isoformat(),
         "model": model_name,
         "train_matches": int(len(played)),
-        "lineups_provider": "api-football" if af.enabled and not args.skip_lineups else None,
+        "lineups_provider": provider,
+        "uses_player_xi": True,
         "xai": {
-            "library": "tabpfn-extensions interpretability / shapiq",
+            "library": "ShapIQ · tabpfn-extensions / shapiq + XI player interactions",
             "docs": "https://docs.priorlabs.ai/capabilities/interpretability",
         },
         "predictions": rows,

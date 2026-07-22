@@ -373,6 +373,59 @@ class ApiFootball:
         rating = float(st.get("rating") or 0)
         return 1.0 + minutes / 900.0 + 0.35 * goals + 0.25 * assists + 0.15 * max(rating - 6.5, 0)
 
+    def serialize_player(self, p: dict, season: int | None = None) -> dict:
+        pos = p.get("pos")
+        if not pos and p.get("position"):
+            pos = str(p["position"])[:1]
+        pid = p.get("id")
+        return {
+            "id": pid,
+            "name": p.get("name"),
+            "number": p.get("number"),
+            "pos": pos or None,
+            "grid": p.get("grid"),
+            "strength": round(self.player_strength(pid, season), 3),
+        }
+
+    def serialize_side(self, block: dict, season: int | None = None, include_pool: bool = True) -> dict:
+        """Pack a lineup side for the web UI (grid, strength, bench/squad pool)."""
+        players = [self.serialize_player(p, season) for p in (block.get("players") or [])]
+        strength = float(sum(p["strength"] for p in players)) if players else None
+        out = {
+            "source": block.get("source") or "unknown",
+            "formation": block.get("formation"),
+            "players": players,
+            "strength": strength,
+            "team_id": block.get("team_id"),
+        }
+        if not include_pool:
+            return out
+        pool: list[dict] = []
+        seen = {p.get("id") for p in players if p.get("id") is not None}
+        for p in block.get("substitutes") or []:
+            sp = self.serialize_player(p, season)
+            if sp.get("id") is not None and sp["id"] in seen:
+                continue
+            if sp.get("id") is not None:
+                seen.add(sp["id"])
+            pool.append(sp)
+        tid = block.get("team_id")
+        if tid:
+            try:
+                for p in self.ensure_squad(tid) or []:
+                    if p.get("id") in seen:
+                        continue
+                    sp = self.serialize_player(p, season)
+                    if sp.get("id") is not None:
+                        seen.add(sp["id"])
+                    pool.append(sp)
+            except Exception:
+                pass
+        # Strongest alternatives first for the XI lab
+        pool.sort(key=lambda p: (-(p.get("strength") or 0), p.get("number") or 99))
+        out["pool"] = pool
+        return out
+
     def xi_strength(self, players: list[dict], season: int | None = None) -> float:
         if not players:
             return 0.0

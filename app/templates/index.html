@@ -6,7 +6,7 @@
   <title>Spielfeld — Bundesliga Matchday Predictions</title>
   <meta name="description" content="TabPFN-powered probability tips for the next Bundesliga Spieltag." />
   <link rel="icon" href="/favicon.ico" />
-  <link rel="stylesheet" href="/css/main.css" />
+  <link rel="stylesheet" href="/css/main.css?v=preset1" />
 </head>
 <body>
   <div class="page">
@@ -18,41 +18,50 @@
 
     <div class="wrap">
       <header class="site-header">
-        <p class="brand">SPIELFELD</p>
-        <p class="header-meta">Bundesliga · Next Matchday</p>
+        <div class="brand-lockup">
+          <a class="brand" href="/">SPIELFELD</a>
+          <p class="eyebrow">{{ payload.matchday_name or "Next Spieltag" }} · {{ payload.season }}</p>
+        </div>
+        <nav class="site-nav">
+          <a class="on" href="/">Tips</a>
+          <a href="/about">About</a>
+        </nav>
       </header>
 
       <main>
         <section class="hero">
-          <p class="eyebrow animate-rise">{{ payload.matchday_name or "Next Spieltag" }} · {{ payload.season }}</p>
-          <h1 class="animate-rise delay-1">SPIELFELD</h1>
-          <p class="hero-copy animate-rise delay-2">
-            Probability tips for the next Bundesliga matchday — form, ELO, and live starting XIs from API-Football.
-          </p>
-          <a class="cta animate-rise delay-3" href="#tips">See tips</a>
+          <div class="hero-copy-block animate-rise">
+            <h1>SPIELFELD</h1>
+            <p class="hero-copy">
+              Next-matchday tips with live XIs, pitch boards, and a ShapIQ lab for lineup what-ifs.
+            </p>
+          </div>
+          <div class="hero-actions animate-rise delay-1">
+            <a class="cta" href="#tips">Matchday tips</a>
+            <p class="hero-meta"><a href="/about">{{ payload.model }} · {{ payload.train_matches }} matches · About</a></p>
+          </div>
         </section>
 
         <section id="tips" class="tips">
           <div class="tips-head">
             <div>
               <h2>Matchday tips</h2>
-              <p>Click a matchup for starting XI and SHAP drivers. Unconfirmed sides use the last starting XI.</p>
+              <p>Open a matchup for the 11v11 board, XI swaps, and ShapIQ drivers.</p>
             </div>
             <div class="tips-meta">
-              <p>{{ payload.model }} · {{ payload.train_matches }} training matches</p>
               <p id="lineups-stamp"></p>
             </div>
           </div>
 
-          <div id="matches">
+          <div id="matches" class="matches">
             {% if payload.predictions %}
               {% for match in payload.predictions %}
-              <article class="match animate-rise" style="animation-delay: {{ '%.2f'|format(0.08 * loop.index0) }}s">
+              <article class="match animate-rise" style="animation-delay: {{ '%.2f'|format(0.05 * loop.index0) }}s">
                 <button type="button" class="match-btn" data-match-id="{{ match.match_id }}">
-                  <div>
+                  <div class="match-main">
                     <div class="row-top">
                       <p class="muted-xs">{{ match.date|kickoff }}</p>
-                      <p class="view-detail">View detail</p>
+                      <p class="view-detail">Lab</p>
                     </div>
                     <div class="teams">
                       {% if match.home_icon %}
@@ -73,28 +82,31 @@
                     <p class="xi-label" data-xi-label hidden></p>
                     {% endif %}
                   </div>
-                  <div>
+
+                  <div class="mini-pitch" data-mini-pitch="{{ match.match_id }}" aria-hidden="true"></div>
+
+                  <div class="match-tip">
                     <div class="tip-block">
                       <div>
-                        <p class="muted-xs">Model tip</p>
+                        <p class="muted-xs">Tip</p>
                         <p class="tip-value">{{ tip_label(match) }}</p>
                       </div>
-                      <p class="lean">{{ [match.p_home_win, match.p_draw, match.p_away_win]|max|pct }}% lean</p>
+                      <p class="lean">{{ [match.p_home_win, match.p_draw, match.p_away_win]|max|pct }}%</p>
                     </div>
                     <div class="bars">
-                      <div class="bar-row">
+                      <div class="bar-row compact">
                         <span>H</span>
                         <div class="bar-track"><div class="bar-fill home" style="width: {{ [match.p_home_win * 100, 2]|max }}%; animation-delay: 0s"></div></div>
                         <span class="pct">{{ match.p_home_win|pct }}%</span>
                       </div>
-                      <div class="bar-row">
+                      <div class="bar-row compact">
                         <span>D</span>
-                        <div class="bar-track"><div class="bar-fill draw" style="width: {{ [match.p_draw * 100, 2]|max }}%; animation-delay: 0.15s"></div></div>
+                        <div class="bar-track"><div class="bar-fill draw" style="width: {{ [match.p_draw * 100, 2]|max }}%; animation-delay: 0.1s"></div></div>
                         <span class="pct">{{ match.p_draw|pct }}%</span>
                       </div>
-                      <div class="bar-row">
+                      <div class="bar-row compact">
                         <span>A</span>
-                        <div class="bar-track"><div class="bar-fill away" style="width: {{ [match.p_away_win * 100, 2]|max }}%; animation-delay: 0.3s"></div></div>
+                        <div class="bar-track"><div class="bar-fill away" style="width: {{ [match.p_away_win * 100, 2]|max }}%; animation-delay: 0.2s"></div></div>
                         <span class="pct">{{ match.p_away_win|pct }}%</span>
                       </div>
                     </div>
@@ -112,13 +124,18 @@
   </div>
 
   <div id="modal" class="modal-backdrop" role="dialog" aria-modal="true" hidden>
-    <div class="modal">
+    <div class="modal detail-modal">
       <div class="modal-head">
-        <div>
+        <div class="modal-brand">
           <p class="muted-xs">Match detail</p>
           <h3 id="modal-title"></h3>
-          <p class="modal-sub">Tip <span class="accent" id="modal-tip"></span> · <span id="modal-method"></span></p>
+          <p class="modal-sub">Tip <span class="accent" id="modal-tip"></span></p>
         </div>
+        <div class="mode-tabs" role="tablist">
+          <button type="button" class="mode-tab on" data-mode="board" role="tab" title="Pitch + player swaps">Board</button>
+          <button type="button" class="mode-tab" data-mode="shap" role="tab" title="Drivers + matchday what-if">ShapIQ</button>
+        </div>
+        <div id="live-impact" class="live-impact" aria-live="polite"></div>
         <button type="button" class="close-btn" id="modal-close">Close</button>
       </div>
       <div class="modal-body" id="modal-body"></div>
@@ -126,171 +143,6 @@
   </div>
 
   <script id="payload-data" type="application/json">{{ payload_json | safe }}</script>
-  <script>
-  (() => {
-    const state = {
-      data: JSON.parse(document.getElementById('payload-data').textContent),
-      selectedId: null,
-    }
-
-    const modal = document.getElementById('modal')
-    const stamp = document.getElementById('lineups-stamp')
-
-    function sourceLabel(source) {
-      if (source === 'confirmed') return 'Confirmed XI'
-      if (source === 'last_xi') return 'Last starting XI'
-      if (source === 'squad_estimate') return 'Squad estimate'
-      return 'XI pending'
-    }
-
-    function xiShort(source) {
-      if (source === 'confirmed') return 'confirmed'
-      if (source === 'last_xi') return 'last XI'
-      if (source === 'squad_estimate') return 'squad est.'
-      return 'pending'
-    }
-
-    function tipLabel(match) {
-      if (match.predicted === 'home_win') return match.home_short
-      if (match.predicted === 'away_win') return match.away_short
-      return 'Draw'
-    }
-
-    function playerLine(p) {
-      const num = p.number != null ? `${p.number} ` : ''
-      const pos = p.pos ? ` (${p.pos})` : ''
-      return `${num}${p.name || '—'}${pos}`
-    }
-
-    function formatStamp(iso) {
-      if (!iso) return ''
-      const d = new Date(iso)
-      if (Number.isNaN(d.getTime())) return ''
-      return new Intl.DateTimeFormat('en-GB', {
-        dateStyle: 'medium', timeStyle: 'short', timeZone: 'Europe/Berlin'
-      }).format(d)
-    }
-
-    function updateStamp(iso) {
-      const label = formatStamp(iso || state.data.lineups_refreshed_at || state.data.generated_at)
-      stamp.textContent = label ? `Lineups ${label}` : ''
-    }
-
-    function updateXiLabels() {
-      for (const match of state.data.predictions || []) {
-        const btn = document.querySelector(`[data-match-id="${match.match_id}"]`)
-        if (!btn) continue
-        const el = btn.querySelector('[data-xi-label]')
-        if (!el) continue
-        const h = match.lineups?.home?.source
-        const a = match.lineups?.away?.source
-        if (!h && !a) { el.hidden = true; continue }
-        el.hidden = false
-        el.textContent = `XI ${xiShort(h)} · ${xiShort(a)}`
-      }
-    }
-
-    function renderModal(match) {
-      document.getElementById('modal-title').textContent = `${match.home_short} vs ${match.away_short}`
-      document.getElementById('modal-tip').textContent = tipLabel(match)
-      document.getElementById('modal-method').textContent = match.explanation?.method || 'SHAP unavailable'
-
-      const body = document.getElementById('modal-body')
-      const sides = [
-        { key: 'home', short: match.home_short, data: match.lineups?.home },
-        { key: 'away', short: match.away_short, data: match.lineups?.away },
-      ]
-      let html = ''
-      if (sides.some(s => s.data?.players?.length)) {
-        html += '<div class="xi-grid">'
-        for (const side of sides) {
-          const formation = side.data?.formation ? ` · ${side.data.formation}` : ''
-          html += `<div>
-            <p class="muted-xs">${side.short} · ${sourceLabel(side.data?.source)}${formation}</p>
-            <ol class="xi-list">
-              ${(side.data?.players || []).map(p => `<li>${playerLine(p)}</li>`).join('')}
-            </ol>
-          </div>`
-        }
-        html += '</div>'
-      }
-
-      if (match.explanation?.plot) {
-        html += `<div class="shap-plot"><img src="${match.explanation.plot}" alt="SHAP waterfall for ${match.home_team} vs ${match.away_team}" /></div>`
-      } else {
-        html += `<div class="empty">No SHAP plot for this matchup. Re-run <code>python predict.py</code>.</div>`
-      }
-
-      if (match.explanation?.top_features?.length) {
-        html += `<div>
-          <p class="muted-xs">Top drivers for ${String(match.predicted).replace('_', ' ')}</p>
-          <ul class="drivers">
-            ${match.explanation.top_features.map(f => `
-              <li>
-                <span>${f.label}</span>
-                <span class="${f.shap >= 0 ? 'pos' : 'neg'}">${f.shap >= 0 ? '+' : ''}${Number(f.shap).toFixed(3)}</span>
-              </li>`).join('')}
-          </ul>
-          <p class="footnote">
-            Shapley values attribute the predicted class probability relative to the baseline
-            (${Number(match.explanation.baseline).toFixed(3)}). Positive pushes toward the tip.
-            Method from
-            <a href="https://docs.priorlabs.ai/capabilities/interpretability" target="_blank" rel="noopener">Prior Labs interpretability</a>.
-          </p>
-        </div>`
-      }
-      body.innerHTML = html
-    }
-
-    function openModal(match) {
-      state.selectedId = match.match_id
-      renderModal(match)
-      modal.hidden = false
-      modal.classList.add('open')
-      document.body.style.overflow = 'hidden'
-    }
-
-    function closeModal() {
-      state.selectedId = null
-      modal.hidden = true
-      modal.classList.remove('open')
-      document.body.style.overflow = ''
-    }
-
-    document.querySelectorAll('.match-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const id = Number(btn.dataset.matchId)
-        const match = state.data.predictions.find(m => m.match_id === id)
-        if (match) openModal(match)
-      })
-    })
-    document.getElementById('modal-close').addEventListener('click', closeModal)
-    modal.addEventListener('click', (e) => { if (e.target === modal) closeModal() })
-    window.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal() })
-
-    async function mergeLiveLineups() {
-      try {
-        const res = await fetch('/api/lineups')
-        if (!res.ok) return
-        const live = await res.json()
-        if (!live?.lineups) return
-        state.data.predictions = state.data.predictions.map(m => {
-          const row = live.lineups[String(m.match_id)]
-          return row ? { ...m, lineups: row } : m
-        })
-        updateXiLabels()
-        updateStamp(live.refreshed_at)
-        if (state.selectedId != null) {
-          const match = state.data.predictions.find(m => m.match_id === state.selectedId)
-          if (match) renderModal(match)
-        }
-      } catch (_) { /* keep baked */ }
-    }
-
-    updateStamp()
-    mergeLiveLineups()
-    setInterval(mergeLiveLineups, 15 * 60 * 1000)
-  })()
-  </script>
+  <script src="/js/app.js?v=preset1"></script>
 </body>
 </html>
