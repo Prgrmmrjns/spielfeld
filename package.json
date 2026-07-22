@@ -8,6 +8,6 @@
     "preview": "npm --prefix web run preview"
   },
   "engines": {
-    "node": ">=22"
+    "node": "22.x"
   }
 }
