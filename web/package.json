@@ -1,5 +1,5 @@
 {
-  "name": "web",
+  "name": "spielfeld",
   "private": true,
   "type": "module",
   "scripts": {

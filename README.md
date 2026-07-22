@@ -5,8 +5,8 @@ Predict the next Bundesliga Spieltag with engineered club features and a TabPFN 
 ## Setup
 
 ```bash
-git clone https://github.com/prgrmmrjns/tabpfn_wc_predictions.git
-cd tabpfn_wc_predictions
+git clone https://github.com/Prgrmmrjns/Spielfeld.git
+cd Spielfeld
 pip install -r requirements.txt
 ```
 
