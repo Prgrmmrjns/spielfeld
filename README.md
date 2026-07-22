@@ -10,7 +10,7 @@ cd tabpfn_wc_predictions
 pip install -r requirements.txt
 ```
 
-Optional: set `TABPFN_TOKEN` to use the Prior Labs TabPFN client. Without it, the script falls back to a calibrated `HistGradientBoostingClassifier`.
+Optional: put `TABPFN_API_KEY` or `TABPFN_TOKEN` in a `.env` file to use the Prior Labs TabPFN client. Without it, the script falls back to a calibrated `HistGradientBoostingClassifier`.
 
 ## Predict next matchday
 

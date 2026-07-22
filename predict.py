@@ -3,6 +3,7 @@ import argparse
 import json
 import os
 from collections import defaultdict
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
@@ -19,6 +20,33 @@ API = "https://api.openligadb.de"
 IMPORTANCE = 45.0
 os.environ.setdefault("TABPFN_NO_BROWSER", "1")
 os.environ.setdefault("TABPFN_CLIENT_NO_BROWSER", "1")
+
+
+def load_dotenv(path=".env"):
+    """Load KEY=VALUE pairs from a local .env without requiring python-dotenv."""
+    p = Path(path)
+    if not p.is_file():
+        # Also accept a sibling workspace .env when running from a local clone.
+        for candidate in (Path("/workspace/.env"), Path(__file__).resolve().parent / ".env"):
+            if candidate.is_file():
+                p = candidate
+                break
+        else:
+            return
+    for line in p.read_text(encoding="utf-8").splitlines():
+        line = line.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        key, value = line.split("=", 1)
+        key, value = key.strip(), value.strip().strip('"').strip("'")
+        if key and key not in os.environ:
+            os.environ[key] = value
+
+
+load_dotenv()
+# tabpfn-client reads TABPFN_TOKEN; accept TABPFN_API_KEY as an alias.
+if not os.getenv("TABPFN_TOKEN") and os.getenv("TABPFN_API_KEY"):
+    os.environ["TABPFN_TOKEN"] = os.environ["TABPFN_API_KEY"]
 
 # Approximate squad market values (€m). Unknown clubs use the median.
 SQUAD_VALUE = {
@@ -277,9 +305,16 @@ def build_features(df):
 def train(pool):
     """Prefer TabPFN when authenticated; otherwise use a local gradient boosting model."""
     X, y = pool[FEATURES].values, pool["outcome"].values
-    if os.getenv("TABPFN_TOKEN"):
+    token = os.getenv("TABPFN_TOKEN") or os.getenv("TABPFN_API_KEY")
+    if token:
         try:
-            from tabpfn_client import TabPFNClassifier
+            from tabpfn_client import TabPFNClassifier, set_access_token
+            import tabpfn_client.constants as tabpfn_constants
+
+            os.environ["TABPFN_TOKEN"] = token
+            tabpfn_constants.TABPFN_TOKEN = token
+            set_access_token(token)
+            print("Training with TabPFN…")
             clf = TabPFNClassifier(ignore_pretraining_limits=True, random_state=42)
             clf.fit(X, y)
             clf.model_name_ = "TabPFN"

@@ -13,3 +13,4 @@ web/.nuxt/
 web/.output/
 web/dist/
 web/.data/
+.env

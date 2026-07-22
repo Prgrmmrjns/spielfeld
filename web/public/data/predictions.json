@@ -3,8 +3,8 @@
   "season": "2026/2027",
   "matchday": 1,
   "matchday_name": "1. Spieltag",
-  "generated_at": "2026-07-22T09:21:48.969617+00:00",
-  "model": "HistGradientBoosting",
+  "generated_at": "2026-07-22T09:32:16.388183+00:00",
+  "model": "TabPFN",
   "train_matches": 2142,
   "predictions": [
     {
@@ -17,9 +17,9 @@
       "home_icon": "https://upload.wikimedia.org/wikipedia/commons/1/1f/Logo_FC_Bayern_M%C3%BCnchen_%282002%E2%80%932017%29.svg",
       "away_icon": "https://i.imgur.com/v0tkpNx.png",
       "predicted": "home_win",
-      "p_home_win": 0.5863447821749346,
-      "p_draw": 0.23234366428850994,
-      "p_away_win": 0.18131155353655556
+      "p_home_win": 0.7710946798324585,
+      "p_draw": 0.15140730142593384,
+      "p_away_win": 0.07749804854393005
     },
     {
       "match_id": 83158,
@@ -31,9 +31,9 @@
       "home_icon": "https://i.imgur.com/Rpwsjz1.png",
       "away_icon": "https://i.imgur.com/KSIk0Eu.png",
       "predicted": "home_win",
-      "p_home_win": 0.6603893248839147,
-      "p_draw": 0.1979502782151017,
-      "p_away_win": 0.14166039690098378
+      "p_home_win": 0.6687610149383545,
+      "p_draw": 0.20553869009017944,
+      "p_away_win": 0.12570028007030487
     },
     {
       "match_id": 83161,
@@ -45,9 +45,9 @@
       "home_icon": "https://upload.wikimedia.org/wikipedia/commons/9/9e/Logo_Mainz_05.svg",
       "away_icon": "https://upload.wikimedia.org/wikipedia/commons/e/e3/SC_Paderborn_07_Logo.svg",
       "predicted": "home_win",
-      "p_home_win": 0.6854248986561952,
-      "p_draw": 0.31457510134380473,
-      "p_away_win": 0.0
+      "p_home_win": 0.6617290377616882,
+      "p_draw": 0.21133168041706085,
+      "p_away_win": 0.1269392967224121
     },
     {
       "match_id": 83162,
@@ -59,9 +59,9 @@
       "home_icon": "https://assets.dfb.de/uploads/000/018/232/small_union-Berlin.jpg",
       "away_icon": "https://i.imgur.com/X8NFkOb.png",
       "predicted": "away_win",
-      "p_home_win": 0.3013122574831126,
-      "p_draw": 0.27508867755195093,
-      "p_away_win": 0.42359906496493654
+      "p_home_win": 0.3164941668510437,
+      "p_draw": 0.27208709716796875,
+      "p_away_win": 0.41141873598098755
     },
     {
       "match_id": 83163,
@@ -73,9 +73,9 @@
       "home_icon": "https://upload.wikimedia.org/wikipedia/commons/0/01/1._FC_Koeln_Logo_2014%E2%80%93.svg",
       "away_icon": "https://i.imgur.com/gF0PfEl.png",
       "predicted": "away_win",
-      "p_home_win": 0.30024695598679335,
-      "p_draw": 0.24473356682099898,
-      "p_away_win": 0.4550194771922076
+      "p_home_win": 0.281985878944397,
+      "p_draw": 0.265044242143631,
+      "p_away_win": 0.45296990871429443
     },
     {
       "match_id": 83164,
@@ -87,9 +87,9 @@
       "home_icon": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/SV_Elversberg_Logo.svg/500px-SV_Elversberg_Logo.svg.png",
       "away_icon": "https://www.bundesliga-reisefuehrer.de/sites/default/files/B04_Standard_Logo_RGB.png",
       "predicted": "away_win",
-      "p_home_win": 0.17543010016581176,
-      "p_draw": 0.1503953962793105,
-      "p_away_win": 0.6741745035548777
+      "p_home_win": 0.11179231852293015,
+      "p_draw": 0.1673177182674408,
+      "p_away_win": 0.7208899259567261
     },
     {
       "match_id": 83157,
@@ -101,9 +101,9 @@
       "home_icon": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/67/Borussia_Dortmund_logo.svg/960px-Borussia_Dortmund_logo.svg.png",
       "away_icon": "https://upload.wikimedia.org/wikipedia/commons/f/f7/Hamburger_SV_logo.svg",
       "predicted": "home_win",
-      "p_home_win": 0.7034981885560972,
-      "p_draw": 0.221274776732302,
-      "p_away_win": 0.07522703471160071
+      "p_home_win": 0.7736893892288208,
+      "p_draw": 0.1522228717803955,
+      "p_away_win": 0.07408776134252548
     },
     {
       "match_id": 83159,
@@ -115,9 +115,9 @@
       "home_icon": "https://i.imgur.com/r3mvi0h.png",
       "away_icon": "https://upload.wikimedia.org/wikipedia/commons/b/be/SV-Werder-Bremen-Logo.svg",
       "predicted": "home_win",
-      "p_home_win": 0.390801822336797,
-      "p_draw": 0.3134953133086269,
-      "p_away_win": 0.2957028643545762
+      "p_home_win": 0.5406441688537598,
+      "p_draw": 0.2559795379638672,
+      "p_away_win": 0.20337626338005066
     },
     {
       "match_id": 83160,
@@ -129,9 +129,9 @@
       "home_icon": "https://i.imgur.com/sdE62e2.png",
       "away_icon": "https://upload.wikimedia.org/wikipedia/commons/9/97/FC_Schalke_04_Logo.png",
       "predicted": "home_win",
-      "p_home_win": 0.4499306065287792,
-      "p_draw": 0.2818982326529767,
-      "p_away_win": 0.268171160818244
+      "p_home_win": 0.5006682872772217,
+      "p_draw": 0.2651815414428711,
+      "p_away_win": 0.2341502159833908
     }
   ]
 }
