@@ -5,6 +5,10 @@ import os
 from collections import defaultdict
 from pathlib import Path
 
+import matplotlib
+
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import requests
@@ -18,6 +22,7 @@ LEAGUE = "bl1"
 CACHE = "bundesliga_results.csv"
 API = "https://api.openligadb.de"
 IMPORTANCE = 45.0
+EXPLAIN_DIR = Path("web/public/explanations")
 os.environ.setdefault("TABPFN_NO_BROWSER", "1")
 os.environ.setdefault("TABPFN_CLIENT_NO_BROWSER", "1")
 
@@ -47,6 +52,9 @@ load_dotenv()
 # tabpfn-client reads TABPFN_TOKEN; accept TABPFN_API_KEY as an alias.
 if not os.getenv("TABPFN_TOKEN") and os.getenv("TABPFN_API_KEY"):
     os.environ["TABPFN_TOKEN"] = os.environ["TABPFN_API_KEY"]
+
+SHAP_BUDGET = int(os.getenv("SHAP_BUDGET", "64"))
+SHAP_BACKGROUND = int(os.getenv("SHAP_BACKGROUND", "48"))
 
 # Approximate squad market values (€m). Unknown clubs use the median.
 SQUAD_VALUE = {
@@ -82,6 +90,36 @@ FEATURES = [
     "home_played", "away_played",
     "h2h_n", "h2h_home_winrate", "h2h_draw_rate", "h2h_gd",
 ]
+
+FEATURE_LABELS = {
+    "elo_diff": "ELO gap",
+    "home_elo": "Home ELO",
+    "away_elo": "Away ELO",
+    "value_diff": "Squad value gap",
+    "home_squad_value": "Home squad value",
+    "away_squad_value": "Away squad value",
+    "form5_diff": "Form (5) gap",
+    "form10_diff": "Form (10) gap",
+    "home_form5": "Home form (5)",
+    "away_form5": "Away form (5)",
+    "home_winrate": "Home win rate",
+    "away_winrate": "Away win rate",
+    "home_gf5": "Home goals for (5)",
+    "away_gf5": "Away goals for (5)",
+    "home_ga5": "Home goals against (5)",
+    "away_ga5": "Away goals against (5)",
+    "gd10_diff": "Goal diff (10) gap",
+    "home_streak": "Home streak",
+    "away_streak": "Away streak",
+    "home_rest": "Home rest days",
+    "away_rest": "Away rest days",
+    "home_played": "Home matches played",
+    "away_played": "Away matches played",
+    "h2h_n": "H2H meetings",
+    "h2h_home_winrate": "H2H home win rate",
+    "h2h_draw_rate": "H2H draw rate",
+    "h2h_gd": "H2H goal diff",
+}
 
 
 def squad_value(team):
@@ -335,7 +373,8 @@ def predict_matchday(clf, history, fixtures):
         batch.append(_feature_row(r.home_team, r.away_team, r.date, *state))
         meta.append(r)
 
-    proba = clf.predict_proba(pd.DataFrame(batch)[FEATURES].values)
+    X = pd.DataFrame(batch)[FEATURES]
+    proba = clf.predict_proba(X.values)
     classes = list(clf.classes_)
     rows = []
     for i, r in enumerate(meta):
@@ -353,7 +392,103 @@ def predict_matchday(clf, history, fixtures):
             "p_home_win": float(proba[i, classes.index("home_win")]),
             "p_draw": float(proba[i, classes.index("draw")]),
             "p_away_win": float(proba[i, classes.index("away_win")]),
+            "features": {name: float(X.iloc[i][name]) for name in FEATURES},
         })
+    return rows, X
+
+
+def _top_shap_features(sv, n=8):
+    """Extract first-order Shapley contributions ranked by absolute impact."""
+    items = []
+    for key, value in sv.dict_values.items():
+        if not isinstance(key, tuple) or len(key) != 1:
+            continue
+        idx = key[0]
+        name = FEATURES[idx]
+        items.append({
+            "feature": name,
+            "label": FEATURE_LABELS.get(name, name),
+            "shap": float(value),
+        })
+    items.sort(key=lambda d: abs(d["shap"]), reverse=True)
+    return items[:n]
+
+
+def explain_matchups(clf, train_X, fixture_X, rows, out_dir=EXPLAIN_DIR, budget=SHAP_BUDGET):
+    """Build SHAP waterfall plots for each fixture (TabPFN shapiq or shap fallback)."""
+    out_dir = Path(out_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    labels = np.array([FEATURE_LABELS.get(f, f) for f in FEATURES])
+    bg = train_X[FEATURES].sample(n=min(SHAP_BACKGROUND, len(train_X)), random_state=42)
+    classes = list(clf.classes_)
+    model_name = getattr(clf, "model_name_", type(clf).__name__)
+
+    for i, row in enumerate(rows):
+        mid = row["match_id"] or i
+        plot_path = out_dir / f"{mid}.png"
+        x = fixture_X.iloc[[i]][FEATURES]
+        class_index = classes.index(row["predicted"])
+        print(f"  SHAP {row['home_short']} vs {row['away_short']} ({row['predicted']})…")
+
+        try:
+            if model_name == "TabPFN":
+                from tabpfn_extensions.interpretability.shapiq import (
+                    get_tabpfn_imputation_explainer,
+                )
+                explainer = get_tabpfn_imputation_explainer(
+                    model=clf,
+                    data=bg,
+                    index="SV",
+                    max_order=1,
+                    class_index=class_index,
+                )
+                sv = explainer.explain(x.values, budget=budget)
+                ax = sv.plot_waterfall(feature_names=labels, show=False, max_display=10)
+                fig = ax.figure if hasattr(ax, "figure") else plt.gcf()
+                top = _top_shap_features(sv)
+                baseline = float(getattr(sv, "baseline_value", 0.0))
+            else:
+                import shap
+
+                # CalibratedClassifierCV wraps HistGradientBoosting — explain predicted class prob.
+                def predict_fn(data):
+                    return clf.predict_proba(data)[:, class_index]
+
+                explainer = shap.Explainer(predict_fn, bg.values)
+                explanation = explainer(x.values)
+                plt.figure(figsize=(8, 5))
+                shap.plots.waterfall(explanation[0], max_display=10, show=False)
+                fig = plt.gcf()
+                values = explanation.values[0]
+                top = sorted(
+                    [{
+                        "feature": FEATURES[j],
+                        "label": FEATURE_LABELS.get(FEATURES[j], FEATURES[j]),
+                        "shap": float(values[j]),
+                    } for j in range(len(FEATURES))],
+                    key=lambda d: abs(d["shap"]),
+                    reverse=True,
+                )[:8]
+                baseline = float(getattr(explanation, "base_values", [0])[0])
+
+            fig.suptitle(
+                f"{row['home_short']} vs {row['away_short']} → {row['predicted'].replace('_', ' ')}",
+                fontsize=11,
+            )
+            fig.savefig(plot_path, bbox_inches="tight", dpi=140, facecolor="white")
+            plt.close("all")
+            row["explanation"] = {
+                "plot": f"/explanations/{mid}.png",
+                "method": "shapiq SV waterfall" if model_name == "TabPFN" else "shap waterfall",
+                "class": row["predicted"],
+                "baseline": baseline,
+                "top_features": top,
+            }
+        except Exception as exc:
+            plt.close("all")
+            print(f"    explanation failed: {exc}")
+            row["explanation"] = None
+
     return rows
 
 
@@ -362,6 +497,7 @@ def main():
     parser.add_argument("--refresh", action="store_true", help="Re-download Bundesliga history")
     parser.add_argument("--json", default="predictions.json", help="JSON output path")
     parser.add_argument("--csv", default="predictions.csv", help="CSV output path")
+    parser.add_argument("--skip-shap", action="store_true", help="Skip SHAP plot generation")
     args = parser.parse_args()
 
     history = load_history(refresh=args.refresh)
@@ -375,11 +511,16 @@ def main():
     print(f"Next matchday: {meta['matchday_name']} (Saison {meta['season']}/{meta['season'] + 1}) — {len(fixtures)} fixtures")
 
     feats = build_features(played)
-    clf = train(feats.tail(MAX_TRAIN))
-    rows = predict_matchday(clf, history, fixtures)
+    train_pool = feats.tail(MAX_TRAIN)
+    clf = train(train_pool)
+    rows, fixture_X = predict_matchday(clf, history, fixtures)
     model_name = getattr(clf, "model_name_", type(clf).__name__)
 
-    out = pd.DataFrame(rows)
+    if not args.skip_shap:
+        print("\nGenerating SHAP explanations…")
+        rows = explain_matchups(clf, train_pool, fixture_X, rows)
+
+    out = pd.DataFrame([{k: v for k, v in r.items() if k not in ("features", "explanation")} for r in rows])
     out.to_csv(args.csv, index=False)
     payload = {
         "league": "Bundesliga",
@@ -389,10 +530,19 @@ def main():
         "generated_at": pd.Timestamp.now(tz="UTC").isoformat(),
         "model": model_name,
         "train_matches": int(len(played)),
+        "xai": {
+            "library": "tabpfn-extensions interpretability / shapiq",
+            "docs": "https://docs.priorlabs.ai/capabilities/interpretability",
+        },
         "predictions": rows,
     }
     with open(args.json, "w", encoding="utf-8") as f:
         json.dump(payload, f, ensure_ascii=False, indent=2)
+
+    # Keep the Nuxt public copy in sync when present.
+    public_json = Path("web/public/data/predictions.json")
+    if public_json.parent.is_dir():
+        public_json.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
 
     print(f"\n{len(rows)} predictions -> {args.csv}, {args.json}\n")
     for r in rows:

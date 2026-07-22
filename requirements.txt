@@ -1,4 +1,7 @@
 tabpfn-client
+tabpfn-extensions[interpretability]
+shap
+matplotlib
 pandas
 numpy
 scikit-learn

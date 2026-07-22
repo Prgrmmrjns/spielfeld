@@ -11,11 +11,22 @@ type Prediction = {
   p_home_win: number
   p_draw: number
   p_away_win: number
+  explanation?: {
+    plot: string
+    method: string
+    class: string
+    baseline: number
+    top_features: Array<{ feature: string, label: string, shap: number }>
+  } | null
 }
 
 const props = defineProps<{
   match: Prediction
   index: number
+}>()
+
+const emit = defineEmits<{
+  select: [Prediction]
 }>()
 
 const kickoff = computed(() => {
@@ -53,14 +64,23 @@ const bars = computed(() => [
 
 <template>
   <article
-    class="animate-rise border-t border-white/10 py-7 first:border-t-0 md:py-8"
+    class="animate-rise group border-t border-white/10 py-7 first:border-t-0 md:py-8"
     :style="{ animationDelay: `${0.08 * index}s` }"
   >
-    <div class="grid gap-5 md:grid-cols-[1.2fr_1fr] md:items-center">
+    <button
+      type="button"
+      class="grid w-full gap-5 text-left transition md:grid-cols-[1.2fr_1fr] md:items-center md:rounded-sm md:px-3 md:py-2 md:hover:bg-white/[0.03]"
+      @click="emit('select', match)"
+    >
       <div>
-        <p class="mb-3 text-xs uppercase tracking-[0.18em] text-white/45">
-          {{ kickoff }}
-        </p>
+        <div class="mb-3 flex items-center justify-between gap-3">
+          <p class="text-xs uppercase tracking-[0.18em] text-white/45">
+            {{ kickoff }}
+          </p>
+          <p class="text-xs uppercase tracking-[0.16em] text-[var(--accent)] opacity-0 transition group-hover:opacity-100">
+            View SHAP
+          </p>
+        </div>
         <div class="flex items-center gap-3">
           <img
             v-if="match.home_icon"
@@ -122,6 +142,6 @@ const bars = computed(() => [
           </div>
         </div>
       </div>
-    </div>
+    </button>
   </article>
 </template>

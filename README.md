@@ -26,13 +26,11 @@ This will:
 2. Build leakage-safe features (ELO, form, H2H, rest days, squad value)
 3. Fetch the upcoming Spieltag fixtures
 4. Write `predictions.csv` and `predictions.json`
+5. Generate SHAP waterfall plots per fixture into `web/public/explanations/` ([Prior Labs interpretability](https://docs.priorlabs.ai/capabilities/interpretability))
 
-Copy predictions into the web app:
+`predictions.json` is also copied to `web/public/data/predictions.json` automatically.
 
-```bash
-mkdir -p web/public/data
-cp predictions.json web/public/data/predictions.json
-```
+Skip SHAP with `python predict.py --skip-shap`.
 
 ## Nuxt web app
 

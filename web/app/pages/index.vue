@@ -1,4 +1,25 @@
 <script setup lang="ts">
+type Prediction = {
+  date: string
+  home_team: string
+  away_team: string
+  home_short: string
+  away_short: string
+  home_icon?: string
+  away_icon?: string
+  predicted: string
+  p_home_win: number
+  p_draw: number
+  p_away_win: number
+  explanation?: {
+    plot: string
+    method: string
+    class: string
+    baseline: number
+    top_features: Array<{ feature: string, label: string, shap: number }>
+  } | null
+}
+
 type PredictionPayload = {
   league: string
   season: string
@@ -7,22 +28,18 @@ type PredictionPayload = {
   generated_at: string
   model: string
   train_matches: number
-  predictions: Array<{
-    date: string
-    home_team: string
-    away_team: string
-    home_short: string
-    away_short: string
-    home_icon?: string
-    away_icon?: string
-    predicted: string
-    p_home_win: number
-    p_draw: number
-    p_away_win: number
-  }>
+  predictions: Prediction[]
 }
 
 const { data, error, pending, refresh } = await useFetch<PredictionPayload>('/api/predictions')
+
+const selected = ref<Prediction | null>(null)
+const modalOpen = computed({
+  get: () => selected.value !== null,
+  set: (open: boolean) => {
+    if (!open) selected.value = null
+  }
+})
 
 const generatedLabel = computed(() => {
   if (!data.value?.generated_at) return ''
@@ -94,7 +111,7 @@ const generatedLabel = computed(() => {
               Matchday tips
             </h2>
             <p class="mt-2 max-w-xl text-white/60">
-              One view of home / draw / away probabilities for every fixture.
+              Click a matchup for SHAP drivers behind the tip.
             </p>
           </div>
           <div class="text-right text-sm text-white/45">
@@ -119,9 +136,16 @@ const generatedLabel = computed(() => {
             :key="`${match.home_team}-${match.away_team}-${match.date}`"
             :match="match"
             :index="index"
+            @select="selected = $event"
           />
         </div>
       </section>
     </main>
+
+    <ShapModal
+      :open="modalOpen"
+      :match="selected"
+      @close="selected = null"
+    />
   </div>
 </template>
