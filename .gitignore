@@ -13,4 +13,7 @@ web/.nuxt/
 web/.output/
 web/dist/
 web/.data/
+web/.vercel/
+.vercel/
 .env
+node_modules/

@@ -7,10 +7,16 @@ Predict the next Bundesliga Spieltag with engineered club features and a TabPFN 
 ```bash
 git clone https://github.com/Prgrmmrjns/Spielfeld.git
 cd Spielfeld
-pip install -r requirements.txt
+pip install -r requirements-ml.txt
 ```
 
 Optional: put `TABPFN_API_KEY` or `TABPFN_TOKEN` in a `.env` file to use the Prior Labs TabPFN client. Without it, the script falls back to a calibrated `HistGradientBoostingClassifier`.
+
+## Vercel
+
+The Nuxt app is in `web/`. Deploy settings are in root `vercel.json` (install/build only the web app; ML Python deps are not installed on Vercel).
+
+In the Vercel project, prefer **Root Directory = `web`**. If Root Directory stays at the repo root, `vercel.json` still builds Nuxt and moves the Nitro `.vercel` output into place.
 
 ## Predict next matchday
 
