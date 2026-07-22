@@ -37,19 +37,49 @@ export function apiKey() {
   return process.env.API_FOOTBALL_KEY || process.env.APIFOOTBALL_KEY || process.env.API_SPORTS_KEY || ''
 }
 
-export async function apiFootball(path: string, params: Record<string, string | number> = {}) {
+const sleep = (ms: number) => new Promise(r => setTimeout(r, ms))
+const MIN_GAP_MS = Number(process.env.AF_MIN_GAP_MS || 7000)
+let lastCall = 0
+
+export async function apiFootball(path: string, params: Record<string, string | number> = {}, attempt = 0): Promise<any> {
   const key = apiKey()
   if (!key) throw createError({ statusCode: 503, statusMessage: 'API_FOOTBALL_KEY not configured' })
+  const wait = MIN_GAP_MS - (Date.now() - lastCall)
+  if (wait > 0) await sleep(wait)
+  lastCall = Date.now()
   const url = new URL(BASE + path)
   for (const [k, v] of Object.entries(params)) url.searchParams.set(k, String(v))
   const res = await fetch(url, { headers: { 'x-apisports-key': key } })
   if (!res.ok) throw createError({ statusCode: res.status, statusMessage: `API-Football ${path} failed` })
-  return res.json() as Promise<any>
+  const data = await res.json()
+  const err = data?.errors
+  const rateLimited = err && (err.rateLimit || Object.values(err).some((v: any) => String(v).toLowerCase().includes('rate limit')))
+  if (rateLimited) {
+    if (attempt >= 3) throw createError({ statusCode: 429, statusMessage: 'API-Football rate limited' })
+    await sleep(65000)
+    return apiFootball(path, params, attempt + 1)
+  }
+  return data
 }
 
 export function currentSeason() {
   const now = new Date()
   return now.getUTCMonth() >= 6 ? now.getUTCFullYear() : now.getUTCFullYear() - 1
+}
+
+/** Free plans often only allow older seasons (e.g. 2022–2024). */
+export async function resolveAccessibleSeason(preferred = currentSeason()) {
+  const override = Number(process.env.AF_DATA_SEASON || 0)
+  if (override) return override
+  for (let s = preferred; s >= preferred - 4; s--) {
+    try {
+      const res = await apiFootball('/teams', { league: LEAGUE_ID, season: s })
+      if ((res.response || []).length) return s
+    } catch {
+      // try older
+    }
+  }
+  return preferred
 }
 
 export function resolveTeamId(name: string, teams: Array<{ id: number, name: string }>) {
@@ -143,11 +173,17 @@ export async function buildLiveLineups(predictions: any[]) {
     }
   }
 
-  const season = currentSeason()
+  const preferred = currentSeason()
+  const season = await resolveAccessibleSeason(preferred)
   const teamsRes = await apiFootball('/teams', { league: LEAGUE_ID, season })
-  const teams = (teamsRes.response || []).map((r: any) => r.team)
+  const bl2Res = await apiFootball('/teams', { league: 79, season }).catch(() => ({ response: [] }))
+  const teams = [
+    ...(teamsRes.response || []).map((r: any) => r.team),
+    ...(bl2Res.response || []).map((r: any) => r.team)
+  ]
   const fixturesRes = await apiFootball('/fixtures', { league: LEAGUE_ID, season })
-  const fixtures = fixturesRes.response || []
+  const bl2Fx = await apiFootball('/fixtures', { league: 79, season }).catch(() => ({ response: [] }))
+  const fixtures = [...(fixturesRes.response || []), ...(bl2Fx.response || [])]
 
   for (const p of predictions || []) {
     if (p.lineups?.home?.source === 'confirmed' && p.lineups.home.players?.length) {

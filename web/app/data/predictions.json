@@ -28,11 +28,11 @@
         "elo_diff": 313.6480085214623,
         "home_elo": 1968.0010394554208,
         "away_elo": 1719.3530309339585,
-        "value_diff": 570.0,
-        "home_squad_value": 950.0,
-        "away_squad_value": 380.0,
+        "value_diff": 570,
+        "home_squad_value": 950,
+        "away_squad_value": 380,
         "form5_diff": 1.4000000000000001,
-        "form10_diff": 1.0,
+        "form10_diff": 1,
         "home_form5": 2.6,
         "away_form5": 1.2,
         "home_winrate": 0.8,
@@ -42,13 +42,13 @@
         "home_ga5": 1.8,
         "away_ga5": 2.2,
         "gd10_diff": 1.5,
-        "home_streak": 15.0,
-        "away_streak": 4.0,
-        "home_rest": 90.0,
-        "away_rest": 90.0,
-        "home_played": 238.0,
-        "away_played": 204.0,
-        "h2h_n": 12.0,
+        "home_streak": 15,
+        "away_streak": 4,
+        "home_rest": 90,
+        "away_rest": 90,
+        "home_played": 238,
+        "away_played": 204,
+        "h2h_n": 12,
         "h2h_home_winrate": 0.75,
         "h2h_draw_rate": 0.16666666666666666,
         "h2h_gd": 2.1666666666666665
@@ -97,9 +97,158 @@
           {
             "feature": "away_elo",
             "label": "Away ELO",
-            "shap": -0.0
+            "shap": 0
           }
         ]
+      },
+      "lineups": {
+        "api_fixture_id": null,
+        "home": {
+          "source": "last_xi",
+          "formation": "4-2-3-1",
+          "players": [
+            {
+              "id": 497,
+              "name": "M. Neuer",
+              "number": 1,
+              "pos": "G"
+            },
+            {
+              "id": 1157,
+              "name": "K. Laimer",
+              "number": 27,
+              "pos": "D"
+            },
+            {
+              "id": 175,
+              "name": "E. Dier",
+              "number": 15,
+              "pos": "D"
+            },
+            {
+              "id": 125171,
+              "name": "J. Stanišić",
+              "number": 44,
+              "pos": "D"
+            },
+            {
+              "id": 8,
+              "name": "Raphaël Guerreiro",
+              "number": 22,
+              "pos": "D"
+            },
+            {
+              "id": 502,
+              "name": "J. Kimmich",
+              "number": 6,
+              "pos": "M"
+            },
+            {
+              "id": 328033,
+              "name": "A. Pavlović",
+              "number": 45,
+              "pos": "M"
+            },
+            {
+              "id": 19617,
+              "name": "M. Olise",
+              "number": 17,
+              "pos": "M"
+            },
+            {
+              "id": 510,
+              "name": "S. Gnabry",
+              "number": 7,
+              "pos": "M"
+            },
+            {
+              "id": 508,
+              "name": "K. Coman",
+              "number": 11,
+              "pos": "M"
+            },
+            {
+              "id": 522,
+              "name": "T. Müller",
+              "number": 25,
+              "pos": "F"
+            }
+          ],
+          "strength": null
+        },
+        "away": {
+          "source": "last_xi",
+          "formation": "3-4-2-1",
+          "players": [
+            {
+              "id": 399,
+              "name": "A. Nübel",
+              "number": 33,
+              "pos": "G"
+            },
+            {
+              "id": 349344,
+              "name": "L. Jaquez",
+              "number": 14,
+              "pos": "D"
+            },
+            {
+              "id": 38112,
+              "name": "J. Chabot",
+              "number": 24,
+              "pos": "D"
+            },
+            {
+              "id": 135883,
+              "name": "R. Hendriks",
+              "number": 3,
+              "pos": "D"
+            },
+            {
+              "id": 24868,
+              "name": "J. Vagnoman",
+              "number": 4,
+              "pos": "M"
+            },
+            {
+              "id": 24963,
+              "name": "A. Karazor",
+              "number": 16,
+              "pos": "M"
+            },
+            {
+              "id": 162887,
+              "name": "E. Millot",
+              "number": 8,
+              "pos": "M"
+            },
+            {
+              "id": 25342,
+              "name": "M. Mittelstädt",
+              "number": 7,
+              "pos": "M"
+            },
+            {
+              "id": 128533,
+              "name": "J. Leweling",
+              "number": 18,
+              "pos": "F"
+            },
+            {
+              "id": 26475,
+              "name": "D. Undav",
+              "number": 26,
+              "pos": "F"
+            },
+            {
+              "id": 158054,
+              "name": "N. Woltemade",
+              "number": 11,
+              "pos": "F"
+            }
+          ],
+          "strength": null
+        }
       }
     },
     {
@@ -119,27 +268,27 @@
         "elo_diff": 172.21222476274602,
         "home_elo": 1657.784206703892,
         "away_elo": 1550.571981941146,
-        "value_diff": 280.0,
-        "home_squad_value": 480.0,
-        "away_squad_value": 200.0,
+        "value_diff": 280,
+        "home_squad_value": 480,
+        "away_squad_value": 200,
         "form5_diff": 0.19999999999999996,
         "form10_diff": 0.8,
         "home_form5": 1.8,
         "away_form5": 1.6,
         "home_winrate": 0.7,
         "away_winrate": 0.3,
-        "home_gf5": 2.0,
+        "home_gf5": 2,
         "away_gf5": 1.4,
         "home_ga5": 2.2,
         "away_ga5": 0.8,
         "gd10_diff": 0.5,
-        "home_streak": 0.0,
-        "away_streak": 1.0,
-        "home_rest": 90.0,
-        "away_rest": 90.0,
-        "home_played": 238.0,
-        "away_played": 238.0,
-        "h2h_n": 14.0,
+        "home_streak": 0,
+        "away_streak": 1,
+        "home_rest": 90,
+        "away_rest": 90,
+        "home_played": 238,
+        "away_played": 238,
+        "h2h_n": 14,
         "h2h_home_winrate": 0.5,
         "h2h_draw_rate": 0.21428571428571427,
         "h2h_gd": 0.42857142857142855
@@ -188,9 +337,158 @@
           {
             "feature": "elo_diff",
             "label": "ELO gap",
-            "shap": -0.0
+            "shap": 0
           }
         ]
+      },
+      "lineups": {
+        "api_fixture_id": null,
+        "home": {
+          "source": "last_xi",
+          "formation": "4-2-2-2",
+          "players": [
+            {
+              "id": 1139,
+              "name": "P. Gulácsi",
+              "number": 1,
+              "pos": "G"
+            },
+            {
+              "id": 37143,
+              "name": "L. Geertruida",
+              "number": 3,
+              "pos": "D"
+            },
+            {
+              "id": 7328,
+              "name": "N. Seiwald",
+              "number": 13,
+              "pos": "D"
+            },
+            {
+              "id": 268571,
+              "name": "E. Bitshiabu",
+              "number": 5,
+              "pos": "D"
+            },
+            {
+              "id": 25158,
+              "name": "D. Raum",
+              "number": 22,
+              "pos": "D"
+            },
+            {
+              "id": 340154,
+              "name": "A. Vermeeren",
+              "number": 18,
+              "pos": "M"
+            },
+            {
+              "id": 1155,
+              "name": "K. Kampl",
+              "number": 44,
+              "pos": "M"
+            },
+            {
+              "id": 25917,
+              "name": "R. Baku",
+              "number": 17,
+              "pos": "M"
+            },
+            {
+              "id": 162016,
+              "name": "X. Simons",
+              "number": 10,
+              "pos": "M"
+            },
+            {
+              "id": 383665,
+              "name": "T. Gomis",
+              "number": 27,
+              "pos": "F"
+            },
+            {
+              "id": 314511,
+              "name": "A. Nusa",
+              "number": 7,
+              "pos": "F"
+            }
+          ],
+          "strength": null
+        },
+        "away": {
+          "source": "last_xi",
+          "formation": "4-3-3",
+          "players": [
+            {
+              "id": 2801,
+              "name": "J. Omlin",
+              "number": 1,
+              "pos": "G"
+            },
+            {
+              "id": 1082,
+              "name": "S. Lainer",
+              "number": 22,
+              "pos": "D"
+            },
+            {
+              "id": 38114,
+              "name": "K. Itakura",
+              "number": 3,
+              "pos": "D"
+            },
+            {
+              "id": 2803,
+              "name": "N. Elvedi",
+              "number": 30,
+              "pos": "D"
+            },
+            {
+              "id": 327646,
+              "name": "L. Ullrich",
+              "number": 26,
+              "pos": "D"
+            },
+            {
+              "id": 203007,
+              "name": "R. Reitz",
+              "number": 27,
+              "pos": "M"
+            },
+            {
+              "id": 19,
+              "name": "J. Weigl",
+              "number": 8,
+              "pos": "M"
+            },
+            {
+              "id": 24969,
+              "name": "P. Sander",
+              "number": 16,
+              "pos": "M"
+            },
+            {
+              "id": 20784,
+              "name": "F. Honorat",
+              "number": 9,
+              "pos": "F"
+            },
+            {
+              "id": 25646,
+              "name": "A. Pléa",
+              "number": 14,
+              "pos": "F"
+            },
+            {
+              "id": 725,
+              "name": "R. Hack",
+              "number": 25,
+              "pos": "F"
+            }
+          ],
+          "strength": null
+        }
       }
     },
     {
@@ -210,29 +508,29 @@
         "elo_diff": 401.4771215551675,
         "home_elo": 1598.8094739262697,
         "away_elo": 1262.3323523711022,
-        "value_diff": 95.0,
-        "home_squad_value": 150.0,
-        "away_squad_value": 55.0,
+        "value_diff": 95,
+        "home_squad_value": 150,
+        "away_squad_value": 55,
         "form5_diff": 1.2,
         "form10_diff": 1.2999999999999998,
         "home_form5": 1.4,
         "away_form5": 0.2,
         "home_winrate": 0.5,
-        "away_winrate": 0.0,
+        "away_winrate": 0,
         "home_gf5": 1.6,
-        "away_gf5": 1.0,
+        "away_gf5": 1,
         "home_ga5": 1.4,
         "away_ga5": 2.6,
         "gd10_diff": 1.7999999999999998,
-        "home_streak": 1.0,
-        "away_streak": 0.0,
-        "home_rest": 90.0,
-        "away_rest": 90.0,
-        "home_played": 238.0,
-        "away_played": 34.0,
-        "h2h_n": 2.0,
-        "h2h_home_winrate": 1.0,
-        "h2h_draw_rate": 0.0,
+        "home_streak": 1,
+        "away_streak": 0,
+        "home_rest": 90,
+        "away_rest": 90,
+        "home_played": 238,
+        "away_played": 34,
+        "h2h_n": 2,
+        "h2h_home_winrate": 1,
+        "h2h_draw_rate": 0,
         "h2h_gd": 1.5
       },
       "explanation": {
@@ -279,9 +577,158 @@
           {
             "feature": "home_elo",
             "label": "Home ELO",
-            "shap": -0.0
+            "shap": 0
           }
         ]
+      },
+      "lineups": {
+        "api_fixture_id": null,
+        "home": {
+          "source": "last_xi",
+          "formation": "3-4-2-1",
+          "players": [
+            {
+              "id": 25906,
+              "name": "R. Zentner",
+              "number": 27,
+              "pos": "G"
+            },
+            {
+              "id": 1812,
+              "name": "D. da Costa",
+              "number": 21,
+              "pos": "D"
+            },
+            {
+              "id": 25907,
+              "name": "S. Bell",
+              "number": 16,
+              "pos": "D"
+            },
+            {
+              "id": 39279,
+              "name": "A. Hanche-Olsen",
+              "number": 25,
+              "pos": "D"
+            },
+            {
+              "id": 22244,
+              "name": "A. Caci",
+              "number": 19,
+              "pos": "M"
+            },
+            {
+              "id": 33889,
+              "name": "K. Sano",
+              "number": 6,
+              "pos": "M"
+            },
+            {
+              "id": 714,
+              "name": "N. Amiri",
+              "number": 18,
+              "pos": "M"
+            },
+            {
+              "id": 25915,
+              "name": "P. Mwene",
+              "number": 2,
+              "pos": "M"
+            },
+            {
+              "id": 202736,
+              "name": "P. Nebel",
+              "number": 8,
+              "pos": "F"
+            },
+            {
+              "id": 2906,
+              "name": "Lee Jae-Sung",
+              "number": 7,
+              "pos": "F"
+            },
+            {
+              "id": 25926,
+              "name": "J. Burkardt",
+              "number": 29,
+              "pos": "F"
+            }
+          ],
+          "strength": null
+        },
+        "away": {
+          "source": "last_xi",
+          "formation": "3-4-2-1",
+          "players": [
+            {
+              "id": 25058,
+              "name": "M. Riemann",
+              "number": 1,
+              "pos": "G"
+            },
+            {
+              "id": 119173,
+              "name": "M. Hoffmeier",
+              "number": 33,
+              "pos": "D"
+            },
+            {
+              "id": 25289,
+              "name": "F. Götze",
+              "number": 20,
+              "pos": "D"
+            },
+            {
+              "id": 178403,
+              "name": "C. Brackelmann",
+              "number": 4,
+              "pos": "D"
+            },
+            {
+              "id": 7592,
+              "name": "R. Obermair",
+              "number": 23,
+              "pos": "M"
+            },
+            {
+              "id": 203015,
+              "name": "T. Scheller",
+              "number": 25,
+              "pos": "M"
+            },
+            {
+              "id": 334331,
+              "name": "M. Hansen",
+              "number": 22,
+              "pos": "M"
+            },
+            {
+              "id": 323951,
+              "name": "A. Zehnter",
+              "number": 32,
+              "pos": "M"
+            },
+            {
+              "id": 125726,
+              "name": "F. Bilbija",
+              "number": 7,
+              "pos": "F"
+            },
+            {
+              "id": 380873,
+              "name": "I. Ansah",
+              "number": 29,
+              "pos": "F"
+            },
+            {
+              "id": 25049,
+              "name": "M. Mehlem",
+              "number": 6,
+              "pos": "F"
+            }
+          ],
+          "strength": null
+        }
       }
     },
     {
@@ -301,9 +748,9 @@
         "elo_diff": 15.278762324372565,
         "home_elo": 1480.6939822394575,
         "away_elo": 1530.415219915085,
-        "value_diff": -160.0,
-        "home_squad_value": 180.0,
-        "away_squad_value": 340.0,
+        "value_diff": -160,
+        "home_squad_value": 180,
+        "away_squad_value": 340,
         "form5_diff": 0.9999999999999999,
         "form10_diff": 0.10000000000000009,
         "home_form5": 1.4,
@@ -315,13 +762,13 @@
         "home_ga5": 1.4,
         "away_ga5": 2.2,
         "gd10_diff": -0.3,
-        "home_streak": 3.0,
-        "away_streak": 1.0,
-        "home_rest": 90.0,
-        "away_rest": 90.0,
-        "home_played": 238.0,
-        "away_played": 238.0,
-        "h2h_n": 14.0,
+        "home_streak": 3,
+        "away_streak": 1,
+        "home_rest": 90,
+        "away_rest": 90,
+        "home_played": 238,
+        "away_played": 238,
+        "h2h_n": 14,
         "h2h_home_winrate": 0.35714285714285715,
         "h2h_draw_rate": 0.2857142857142857,
         "h2h_gd": -0.21428571428571427
@@ -370,9 +817,158 @@
           {
             "feature": "away_elo",
             "label": "Away ELO",
-            "shap": -0.0
+            "shap": 0
           }
         ]
+      },
+      "lineups": {
+        "api_fixture_id": null,
+        "home": {
+          "source": "last_xi",
+          "formation": "3-4-2-1",
+          "players": [
+            {
+              "id": 26234,
+              "name": "A. Schwolow",
+              "number": 37,
+              "pos": "G"
+            },
+            {
+              "id": 37117,
+              "name": "D. Doekhi",
+              "number": 5,
+              "pos": "D"
+            },
+            {
+              "id": 288206,
+              "name": "L. Querfeld",
+              "number": 14,
+              "pos": "D"
+            },
+            {
+              "id": 324957,
+              "name": "T. Rothe",
+              "number": 15,
+              "pos": "D"
+            },
+            {
+              "id": 26249,
+              "name": "J. Haberer",
+              "number": 19,
+              "pos": "M"
+            },
+            {
+              "id": 25300,
+              "name": "R. Khedira",
+              "number": 8,
+              "pos": "M"
+            },
+            {
+              "id": 30785,
+              "name": "A. Schäfer",
+              "number": 13,
+              "pos": "M"
+            },
+            {
+              "id": 14330,
+              "name": "J. Juranović",
+              "number": 18,
+              "pos": "M"
+            },
+            {
+              "id": 24910,
+              "name": "T. Skarke",
+              "number": 21,
+              "pos": "F"
+            },
+            {
+              "id": 327956,
+              "name": "D. Preu",
+              "number": 45,
+              "pos": "F"
+            },
+            {
+              "id": 162946,
+              "name": "B. Hollerbach",
+              "number": 16,
+              "pos": "F"
+            }
+          ],
+          "strength": null
+        },
+        "away": {
+          "source": "last_xi",
+          "formation": "3-4-2-1",
+          "players": [
+            {
+              "id": 1800,
+              "name": "K. Trapp",
+              "number": 1,
+              "pos": "G"
+            },
+            {
+              "id": 269531,
+              "name": "N. Collins",
+              "number": 34,
+              "pos": "D"
+            },
+            {
+              "id": 26238,
+              "name": "R. Koch",
+              "number": 4,
+              "pos": "D"
+            },
+            {
+              "id": 204043,
+              "name": "A. Theate",
+              "number": 3,
+              "pos": "D"
+            },
+            {
+              "id": 533,
+              "name": "R. Kristensen",
+              "number": 13,
+              "pos": "M"
+            },
+            {
+              "id": 335094,
+              "name": "H. Larsson",
+              "number": 16,
+              "pos": "M"
+            },
+            {
+              "id": 21587,
+              "name": "E. Skhiri",
+              "number": 15,
+              "pos": "M"
+            },
+            {
+              "id": 280074,
+              "name": "N. Brown",
+              "number": 21,
+              "pos": "M"
+            },
+            {
+              "id": 161922,
+              "name": "A. Knauff",
+              "number": 36,
+              "pos": "F"
+            },
+            {
+              "id": 276670,
+              "name": "F. Chaïbi",
+              "number": 8,
+              "pos": "F"
+            },
+            {
+              "id": 174565,
+              "name": "H. Ekitiké",
+              "number": 11,
+              "pos": "F"
+            }
+          ],
+          "strength": null
+        }
       }
     },
     {
@@ -392,13 +988,13 @@
         "elo_diff": -133.28919756490723,
         "home_elo": 1410.802637771596,
         "away_elo": 1609.0918353365032,
-        "value_diff": -60.0,
-        "home_squad_value": 150.0,
-        "away_squad_value": 210.0,
+        "value_diff": -60,
+        "home_squad_value": 150,
+        "away_squad_value": 210,
         "form5_diff": -1.6,
         "form10_diff": -0.7,
         "home_form5": 0.4,
-        "away_form5": 2.0,
+        "away_form5": 2,
         "home_winrate": 0.1,
         "away_winrate": 0.4,
         "home_gf5": 1.2,
@@ -406,16 +1002,16 @@
         "home_ga5": 2.6,
         "away_ga5": 1.8,
         "gd10_diff": -0.09999999999999998,
-        "home_streak": 0.0,
-        "away_streak": 0.0,
-        "home_rest": 90.0,
-        "away_rest": 90.0,
-        "home_played": 204.0,
-        "away_played": 238.0,
-        "h2h_n": 12.0,
+        "home_streak": 0,
+        "away_streak": 0,
+        "home_rest": 90,
+        "away_rest": 90,
+        "home_played": 204,
+        "away_played": 238,
+        "h2h_n": 12,
         "h2h_home_winrate": 0.16666666666666666,
         "h2h_draw_rate": 0.25,
-        "h2h_gd": -1.0
+        "h2h_gd": -1
       },
       "explanation": {
         "plot": "/explanations/83163.png",
@@ -461,9 +1057,158 @@
           {
             "feature": "away_elo",
             "label": "Away ELO",
-            "shap": -0.0
+            "shap": 0
           }
         ]
+      },
+      "lineups": {
+        "api_fixture_id": null,
+        "home": {
+          "source": "last_xi",
+          "formation": "4-2-3-1",
+          "players": [
+            {
+              "id": 15871,
+              "name": "M. Schwäbe",
+              "number": 1,
+              "pos": "G"
+            },
+            {
+              "id": 7319,
+              "name": "J. Gazibegović",
+              "number": 25,
+              "pos": "D"
+            },
+            {
+              "id": 90641,
+              "name": "T. Hübers",
+              "number": 4,
+              "pos": "D"
+            },
+            {
+              "id": 26237,
+              "name": "D. Heintz",
+              "number": 3,
+              "pos": "D"
+            },
+            {
+              "id": 25178,
+              "name": "L. Paqarada",
+              "number": 17,
+              "pos": "D"
+            },
+            {
+              "id": 162480,
+              "name": "E. Martel",
+              "number": 6,
+              "pos": "M"
+            },
+            {
+              "id": 202838,
+              "name": "D. Huseinbašić",
+              "number": 8,
+              "pos": "M"
+            },
+            {
+              "id": 181908,
+              "name": "J. Thielmann",
+              "number": 29,
+              "pos": "M"
+            },
+            {
+              "id": 26260,
+              "name": "L. Waldschmidt",
+              "number": 9,
+              "pos": "M"
+            },
+            {
+              "id": 24803,
+              "name": "F. Kainz",
+              "number": 11,
+              "pos": "M"
+            },
+            {
+              "id": 334362,
+              "name": "D. Downs",
+              "number": 42,
+              "pos": "F"
+            }
+          ],
+          "strength": null
+        },
+        "away": {
+          "source": "last_xi",
+          "formation": "3-4-2-1",
+          "players": [
+            {
+              "id": 702,
+              "name": "O. Baumann",
+              "number": 1,
+              "pos": "G"
+            },
+            {
+              "id": 304686,
+              "name": "Arthur Chaves",
+              "number": 35,
+              "pos": "D"
+            },
+            {
+              "id": 18967,
+              "name": "L. Østigård",
+              "number": 4,
+              "pos": "D"
+            },
+            {
+              "id": 25366,
+              "name": "K. Akpoguma",
+              "number": 25,
+              "pos": "D"
+            },
+            {
+              "id": 709,
+              "name": "P. Kadeřábek",
+              "number": 3,
+              "pos": "M"
+            },
+            {
+              "id": 177665,
+              "name": "A. Stach",
+              "number": 16,
+              "pos": "M"
+            },
+            {
+              "id": 718,
+              "name": "D. Geiger",
+              "number": 8,
+              "pos": "M"
+            },
+            {
+              "id": 7327,
+              "name": "A. Prass",
+              "number": 22,
+              "pos": "M"
+            },
+            {
+              "id": 325975,
+              "name": "T. Bischof",
+              "number": 7,
+              "pos": "F"
+            },
+            {
+              "id": 726,
+              "name": "A. Kramarić",
+              "number": 27,
+              "pos": "F"
+            },
+            {
+              "id": 66019,
+              "name": "A. Hložek",
+              "number": 23,
+              "pos": "F"
+            }
+          ],
+          "strength": null
+        }
       }
     },
     {
@@ -481,32 +1226,32 @@
       "p_away_win": 0.7208899259567261,
       "features": {
         "elo_diff": -121.36378587022682,
-        "home_elo": 1500.0,
+        "home_elo": 1500,
         "away_elo": 1686.3637858702268,
-        "value_diff": -580.0,
-        "home_squad_value": 40.0,
-        "away_squad_value": 620.0,
+        "value_diff": -580,
+        "home_squad_value": 40,
+        "away_squad_value": 620,
         "form5_diff": -0.09999999999999987,
         "form10_diff": -0.30000000000000004,
         "home_form5": 1.3,
         "away_form5": 1.4,
         "home_winrate": 0.33,
         "away_winrate": 0.4,
-        "home_gf5": 1.0,
+        "home_gf5": 1,
         "away_gf5": 1.8,
-        "home_ga5": 1.0,
+        "home_ga5": 1,
         "away_ga5": 1.6,
         "gd10_diff": -0.5,
-        "home_streak": 0.0,
-        "away_streak": 1.0,
-        "home_rest": 30.0,
-        "away_rest": 90.0,
-        "home_played": 0.0,
-        "away_played": 238.0,
-        "h2h_n": 0.0,
+        "home_streak": 0,
+        "away_streak": 1,
+        "home_rest": 30,
+        "away_rest": 90,
+        "home_played": 0,
+        "away_played": 238,
+        "h2h_n": 0,
         "h2h_home_winrate": 0.5,
         "h2h_draw_rate": 0.25,
-        "h2h_gd": 0.0
+        "h2h_gd": 0
       },
       "explanation": {
         "plot": "/explanations/83164.png",
@@ -552,9 +1297,158 @@
           {
             "feature": "home_elo",
             "label": "Home ELO",
-            "shap": -0.0
+            "shap": 0
           }
         ]
+      },
+      "lineups": {
+        "api_fixture_id": null,
+        "home": {
+          "source": "last_xi",
+          "formation": "4-2-3-1",
+          "players": [
+            {
+              "id": 178194,
+              "name": "N. Kristof",
+              "number": 20,
+              "pos": "G"
+            },
+            {
+              "id": 382492,
+              "name": "E. Baum",
+              "number": 2,
+              "pos": "D"
+            },
+            {
+              "id": 177731,
+              "name": "L. Pinckert",
+              "number": 19,
+              "pos": "D"
+            },
+            {
+              "id": 21333,
+              "name": "F. Le Joncour",
+              "number": 3,
+              "pos": "D"
+            },
+            {
+              "id": 88074,
+              "name": "M. Neubauer",
+              "number": 33,
+              "pos": "D"
+            },
+            {
+              "id": 143831,
+              "name": "R. Fellhauer",
+              "number": 6,
+              "pos": "M"
+            },
+            {
+              "id": 178089,
+              "name": "S. Şahin",
+              "number": 8,
+              "pos": "M"
+            },
+            {
+              "id": 177452,
+              "name": "L. Petkov",
+              "number": 25,
+              "pos": "M"
+            },
+            {
+              "id": 328262,
+              "name": "M. Damar",
+              "number": 30,
+              "pos": "M"
+            },
+            {
+              "id": 177362,
+              "name": "T. Zimmerschied",
+              "number": 29,
+              "pos": "M"
+            },
+            {
+              "id": 202501,
+              "name": "F. Asllani",
+              "number": 10,
+              "pos": "F"
+            }
+          ],
+          "strength": null
+        },
+        "away": {
+          "source": "last_xi",
+          "formation": "3-4-2-1",
+          "players": [
+            {
+              "id": 963,
+              "name": "L. Hrádecký",
+              "number": 1,
+              "pos": "G"
+            },
+            {
+              "id": 41150,
+              "name": "E. Tapsoba",
+              "number": 12,
+              "pos": "D"
+            },
+            {
+              "id": 972,
+              "name": "J. Tah",
+              "number": 4,
+              "pos": "D"
+            },
+            {
+              "id": 127817,
+              "name": "P. Hincapié",
+              "number": 3,
+              "pos": "D"
+            },
+            {
+              "id": 231029,
+              "name": "N. Tella",
+              "number": 19,
+              "pos": "M"
+            },
+            {
+              "id": 47516,
+              "name": "Aleix García",
+              "number": 24,
+              "pos": "M"
+            },
+            {
+              "id": 6002,
+              "name": "E. Palacios",
+              "number": 25,
+              "pos": "M"
+            },
+            {
+              "id": 563,
+              "name": "Álex Grimaldo",
+              "number": 20,
+              "pos": "M"
+            },
+            {
+              "id": 25635,
+              "name": "J. Hofmann",
+              "number": 7,
+              "pos": "F"
+            },
+            {
+              "id": 203224,
+              "name": "F. Wirtz",
+              "number": 10,
+              "pos": "F"
+            },
+            {
+              "id": 794,
+              "name": "P. Schick",
+              "number": 14,
+              "pos": "F"
+            }
+          ],
+          "strength": null
+        }
       }
     },
     {
@@ -574,27 +1468,27 @@
         "elo_diff": 342.5163557819824,
         "home_elo": 1787.0430192500642,
         "away_elo": 1509.5266634680818,
-        "value_diff": 400.0,
-        "home_squad_value": 540.0,
-        "away_squad_value": 140.0,
+        "value_diff": 400,
+        "home_squad_value": 540,
+        "away_squad_value": 140,
         "form5_diff": 0.40000000000000013,
         "form10_diff": 0.9000000000000001,
         "home_form5": 1.8,
         "away_form5": 1.4,
         "home_winrate": 0.7,
         "away_winrate": 0.3,
-        "home_gf5": 2.0,
+        "home_gf5": 2,
         "away_gf5": 1.6,
-        "home_ga5": 1.0,
+        "home_ga5": 1,
         "away_ga5": 1.8,
         "gd10_diff": 1.5,
-        "home_streak": 2.0,
-        "away_streak": 3.0,
-        "home_rest": 90.0,
-        "away_rest": 90.0,
-        "home_played": 238.0,
-        "away_played": 34.0,
-        "h2h_n": 2.0,
+        "home_streak": 2,
+        "away_streak": 3,
+        "home_rest": 90,
+        "away_rest": 90,
+        "home_played": 238,
+        "away_played": 34,
+        "h2h_n": 2,
         "h2h_home_winrate": 0.5,
         "h2h_draw_rate": 0.5,
         "h2h_gd": 0.5
@@ -643,9 +1537,158 @@
           {
             "feature": "home_elo",
             "label": "Home ELO",
-            "shap": -0.0
+            "shap": 0
           }
         ]
+      },
+      "lineups": {
+        "api_fixture_id": null,
+        "home": {
+          "source": "last_xi",
+          "formation": "3-4-2-1",
+          "players": [
+            {
+              "id": 25282,
+              "name": "G. Kobel",
+              "number": 1,
+              "pos": "G"
+            },
+            {
+              "id": 506,
+              "name": "N. Süle",
+              "number": 25,
+              "pos": "D"
+            },
+            {
+              "id": 25368,
+              "name": "W. Anton",
+              "number": 3,
+              "pos": "D"
+            },
+            {
+              "id": 2194,
+              "name": "R. Bensebaini",
+              "number": 5,
+              "pos": "D"
+            },
+            {
+              "id": 24845,
+              "name": "J. Ryerson",
+              "number": 26,
+              "pos": "M"
+            },
+            {
+              "id": 1159,
+              "name": "M. Sabitzer",
+              "number": 20,
+              "pos": "M"
+            },
+            {
+              "id": 637,
+              "name": "F. Nmecha",
+              "number": 8,
+              "pos": "M"
+            },
+            {
+              "id": 198654,
+              "name": "D. Svensson",
+              "number": 24,
+              "pos": "M"
+            },
+            {
+              "id": 984,
+              "name": "J. Brandt",
+              "number": 10,
+              "pos": "F"
+            },
+            {
+              "id": 7334,
+              "name": "K. Adeyemi",
+              "number": 27,
+              "pos": "F"
+            },
+            {
+              "id": 21393,
+              "name": "S. Guirassy",
+              "number": 9,
+              "pos": "F"
+            }
+          ],
+          "strength": null
+        },
+        "away": {
+          "source": "last_xi",
+          "formation": "4-3-3",
+          "players": [
+            {
+              "id": 25033,
+              "name": "Daniel Heuer Fernandes",
+              "number": 1,
+              "pos": "G"
+            },
+            {
+              "id": 302632,
+              "name": "W. Mikelbrencis",
+              "number": 2,
+              "pos": "D"
+            },
+            {
+              "id": 24820,
+              "name": "S. Schonlau",
+              "number": 4,
+              "pos": "D"
+            },
+            {
+              "id": 324019,
+              "name": "Daniel Elfadli",
+              "number": 8,
+              "pos": "D"
+            },
+            {
+              "id": 48489,
+              "name": "M. Muheim",
+              "number": 28,
+              "pos": "D"
+            },
+            {
+              "id": 199871,
+              "name": "A. Karabec",
+              "number": 17,
+              "pos": "M"
+            },
+            {
+              "id": 24965,
+              "name": "J. Meffert",
+              "number": 23,
+              "pos": "M"
+            },
+            {
+              "id": 38124,
+              "name": "L. Reis",
+              "number": 14,
+              "pos": "M"
+            },
+            {
+              "id": 380939,
+              "name": "Fábio Baldé",
+              "number": 45,
+              "pos": "F"
+            },
+            {
+              "id": 24914,
+              "name": "R. Glatzel",
+              "number": 9,
+              "pos": "F"
+            },
+            {
+              "id": 8483,
+              "name": "J. Dompé",
+              "number": 7,
+              "pos": "F"
+            }
+          ],
+          "strength": null
+        }
       }
     },
     {
@@ -665,9 +1708,9 @@
         "elo_diff": 214.49895618334403,
         "home_elo": 1581.6886390810898,
         "away_elo": 1432.1896828977458,
-        "value_diff": 50.0,
-        "home_squad_value": 220.0,
-        "away_squad_value": 170.0,
+        "value_diff": 50,
+        "home_squad_value": 220,
+        "away_squad_value": 170,
         "form5_diff": 0.5999999999999999,
         "form10_diff": 0.3999999999999999,
         "home_form5": 1.4,
@@ -675,17 +1718,17 @@
         "home_winrate": 0.4,
         "away_winrate": 0.3,
         "home_gf5": 1.8,
-        "away_gf5": 1.0,
-        "home_ga5": 2.0,
+        "away_gf5": 1,
+        "home_ga5": 2,
         "away_ga5": 1.6,
         "gd10_diff": 0.30000000000000004,
-        "home_streak": 1.0,
-        "away_streak": 0.0,
-        "home_rest": 90.0,
-        "away_rest": 90.0,
-        "home_played": 238.0,
-        "away_played": 204.0,
-        "h2h_n": 12.0,
+        "home_streak": 1,
+        "away_streak": 0,
+        "home_rest": 90,
+        "away_rest": 90,
+        "home_played": 238,
+        "away_played": 204,
+        "h2h_n": 12,
         "h2h_home_winrate": 0.5833333333333334,
         "h2h_draw_rate": 0.25,
         "h2h_gd": 0.9166666666666666
@@ -734,9 +1777,158 @@
           {
             "feature": "elo_diff",
             "label": "ELO gap",
-            "shap": -0.0
+            "shap": 0
           }
         ]
+      },
+      "lineups": {
+        "api_fixture_id": null,
+        "home": {
+          "source": "last_xi",
+          "formation": "4-4-1-1",
+          "players": [
+            {
+              "id": 178768,
+              "name": "N. Atubolu",
+              "number": 1,
+              "pos": "G"
+            },
+            {
+              "id": 202919,
+              "name": "M. Rosenfelder",
+              "number": 37,
+              "pos": "D"
+            },
+            {
+              "id": 2915,
+              "name": "M. Ginter",
+              "number": 28,
+              "pos": "D"
+            },
+            {
+              "id": 26240,
+              "name": "P. Lienhart",
+              "number": 3,
+              "pos": "D"
+            },
+            {
+              "id": 191160,
+              "name": "J. Makengo",
+              "number": 33,
+              "pos": "D"
+            },
+            {
+              "id": 2598,
+              "name": "R. Doan",
+              "number": 42,
+              "pos": "M"
+            },
+            {
+              "id": 2917,
+              "name": "M. Eggestein",
+              "number": 8,
+              "pos": "M"
+            },
+            {
+              "id": 406244,
+              "name": "J. Manzambi",
+              "number": 44,
+              "pos": "M"
+            },
+            {
+              "id": 26248,
+              "name": "V. Grifo",
+              "number": 32,
+              "pos": "M"
+            },
+            {
+              "id": 26255,
+              "name": "L. Höler",
+              "number": 9,
+              "pos": "F"
+            },
+            {
+              "id": 125173,
+              "name": "J. Adamu",
+              "number": 20,
+              "pos": "F"
+            }
+          ],
+          "strength": null
+        },
+        "away": {
+          "source": "last_xi",
+          "formation": "3-5-2",
+          "players": [
+            {
+              "id": 7288,
+              "name": "M. Zetterer",
+              "number": 1,
+              "pos": "G"
+            },
+            {
+              "id": 2916,
+              "name": "N. Stark",
+              "number": 4,
+              "pos": "D"
+            },
+            {
+              "id": 25314,
+              "name": "M. Friedl",
+              "number": 32,
+              "pos": "D"
+            },
+            {
+              "id": 25011,
+              "name": "A. Pieper",
+              "number": 5,
+              "pos": "D"
+            },
+            {
+              "id": 973,
+              "name": "M. Weiser",
+              "number": 8,
+              "pos": "M"
+            },
+            {
+              "id": 15592,
+              "name": "J. Stage",
+              "number": 6,
+              "pos": "M"
+            },
+            {
+              "id": 38798,
+              "name": "S. Lynen",
+              "number": 14,
+              "pos": "M"
+            },
+            {
+              "id": 7562,
+              "name": "R. Schmid",
+              "number": 20,
+              "pos": "M"
+            },
+            {
+              "id": 26319,
+              "name": "F. Agu",
+              "number": 27,
+              "pos": "M"
+            },
+            {
+              "id": 7073,
+              "name": "M. Grüll",
+              "number": 17,
+              "pos": "F"
+            },
+            {
+              "id": 25464,
+              "name": "M. Ducksch",
+              "number": 7,
+              "pos": "F"
+            }
+          ],
+          "strength": null
+        }
       }
     },
     {
@@ -756,27 +1948,27 @@
         "elo_diff": 180.88274901800082,
         "home_elo": 1537.5805165790553,
         "away_elo": 1421.6977675610544,
-        "value_diff": 10.0,
-        "home_squad_value": 130.0,
-        "away_squad_value": 120.0,
+        "value_diff": 10,
+        "home_squad_value": 130,
+        "away_squad_value": 120,
         "form5_diff": 0.6000000000000001,
         "form10_diff": 0.09999999999999987,
-        "home_form5": 2.0,
+        "home_form5": 2,
         "away_form5": 1.4,
         "home_winrate": 0.3,
         "away_winrate": 0.3,
         "home_gf5": 1.8,
         "away_gf5": 1.8,
         "home_ga5": 1.6,
-        "away_ga5": 3.0,
+        "away_ga5": 3,
         "gd10_diff": 0.7,
-        "home_streak": 0.0,
-        "away_streak": 0.0,
-        "home_rest": 90.0,
-        "away_rest": 90.0,
-        "home_played": 238.0,
-        "away_played": 102.0,
-        "h2h_n": 6.0,
+        "home_streak": 0,
+        "away_streak": 0,
+        "home_rest": 90,
+        "away_rest": 90,
+        "home_played": 238,
+        "away_played": 102,
+        "h2h_n": 6,
         "h2h_home_winrate": 0.3333333333333333,
         "h2h_draw_rate": 0.3333333333333333,
         "h2h_gd": 0.3333333333333333
@@ -825,10 +2017,161 @@
           {
             "feature": "home_elo",
             "label": "Home ELO",
-            "shap": -0.0
+            "shap": 0
           }
         ]
+      },
+      "lineups": {
+        "api_fixture_id": null,
+        "home": {
+          "source": "last_xi",
+          "formation": "3-4-2-1",
+          "players": [
+            {
+              "id": 25903,
+              "name": "F. Dahmen",
+              "number": 1,
+              "pos": "G"
+            },
+            {
+              "id": 163039,
+              "name": "C. Matsima",
+              "number": 5,
+              "pos": "D"
+            },
+            {
+              "id": 25290,
+              "name": "J. Gouweleeuw",
+              "number": 6,
+              "pos": "D"
+            },
+            {
+              "id": 48574,
+              "name": "C. Zesiger",
+              "number": 16,
+              "pos": "D"
+            },
+            {
+              "id": 26,
+              "name": "M. Wolf",
+              "number": 11,
+              "pos": "M"
+            },
+            {
+              "id": 14395,
+              "name": "K. Jakić",
+              "number": 17,
+              "pos": "M"
+            },
+            {
+              "id": 15799,
+              "name": "F. Onyeka",
+              "number": 19,
+              "pos": "M"
+            },
+            {
+              "id": 2360,
+              "name": "D. Giannoulis",
+              "number": 13,
+              "pos": "M"
+            },
+            {
+              "id": 348888,
+              "name": "M. Kömür",
+              "number": 36,
+              "pos": "F"
+            },
+            {
+              "id": 20634,
+              "name": "A. Claude-Maurice",
+              "number": 20,
+              "pos": "F"
+            },
+            {
+              "id": 26171,
+              "name": "P. Tietz",
+              "number": 21,
+              "pos": "F"
+            }
+          ],
+          "strength": null
+        },
+        "away": {
+          "source": "last_xi",
+          "formation": "4-4-2",
+          "players": [
+            {
+              "id": 106792,
+              "name": "J. Heekeren",
+              "number": 28,
+              "pos": "G"
+            },
+            {
+              "id": 266192,
+              "name": "A. Gantenbein",
+              "number": 17,
+              "pos": "D"
+            },
+            {
+              "id": 394663,
+              "name": "T. Bulut",
+              "number": 31,
+              "pos": "D"
+            },
+            {
+              "id": 3003,
+              "name": "M. Kamiński",
+              "number": 35,
+              "pos": "D"
+            },
+            {
+              "id": 37760,
+              "name": "D. Murkin",
+              "number": 5,
+              "pos": "D"
+            },
+            {
+              "id": 203018,
+              "name": "M. Aydın",
+              "number": 23,
+              "pos": "M"
+            },
+            {
+              "id": 88140,
+              "name": "R. Schallenberg",
+              "number": 6,
+              "pos": "M"
+            },
+            {
+              "id": 380854,
+              "name": "M. Grüger",
+              "number": 37,
+              "pos": "M"
+            },
+            {
+              "id": 25155,
+              "name": "T. Mohr",
+              "number": 29,
+              "pos": "M"
+            },
+            {
+              "id": 115,
+              "name": "M. Sylla",
+              "number": 9,
+              "pos": "F"
+            },
+            {
+              "id": 25466,
+              "name": "K. Karaman",
+              "number": 19,
+              "pos": "F"
+            }
+          ],
+          "strength": null
+        }
       }
     }
-  ]
+  ],
+  "lineups_provider": "api-football",
+  "lineups_refreshed_at": "2026-07-22T15:40:39.937Z"
 }

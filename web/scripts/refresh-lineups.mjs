@@ -65,12 +65,29 @@ function norm(s) {
     .trim()
 }
 
-async function api(path, params = {}) {
+const sleep = (ms) => new Promise(r => setTimeout(r, ms))
+// Free plan: 10 req/min — keep a safe gap between calls.
+const MIN_GAP_MS = Number(process.env.AF_MIN_GAP_MS || 7000)
+let lastCall = 0
+
+async function api(path, params = {}, attempt = 0) {
+  const wait = MIN_GAP_MS - (Date.now() - lastCall)
+  if (wait > 0) await sleep(wait)
+  lastCall = Date.now()
   const url = new URL(BASE + path)
   for (const [k, v] of Object.entries(params)) url.searchParams.set(k, String(v))
   const res = await fetch(url, { headers: { 'x-apisports-key': KEY } })
   if (!res.ok) throw new Error(`${path} ${res.status}`)
-  return res.json()
+  const data = await res.json()
+  const err = data?.errors
+  const rateLimited = err && (err.rateLimit || Object.values(err).some(v => String(v).toLowerCase().includes('rate limit')))
+  if (rateLimited) {
+    if (attempt >= 4) throw new Error(`rate limited: ${JSON.stringify(err)}`)
+    console.log(`refresh-lineups: rate limited — waiting 65s (attempt ${attempt + 1})`)
+    await sleep(65000)
+    return api(path, params, attempt + 1)
+  }
+  return data
 }
 
 function resolveTeamId(name, teams) {
@@ -109,6 +126,24 @@ function parseLineupSide(side) {
   }
 }
 
+function rememberSides(fid, sides, cache) {
+  cache.lineups[String(fid)] = sides.map(s => ({
+    team_id: s.team_id,
+    formation: s.formation,
+    startXI: s.players
+  }))
+  for (const s of sides) {
+    if (s.team_id && s.players.length) {
+      cache.last_xi[String(s.team_id)] = {
+        fixture_id: fid,
+        formation: s.formation,
+        players: s.players,
+        source: 'confirmed'
+      }
+    }
+  }
+}
+
 async function fetchLastXi(teamId, fixtures, cache) {
   if (!teamId) return null
   if (cache.last_xi?.[String(teamId)]?.players?.length) {
@@ -122,27 +157,31 @@ async function fetchLastXi(teamId, fixtures, cache) {
     })
     .sort((a, b) => (b.fixture?.timestamp || 0) - (a.fixture?.timestamp || 0))
 
-  for (const row of finished.slice(0, 4)) {
+  for (const row of finished.slice(0, 3)) {
     const fid = row.fixture?.id
     if (!fid) continue
-    try {
-      const lu = await api('/fixtures/lineups', { fixture: fid })
-      const sides = (lu.response || []).map(parseLineupSide)
-      cache.lineups[String(fid)] = sides.map(s => ({
-        team_id: s.team_id,
-        formation: s.formation,
-        startXI: s.players
-      }))
-      for (const s of sides) {
-        if (s.team_id && s.players.length) {
+    // Reuse cached lineup payload if present
+    if (cache.lineups?.[String(fid)]?.length) {
+      for (const s of cache.lineups[String(fid)]) {
+        if (s.team_id && s.startXI?.length) {
           cache.last_xi[String(s.team_id)] = {
             fixture_id: fid,
             formation: s.formation,
-            players: s.players,
+            players: s.startXI,
             source: 'confirmed'
           }
         }
       }
+      if (cache.last_xi[String(teamId)]?.players?.length) {
+        return cache.last_xi[String(teamId)]
+      }
+      continue
+    }
+    try {
+      const lu = await api('/fixtures/lineups', { fixture: fid })
+      const sides = (lu.response || []).map(parseLineupSide)
+      if (!sides.length) continue
+      rememberSides(fid, sides, cache)
       if (cache.last_xi[String(teamId)]?.players?.length) {
         return cache.last_xi[String(teamId)]
       }
@@ -153,13 +192,41 @@ async function fetchLastXi(teamId, fixtures, cache) {
   return null
 }
 
+/** Free plans often only allow older seasons (e.g. 2022–2024). */
+async function resolveAccessibleSeason(preferred) {
+  const override = Number(process.env.AF_DATA_SEASON || 0)
+  if (override) return override
+  for (let s = preferred; s >= preferred - 4; s--) {
+    const res = await api('/teams', { league: LEAGUE_ID, season: s })
+    if ((res.response || []).length) {
+      if (s !== preferred) {
+        console.log(`refresh-lineups: season ${preferred} unavailable on plan — using ${s}`)
+      }
+      return s
+    }
+  }
+  return preferred
+}
+
+async function loadLeague(leagueId, season) {
+  const teamsRes = await api('/teams', { league: leagueId, season })
+  const fixturesRes = await api('/fixtures', { league: leagueId, season })
+  return {
+    teams: (teamsRes.response || []).map(r => r.team),
+    fixtures: fixturesRes.response || []
+  }
+}
+
 async function main() {
-  const season = new Date().getUTCMonth() >= 6 ? new Date().getUTCFullYear() : new Date().getUTCFullYear() - 1
+  const preferred = new Date().getUTCMonth() >= 6 ? new Date().getUTCFullYear() : new Date().getUTCFullYear() - 1
+  const season = await resolveAccessibleSeason(preferred)
   const payload = JSON.parse(readFileSync(targets[0], 'utf8'))
-  const teamsRes = await api('/teams', { league: LEAGUE_ID, season })
-  const teams = (teamsRes.response || []).map(r => r.team)
-  const fixturesRes = await api('/fixtures', { league: LEAGUE_ID, season })
-  const fixtures = fixturesRes.response || []
+  const bl = await loadLeague(LEAGUE_ID, season)
+  // 2. Bundesliga for promoted clubs missing from BL season snapshot
+  const bl2 = await loadLeague(79, season)
+  const teams = [...bl.teams, ...bl2.teams]
+  const fixtures = [...bl.fixtures, ...bl2.fixtures]
+  console.log(`refresh-lineups: season=${season} BL teams=${bl.teams.length} fixtures=${bl.fixtures.length}`)
 
   const cachePath = join(root, 'api_football_cache.json')
   const cache = existsSync(cachePath)
@@ -172,10 +239,11 @@ async function main() {
     const hid = resolveTeamId(pred.home_team, teams)
     const aid = resolveTeamId(pred.away_team, teams)
     const datePrefix = String(pred.date || '').slice(0, 10)
+    // Only treat as "confirmed" when the fixture date matches the upcoming match.
     const fx = fixtures.find((row) => {
       const homeOk = hid && row.teams?.home?.id === hid
       const awayOk = aid && row.teams?.away?.id === aid
-      const dateOk = !datePrefix || String(row.fixture?.date || '').startsWith(datePrefix)
+      const dateOk = datePrefix && String(row.fixture?.date || '').startsWith(datePrefix)
       return homeOk && awayOk && dateOk
     })
 

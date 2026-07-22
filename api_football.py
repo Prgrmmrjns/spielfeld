@@ -103,22 +103,24 @@ class ApiFootball:
         return r.json()
 
     def ensure_teams(self, season: int | None = None):
-        """Load Bundesliga teams for season into cache."""
-        season = season or _current_season()
+        """Load Bundesliga (+ 2.BL) teams for an accessible season into cache."""
+        season = season or _accessible_season(self)
         key = f"teams_{season}"
         if self.cache.get(key):
             return
-        data = self._get("/teams", {"league": LEAGUE_ID, "season": season})
-        for row in data.get("response") or []:
-            team = row.get("team") or {}
-            tid = team.get("id")
-            if not tid:
-                continue
-            self.cache["teams"][str(tid)] = team
-            self.cache["name_to_id"][_norm(team.get("name", ""))] = tid
-            if team.get("code"):
-                self.cache["name_to_id"][_norm(team["code"])] = tid
+        for league in (LEAGUE_ID, 79):
+            data = self._get("/teams", {"league": league, "season": season})
+            for row in data.get("response") or []:
+                team = row.get("team") or {}
+                tid = team.get("id")
+                if not tid:
+                    continue
+                self.cache["teams"][str(tid)] = team
+                self.cache["name_to_id"][_norm(team.get("name", ""))] = tid
+                if team.get("code"):
+                    self.cache["name_to_id"][_norm(team["code"])] = tid
         self.cache[key] = True
+        self.cache["data_season"] = season
         self._build_alias_map()
         self.save()
 
@@ -171,30 +173,34 @@ class ApiFootball:
         return players
 
     def ensure_fixtures(self, season: int):
+        season = _accessible_season(self, season)
         sk = str(season)
         if sk in self.cache["fixtures"] and self.cache["fixtures"][sk]:
             return self.cache["fixtures"][sk]
-        data = self._get("/fixtures", {"league": LEAGUE_ID, "season": season}, sleep=0.4)
         fixtures = []
-        for row in data.get("response") or []:
-            fx = row.get("fixture") or {}
-            teams = row.get("teams") or {}
-            goals = row.get("goals") or {}
-            league = row.get("league") or {}
-            fixtures.append({
-                "id": fx.get("id"),
-                "date": fx.get("date"),
-                "timestamp": fx.get("timestamp"),
-                "status": (fx.get("status") or {}).get("short"),
-                "round": league.get("round"),
-                "home_id": (teams.get("home") or {}).get("id"),
-                "away_id": (teams.get("away") or {}).get("id"),
-                "home_name": (teams.get("home") or {}).get("name"),
-                "away_name": (teams.get("away") or {}).get("name"),
-                "home_goals": goals.get("home"),
-                "away_goals": goals.get("away"),
-            })
+        for league in (LEAGUE_ID, 79):
+            data = self._get("/fixtures", {"league": league, "season": season}, sleep=0.4)
+            for row in data.get("response") or []:
+                fx = row.get("fixture") or {}
+                teams = row.get("teams") or {}
+                goals = row.get("goals") or {}
+                league_meta = row.get("league") or {}
+                fixtures.append({
+                    "id": fx.get("id"),
+                    "date": fx.get("date"),
+                    "timestamp": fx.get("timestamp"),
+                    "status": (fx.get("status") or {}).get("short"),
+                    "round": league_meta.get("round"),
+                    "league_id": league_meta.get("id") or league,
+                    "home_id": (teams.get("home") or {}).get("id"),
+                    "away_id": (teams.get("away") or {}).get("id"),
+                    "home_name": (teams.get("home") or {}).get("name"),
+                    "away_name": (teams.get("away") or {}).get("name"),
+                    "home_goals": goals.get("home"),
+                    "away_goals": goals.get("away"),
+                })
         self.cache["fixtures"][sk] = fixtures
+        self.cache["data_season"] = season
         self.save()
         return fixtures
 
@@ -323,18 +329,25 @@ class ApiFootball:
         }
 
     def find_fixture(self, home_name: str, away_name: str, date_iso: str | None = None, season: int | None = None):
-        season = season or _current_season()
-        self.ensure_teams(season)
-        fixtures = self.ensure_fixtures(season)
+        # Use plan-accessible season for lineup history; only return a fixture when
+        # the kickoff date matches (so we don't mark old games as "confirmed").
+        data_season = _accessible_season(self, season)
+        self.ensure_teams(data_season)
+        fixtures = self.ensure_fixtures(data_season)
         hid = self.resolve_team_id(home_name)
         aid = self.resolve_team_id(away_name)
         date_prefix = (date_iso or "")[:10]
+        if not date_prefix:
+            return None
         for fx in fixtures:
             if hid and aid and fx.get("home_id") == hid and fx.get("away_id") == aid:
-                if not date_prefix or (fx.get("date") or "").startswith(date_prefix):
+                if (fx.get("date") or "").startswith(date_prefix):
                     return fx
-            # soft name match
-            if _norm(fx.get("home_name", "")) == _norm(home_name) and _norm(fx.get("away_name", "")) == _norm(away_name):
+            if (
+                _norm(fx.get("home_name", "")) == _norm(home_name)
+                and _norm(fx.get("away_name", "")) == _norm(away_name)
+                and (fx.get("date") or "").startswith(date_prefix)
+            ):
                 return fx
         return None
 
@@ -393,6 +406,24 @@ def _current_season() -> int:
     import pandas as pd
     now = pd.Timestamp.now()
     return now.year if now.month >= 7 else now.year - 1
+
+
+def _accessible_season(client: "ApiFootball", preferred: int | None = None) -> int:
+    """Pick newest Bundesliga season the API key/plan can read (free ≈ 2022–2024)."""
+    override = os.getenv("AF_DATA_SEASON")
+    if override:
+        return int(override)
+    preferred = preferred or _current_season()
+    for season in range(preferred, preferred - 5, -1):
+        try:
+            data = client._get("/teams", {"league": LEAGUE_ID, "season": season}, sleep=0.15)
+            if data.get("response"):
+                if season != preferred:
+                    print(f"API-Football: season {preferred} unavailable on plan — using {season}")
+                return season
+        except Exception:
+            continue
+    return preferred
 
 
 def _order_squad_as_xi(squad: list[dict]) -> list[dict]:

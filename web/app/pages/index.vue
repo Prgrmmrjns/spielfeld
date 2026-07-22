@@ -83,6 +83,12 @@ onMounted(() => {
 })
 
 const selected = ref<Prediction | null>(null)
+
+watch(() => data.value.predictions, (preds) => {
+  if (!selected.value?.match_id) return
+  const next = preds.find(p => p.match_id === selected.value?.match_id)
+  if (next) selected.value = next
+}, { deep: true })
 const modalOpen = computed({
   get: () => selected.value !== null,
   set: (open: boolean) => {
