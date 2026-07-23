@@ -14,3 +14,5 @@ wiki_squads_cache.json
 .vercel/
 .env
 node_modules/
+.tmp*
+*.tmp.png

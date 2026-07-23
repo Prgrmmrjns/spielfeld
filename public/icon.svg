@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Spielfeld">
+  <defs>
+    <linearGradient id="pitch" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#246b3d"/>
+      <stop offset="100%" stop-color="#132a1c"/>
+    </linearGradient>
+  </defs>
+  <!-- Rounded tile -->
+  <rect width="64" height="64" rx="14" fill="#0f1712"/>
+  <!-- Pitch -->
+  <rect x="8" y="8" width="48" height="48" rx="6" fill="url(#pitch)"/>
+  <!-- Pitch lines -->
+  <g fill="none" stroke="#d4ff3f" stroke-opacity="0.85" stroke-width="1.6">
+    <rect x="12" y="12" width="40" height="40" rx="2"/>
+    <line x1="12" y1="32" x2="52" y2="32"/>
+    <circle cx="32" cy="32" r="7"/>
+    <circle cx="32" cy="32" r="1.4" fill="#d4ff3f" stroke="none"/>
+    <!-- Penalty boxes -->
+    <rect x="20" y="12" width="24" height="8"/>
+    <rect x="20" y="44" width="24" height="8"/>
+  </g>
+  <!-- Accent ball -->
+  <circle cx="46" cy="18" r="5.5" fill="#d4ff3f"/>
+  <path d="M43.2 16.4c1.1-.9 2.6-.9 3.7 0M48.8 19.6c-1.1.9-2.6.9-3.7 0M46 12.5v11M40.5 18h11"
+        stroke="#132a1c" stroke-width="1.1" stroke-linecap="round" opacity="0.55"/>
+</svg>

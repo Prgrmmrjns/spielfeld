@@ -5,8 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>About — Spielfeld</title>
   <meta name="description" content="How Spielfeld builds Bundesliga tips: training data, TabPFN, ShapIQ, and lineup lab." />
-  <link rel="icon" href="/favicon.ico" />
-  <link rel="stylesheet" href="/css/main.css?v=about1" />
+  <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+  <link rel="alternate icon" href="/favicon.ico" />
+  <link rel="apple-touch-icon" href="/icon.svg" />
+  <link rel="stylesheet" href="/css/main.css?v=icon1" />
 </head>
 <body>
   <div class="page">
@@ -19,7 +21,10 @@
     <div class="wrap">
       <header class="site-header">
         <div class="brand-lockup">
-          <a class="brand" href="/">SPIELFELD</a>
+          <a class="brand" href="/">
+            <img class="brand-mark" src="/icon.svg" width="28" height="28" alt="" />
+            <span>SPIELFELD</span>
+          </a>
           <p class="eyebrow">About · how the tips work</p>
         </div>
         <nav class="site-nav">
@@ -77,9 +82,8 @@
             <p>
               We engineer features such as ELO-style ratings, recent form, goals, rest days,
               head-to-head, squad value, and <strong>player XI lines / matchups</strong>.
-              TabPFN (when a token is available) learns the mapping from those features to
-              result probabilities. If TabPFN is unavailable we fall back to a local
-              gradient-boosting model — still with the same player-XI features.
+              TabPFN learns the mapping from those features to home / draw / away
+              probabilities — including the player XI line and matchup features.
             </p>
           </article>
 

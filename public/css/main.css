@@ -62,12 +62,22 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
 }
 .brand-lockup { min-width: 0; }
 .brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
   margin: 0;
   font-family: var(--font-display);
   font-size: 1.5rem;
   letter-spacing: 0.08em;
   color: #fff;
   line-height: 1;
+}
+.brand-mark {
+  width: 1.65rem;
+  height: 1.65rem;
+  border-radius: 0.35rem;
+  flex-shrink: 0;
+  box-shadow: 0 0 0 1px rgba(212, 255, 63, 0.18);
 }
 .site-header .eyebrow {
   margin: 0.2rem 0 0;
@@ -161,6 +171,9 @@ a.brand { color: inherit; }
   border-bottom: 1px solid rgba(255,255,255,0.1);
 }
 .hero h1 {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
   margin: 0;
   font-family: var(--font-display);
   font-size: clamp(2.6rem, 8vw, 3.75rem);
@@ -168,6 +181,16 @@ a.brand { color: inherit; }
   letter-spacing: 0.04em;
   font-weight: 400;
   color: #fff;
+}
+.hero-mark {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.55rem;
+  flex-shrink: 0;
+  box-shadow: 0 0 0 1px rgba(212, 255, 63, 0.2);
+}
+@media (min-width: 768px) {
+  .hero-mark { width: 3rem; height: 3rem; }
 }
 .hero-copy {
   margin: 0.4rem 0 0;

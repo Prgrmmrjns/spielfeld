@@ -42,6 +42,13 @@ if public_dir.is_dir():
             from fastapi.responses import FileResponse
             return FileResponse(favicon)
 
+    icon_svg = public_dir / "icon.svg"
+    if icon_svg.exists():
+        @app.get("/icon.svg", include_in_schema=False)
+        async def icon_svg_route():
+            from fastapi.responses import FileResponse
+            return FileResponse(icon_svg, media_type="image/svg+xml")
+
 
 def _pct(value: float) -> int:
     try:

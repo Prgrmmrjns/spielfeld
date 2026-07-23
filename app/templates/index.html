@@ -5,8 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Spielfeld — Bundesliga Matchday Predictions</title>
   <meta name="description" content="TabPFN-powered probability tips for the next Bundesliga Spieltag." />
-  <link rel="icon" href="/favicon.ico" />
-  <link rel="stylesheet" href="/css/main.css?v=preset1" />
+  <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+  <link rel="alternate icon" href="/favicon.ico" />
+  <link rel="apple-touch-icon" href="/icon.svg" />
+  <link rel="stylesheet" href="/css/main.css?v=icon1" />
 </head>
 <body>
   <div class="page">
@@ -19,7 +21,10 @@
     <div class="wrap">
       <header class="site-header">
         <div class="brand-lockup">
-          <a class="brand" href="/">SPIELFELD</a>
+          <a class="brand" href="/">
+            <img class="brand-mark" src="/icon.svg" width="28" height="28" alt="" />
+            <span>SPIELFELD</span>
+          </a>
           <p class="eyebrow">{{ payload.matchday_name or "Next Spieltag" }} · {{ payload.season }}</p>
         </div>
         <nav class="site-nav">
@@ -31,7 +36,10 @@
       <main>
         <section class="hero">
           <div class="hero-copy-block animate-rise">
-            <h1>SPIELFELD</h1>
+            <h1>
+              <img class="hero-mark" src="/icon.svg" width="44" height="44" alt="" />
+              SPIELFELD
+            </h1>
             <p class="hero-copy">
               Next-matchday tips with live XIs, pitch boards, and a ShapIQ lab for lineup what-ifs.
             </p>
