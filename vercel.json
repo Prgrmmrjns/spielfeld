@@ -3,8 +3,12 @@
   "builds": [
     { "src": "app/main.py", "use": "@vercel/python" }
   ],
+  "functions": {
+    "app/main.py": {
+      "includeFiles": "public/**"
+    }
+  },
   "routes": [
-    { "handle": "filesystem" },
     { "src": "/(.*)", "dest": "app/main.py" }
   ],
   "crons": [
