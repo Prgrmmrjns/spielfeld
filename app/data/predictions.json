@@ -3,8 +3,8 @@
   "season": "2026/2027",
   "matchday": 1,
   "matchday_name": "1. Spieltag",
-  "generated_at": "2026-07-22T16:57:06.849840+00:00",
-  "model": "HistGradientBoosting",
+  "generated_at": "2026-07-23T08:30:43.153601+00:00",
+  "model": "TabPFN",
   "train_matches": 2142,
   "lineups_provider": "footballsquads/wikipedia",
   "uses_player_xi": true,
@@ -23,9 +23,9 @@
       "home_icon": "https://upload.wikimedia.org/wikipedia/commons/1/1f/Logo_FC_Bayern_M%C3%BCnchen_%282002%E2%80%932017%29.svg",
       "away_icon": "https://i.imgur.com/v0tkpNx.png",
       "predicted": "home_win",
-      "p_home_win": 0.6270513962140482,
-      "p_draw": 0.24748465625239516,
-      "p_away_win": 0.12546394753355652,
+      "p_home_win": 0.7713199257850647,
+      "p_draw": 0.15136276185512543,
+      "p_away_win": 0.07731729745864868,
       "features": {
         "elo_diff": 313.6480085214623,
         "home_elo": 1968.0010394554208,
@@ -78,7 +78,7 @@
         "midfield_battle": 0.927999999999999,
         "att_vs_def": -1.6511999999999993,
         "def_vs_att": 5.248399999999998,
-        "bench_gap": 1.7380000000000067
+        "bench_gap": 1.738000000000003
       },
       "lineups": {
         "home": {
@@ -672,731 +672,106 @@
           "page": "https://www.footballsquads.co.uk/ger/2025-2026/bundes/stuttg.htm"
         }
       },
+      "xi_sensitivity": {
+        "delta": 3.0,
+        "home_strength": {
+          "p_home_win": 0.004509866237640381,
+          "p_draw": -0.0029617398977279663,
+          "p_away_win": -0.001548081636428833
+        },
+        "away_strength": {
+          "p_home_win": -0.009744584560394287,
+          "p_draw": 0.004843905568122864,
+          "p_away_win": 0.004900708794593811
+        }
+      },
       "explanation": {
         "plot": "/explanations/83156.png",
-        "method": "ShapIQ waterfall",
+        "method": "ShapIQ SV waterfall",
         "class": "home_win",
-        "baseline": 0.4615661869129067,
+        "baseline": 0.433178186416626,
         "top_features": [
           {
             "feature": "value_diff",
             "label": "Squad value gap",
-            "shap": 0.07335312635825288
-          },
-          {
-            "feature": "away_played",
-            "label": "Away matches played",
-            "shap": -0.03500135181200621
-          },
-          {
-            "feature": "away_elo",
-            "label": "Away ELO",
-            "shap": 0.03468220788041909
+            "shap": 0.13905805171852376
           },
           {
             "feature": "elo_diff",
             "label": "ELO gap",
-            "shap": 0.031600504274499966
+            "shap": 0.07592083863546116
           },
           {
-            "feature": "home_played",
-            "label": "Home matches played",
-            "shap": 0.021709712967407903
+            "feature": "away_played",
+            "label": "Away matches played",
+            "shap": -0.03413275386816754
+          },
+          {
+            "feature": "gd10_diff",
+            "label": "Goal diff (10) gap",
+            "shap": 0.029213694145259296
+          },
+          {
+            "feature": "away_form5",
+            "label": "Away form (5)",
+            "shap": 0.02610849723750816
+          },
+          {
+            "feature": "home_elo",
+            "label": "Home ELO",
+            "shap": 0.025814945954824597
           },
           {
             "feature": "def_vs_att",
             "label": "Home defence vs away attack",
-            "shap": 0.019878270590439708
+            "shap": 0.021880683412189544
           },
           {
-            "feature": "home_elo",
-            "label": "Home ELO",
-            "shap": -0.018481961331534832
+            "feature": "h2h_draw_rate",
+            "label": "H2H draw rate",
+            "shap": -0.02011918557441592
           },
           {
-            "feature": "h2h_gd",
-            "label": "H2H goal diff",
-            "shap": -0.015150124653035578
-          }
-        ]
-      },
-      "xi_sensitivity": {
-        "delta": 3.0,
-        "home_strength": {
-          "p_home_win": 0.018643477031800915,
-          "p_draw": 0.010650220768304713,
-          "p_away_win": -0.029293697800105337
-        },
-        "away_strength": {
-          "p_home_win": -0.0006041840728953085,
-          "p_draw": -0.004472769486740497,
-          "p_away_win": 0.005076953559635999
-        }
-      }
-    },
-    {
-      "match_id": 83164,
-      "date": "2026-08-29T13:30:00",
-      "home_team": "SV 07 Elversberg",
-      "away_team": "Bayer 04 Leverkusen",
-      "home_short": "Elversberg",
-      "away_short": "Leverkusen",
-      "home_icon": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/SV_Elversberg_Logo.svg/500px-SV_Elversberg_Logo.svg.png",
-      "away_icon": "https://www.bundesliga-reisefuehrer.de/sites/default/files/B04_Standard_Logo_RGB.png",
-      "predicted": "away_win",
-      "p_home_win": 0.16883244549571738,
-      "p_draw": 0.20624927186949008,
-      "p_away_win": 0.6249182826347927,
-      "features": {
-        "elo_diff": -121.36378587022682,
-        "home_elo": 1500.0,
-        "away_elo": 1686.3637858702268,
-        "value_diff": -580.0,
-        "home_squad_value": 40.0,
-        "away_squad_value": 620.0,
-        "form5_diff": -0.09999999999999987,
-        "form10_diff": -0.30000000000000004,
-        "home_form5": 1.3,
-        "away_form5": 1.4,
-        "home_winrate": 0.33,
-        "away_winrate": 0.4,
-        "home_gf5": 1.0,
-        "away_gf5": 1.8,
-        "home_ga5": 1.0,
-        "away_ga5": 1.6,
-        "gd10_diff": -0.5,
-        "home_streak": 0.0,
-        "away_streak": 1.0,
-        "home_rest": 30.0,
-        "away_rest": 90.0,
-        "home_played": 0.0,
-        "away_played": 238.0,
-        "h2h_n": 0.0,
-        "h2h_home_winrate": 0.5,
-        "h2h_draw_rate": 0.25,
-        "h2h_gd": 0.0,
-        "home_xi_strength": 25.98,
-        "away_xi_strength": 27.416,
-        "xi_strength_diff": -1.436,
-        "home_xi_confirmed": 0.0,
-        "away_xi_confirmed": 0.0,
-        "home_gk": 2.35,
-        "away_gk": 2.326,
-        "home_def": 9.372,
-        "away_def": 9.264,
-        "home_mid": 11.878,
-        "away_mid": 12.475999999999999,
-        "home_fwd": 2.38,
-        "away_fwd": 3.35,
-        "home_attack": 7.7251,
-        "away_attack": 8.9642,
-        "home_defense": 11.017,
-        "away_defense": 10.892199999999999,
-        "home_star": 2.402,
-        "away_star": 3.35,
-        "star_gap": -0.948,
-        "gk_gap": 0.02400000000000002,
-        "midfield_battle": -0.597999999999999,
-        "att_vs_def": -3.1670999999999987,
-        "def_vs_att": 2.0527999999999995,
-        "bench_gap": -0.13800000000000345
-      },
-      "lineups": {
-        "home": {
-          "source": "squad_2026",
-          "formation": "4-2-3-1",
-          "players": [
-            {
-              "id": 745025403,
-              "name": "Frank Lehmann",
-              "number": 1,
-              "pos": "G",
-              "grid": null,
-              "strength": 2.35
-            },
-            {
-              "id": 171919479,
-              "name": "Nicholas Mickelson",
-              "number": 2,
-              "pos": "D",
-              "grid": null,
-              "strength": 2.388
-            },
-            {
-              "id": 662909933,
-              "name": "Florian Le Joncour",
-              "number": 3,
-              "pos": "D",
-              "grid": null,
-              "strength": 2.376
-            },
-            {
-              "id": 952461959,
-              "name": "Luis Seifert",
-              "number": 4,
-              "pos": "D",
-              "grid": null,
-              "strength": 2.364
-            },
-            {
-              "id": 115132486,
-              "name": "Lukas Pinckert",
-              "number": 19,
-              "pos": "D",
-              "grid": null,
-              "strength": 2.244
-            },
-            {
-              "id": 596621406,
-              "name": "Amara Condé",
-              "number": 6,
-              "pos": "M",
-              "grid": null,
-              "strength": 2.402
-            },
-            {
-              "id": 288439974,
-              "name": "Maurice Krattenmacher",
-              "number": 7,
-              "pos": "M",
-              "grid": null,
-              "strength": 2.39
-            },
-            {
-              "id": 225127553,
-              "name": "Łukasz Poręba",
-              "number": 8,
-              "pos": "M",
-              "grid": null,
-              "strength": 2.378
-            },
-            {
-              "id": 726705064,
-              "name": "Jason Ceka",
-              "number": 11,
-              "pos": "M",
-              "grid": null,
-              "strength": 2.366
-            },
-            {
-              "id": 478252551,
-              "name": "Raif Adam",
-              "number": 15,
-              "pos": "M",
-              "grid": null,
-              "strength": 2.342
-            },
-            {
-              "id": 96648175,
-              "name": "Luca Pfeiffer",
-              "number": 16,
-              "pos": "F",
-              "grid": null,
-              "strength": 2.38
-            }
-          ],
-          "pool": [
-            {
-              "id": 175305495,
-              "name": "Mohammad Mahmoud",
-              "number": 18,
-              "pos": "F",
-              "grid": null,
-              "strength": 2.356
-            },
-            {
-              "id": 845508112,
-              "name": "Frederik Schmahl",
-              "number": 17,
-              "pos": "M",
-              "grid": null,
-              "strength": 2.318
-            },
-            {
-              "id": 893773098,
-              "name": "Luca Schnellbacher",
-              "number": 24,
-              "pos": "F",
-              "grid": null,
-              "strength": 2.296
-            },
-            {
-              "id": 280911873,
-              "name": "Carlo Sickinger",
-              "number": 23,
-              "pos": "M",
-              "grid": null,
-              "strength": 2.258
-            },
-            {
-              "id": 249844602,
-              "name": "Elias Etringer",
-              "number": 12,
-              "pos": "G",
-              "grid": null,
-              "strength": 2.254
-            },
-            {
-              "id": 503656028,
-              "name": "Lukas Petkov",
-              "number": 25,
-              "pos": "M",
-              "grid": null,
-              "strength": 2.234
-            },
-            {
-              "id": 627348588,
-              "name": "Filimon Gerezgiher",
-              "number": 27,
-              "pos": "M",
-              "grid": null,
-              "strength": 2.222
-            },
-            {
-              "id": 239974570,
-              "name": "Lasse Günther",
-              "number": 21,
-              "pos": "D",
-              "grid": null,
-              "strength": 2.22
-            },
-            {
-              "id": 263721661,
-              "name": "David Mokwa",
-              "number": 42,
-              "pos": "F",
-              "grid": null,
-              "strength": 2.212
-            },
-            {
-              "id": 658350563,
-              "name": "Tom Zimmerschied",
-              "number": 29,
-              "pos": "M",
-              "grid": null,
-              "strength": 2.198
-            },
-            {
-              "id": 488868476,
-              "name": "Nicolas Kristof",
-              "number": 20,
-              "pos": "G",
-              "grid": null,
-              "strength": 2.182
-            },
-            {
-              "id": 481857871,
-              "name": "Jan Gyamerah",
-              "number": 30,
-              "pos": "D",
-              "grid": null,
-              "strength": 2.136
-            },
-            {
-              "id": 380158502,
-              "name": "Maximilian Rohr",
-              "number": 31,
-              "pos": "D",
-              "grid": null,
-              "strength": 2.124
-            },
-            {
-              "id": 593723249,
-              "name": "Tim Boss",
-              "number": 28,
-              "pos": "G",
-              "grid": null,
-              "strength": 2.11
-            },
-            {
-              "id": 56763352,
-              "name": "Felix Keidel",
-              "number": 43,
-              "pos": "D",
-              "grid": null,
-              "strength": 2.1
-            }
-          ],
-          "strength": 25.98,
-          "season": "2026–27",
-          "page": "https://www.footballsquads.co.uk/ger/2026-2027/bundes/elversberg.htm"
-        },
-        "away": {
-          "source": "squad_2026",
-          "formation": "4-2-3-1",
-          "players": [
-            {
-              "id": 566815978,
-              "name": "Mark Flekken",
-              "number": 1,
-              "pos": "G",
-              "grid": null,
-              "strength": 2.326
-            },
-            {
-              "id": 254105768,
-              "name": "Jarell Quansah",
-              "number": 4,
-              "pos": "D",
-              "grid": null,
-              "strength": 2.364
-            },
-            {
-              "id": 956923114,
-              "name": "Loïc Badé",
-              "number": 5,
-              "pos": "D",
-              "grid": null,
-              "strength": 2.352
-            },
-            {
-              "id": 573297818,
-              "name": "Edmond Tapsoba",
-              "number": 12,
-              "pos": "D",
-              "grid": null,
-              "strength": 2.28
-            },
-            {
-              "id": 84104369,
-              "name": "Arthur",
-              "number": 13,
-              "pos": "D",
-              "grid": null,
-              "strength": 2.268
-            },
-            {
-              "id": 836260633,
-              "name": "Exequiel Palacios",
-              "number": 25,
-              "pos": "M",
-              "grid": null,
-              "strength": 2.988
-            },
-            {
-              "id": 937912519,
-              "name": "Ezequiel Fernández",
-              "number": 6,
-              "pos": "M",
-              "grid": null,
-              "strength": 2.39
-            },
-            {
-              "id": 675055799,
-              "name": "Jonas Hofmann",
-              "number": 7,
-              "pos": "M",
-              "grid": null,
-              "strength": 2.378
-            },
-            {
-              "id": 699278847,
-              "name": "Robert Andrich",
-              "number": 8,
-              "pos": "M",
-              "grid": null,
-              "strength": 2.366
-            },
-            {
-              "id": 809293519,
-              "name": "Malik Tillman",
-              "number": 10,
-              "pos": "M",
-              "grid": null,
-              "strength": 2.354
-            },
-            {
-              "id": 392408874,
-              "name": "Victor Boniface",
-              "number": 22,
-              "pos": "F",
-              "grid": null,
-              "strength": 3.35
-            }
-          ],
-          "pool": [
-            {
-              "id": 607245339,
-              "name": "Martin Terrier",
-              "number": 11,
-              "pos": "F",
-              "grid": null,
-              "strength": 2.392
-            },
-            {
-              "id": 615916469,
-              "name": "Patrik Schick",
-              "number": 14,
-              "pos": "F",
-              "grid": null,
-              "strength": 2.356
-            },
-            {
-              "id": 915264597,
-              "name": "Ernest Poku",
-              "number": 19,
-              "pos": "F",
-              "grid": null,
-              "strength": 2.308
-            },
-            {
-              "id": 236314821,
-              "name": "Nathan Tella",
-              "number": 23,
-              "pos": "F",
-              "grid": null,
-              "strength": 2.272
-            },
-            {
-              "id": 124318577,
-              "name": "Eliesse Ben Seghir",
-              "number": 17,
-              "pos": "M",
-              "grid": null,
-              "strength": 2.27
-            },
-            {
-              "id": 846493689,
-              "name": "Tim Oermann",
-              "number": 15,
-              "pos": "D",
-              "grid": null,
-              "strength": 2.244
-            },
-            {
-              "id": 513705204,
-              "name": "Lucas Vázquez",
-              "number": 21,
-              "pos": "M",
-              "grid": null,
-              "strength": 2.234
-            },
-            {
-              "id": 138650794,
-              "name": "Axel Tape",
-              "number": 16,
-              "pos": "D",
-              "grid": null,
-              "strength": 2.232
-            },
-            {
-              "id": 795550044,
-              "name": "Christian Kofane",
-              "number": 35,
-              "pos": "F",
-              "grid": null,
-              "strength": 2.224
-            },
-            {
-              "id": 722694130,
-              "name": "Aleix García",
-              "number": 24,
-              "pos": "M",
-              "grid": null,
-              "strength": 2.21
-            },
-            {
-              "id": 109978212,
-              "name": "Jeremiah Mensah",
-              "number": 27,
-              "pos": "M",
-              "grid": null,
-              "strength": 2.198
-            },
-            {
-              "id": 908508730,
-              "name": "Alex Grimaldo",
-              "number": 20,
-              "pos": "D",
-              "grid": null,
-              "strength": 2.196
-            },
-            {
-              "id": 326035755,
-              "name": "Ibrahim Maza",
-              "number": 30,
-              "pos": "M",
-              "grid": null,
-              "strength": 2.186
-            },
-            {
-              "id": 954760413,
-              "name": "Montrell Culbreath",
-              "number": 42,
-              "pos": "F",
-              "grid": null,
-              "strength": 2.176
-            },
-            {
-              "id": 394891210,
-              "name": "Emmanuel Chigozie Owen",
-              "number": 47,
-              "pos": "F",
-              "grid": null,
-              "strength": 2.128
-            },
-            {
-              "id": 249726952,
-              "name": "Farid Alfa-Ruprecht",
-              "number": 17,
-              "pos": "F",
-              "grid": null,
-              "strength": 2.104
-            },
-            {
-              "id": 324898373,
-              "name": "Naba Mensah",
-              "number": 45,
-              "pos": "M",
-              "grid": null,
-              "strength": 2.102
-            },
-            {
-              "id": 119706997,
-              "name": "Issa Traoré",
-              "number": 41,
-              "pos": "D",
-              "grid": null,
-              "strength": 2.088
-            },
-            {
-              "id": 89391760,
-              "name": "Alejo Sarco",
-              "number": 18,
-              "pos": "F",
-              "grid": null,
-              "strength": 2.08
-            },
-            {
-              "id": 114373993,
-              "name": "Ken Izekor",
-              "number": 38,
-              "pos": "F",
-              "grid": null,
-              "strength": 2.068
-            },
-            {
-              "id": 585013429,
-              "name": "Ben Hawighorst",
-              "number": 43,
-              "pos": "D",
-              "grid": null,
-              "strength": 2.064
-            },
-            {
-              "id": 327637925,
-              "name": "Niklas Lomb",
-              "number": 36,
-              "pos": "G",
-              "grid": null,
-              "strength": 2.062
-            },
-            {
-              "id": 66096742,
-              "name": "Jesper Schlich",
-              "number": 40,
-              "pos": "G",
-              "grid": null,
-              "strength": 2.05
-            },
-            {
-              "id": 26516665,
-              "name": "Ferdinand Pohl",
-              "number": 46,
-              "pos": "D",
-              "grid": null,
-              "strength": 2.04
-            },
-            {
-              "id": 461370214,
-              "name": "Piero Hincapié",
-              "number": 3,
-              "pos": "D",
-              "grid": null,
-              "strength": 2.016
-            },
-            {
-              "id": 365359224,
-              "name": "Andrea Natali",
-              "number": 26,
-              "pos": "D",
-              "grid": null,
-              "strength": 1.992
-            },
-            {
-              "id": 424087411,
-              "name": "Jeanuël Belocian",
-              "number": 44,
-              "pos": "D",
-              "grid": null,
-              "strength": 1.956
-            }
-          ],
-          "strength": 27.416,
-          "season": "2025–26",
-          "page": "https://www.footballsquads.co.uk/ger/2025-2026/bundes/bayerlev.htm"
-        }
-      },
-      "explanation": {
-        "plot": "/explanations/83164.png",
-        "method": "ShapIQ waterfall",
-        "class": "away_win",
-        "baseline": 0.29306981093406,
-        "top_features": [
-          {
-            "feature": "away_played",
-            "label": "Away matches played",
-            "shap": 0.07251496542920144
+            "feature": "xi_strength_diff",
+            "label": "XI strength gap",
+            "shap": 0.019175403733951556
           },
           {
-            "feature": "home_played",
-            "label": "Home matches played",
-            "shap": 0.045919957856714155
+            "feature": "away_rest",
+            "label": "Away rest days",
+            "shap": -0.018643541569500016
           },
           {
-            "feature": "value_diff",
-            "label": "Squad value gap",
-            "shap": 0.042096923311929935
+            "feature": "home_xi_confirmed",
+            "label": "Home XI confirmed",
+            "shap": -0.016751972308438008
           },
           {
-            "feature": "elo_diff",
-            "label": "ELO gap",
-            "shap": 0.03556142149455048
+            "feature": "form10_diff",
+            "label": "Form (10) gap",
+            "shap": 0.01674204050259528
           },
           {
-            "feature": "star_gap",
-            "label": "Star player gap",
-            "shap": 0.02593085808955587
+            "feature": "away_attack",
+            "label": "Away attack unit",
+            "shap": 0.016320717703037644
+          },
+          {
+            "feature": "home_gk",
+            "label": "Home goalkeeper",
+            "shap": 0.015987115327763375
+          },
+          {
+            "feature": "att_vs_def",
+            "label": "Home attack vs away defence",
+            "shap": 0.01595325105309921
           },
           {
             "feature": "home_rest",
             "label": "Home rest days",
-            "shap": 0.020580553180264687
-          },
-          {
-            "feature": "home_elo",
-            "label": "Home ELO",
-            "shap": 0.01669882747846959
-          },
-          {
-            "feature": "home_squad_value",
-            "label": "Home squad value",
-            "shap": 0.011750581464137856
+            "shap": -0.015580051292574459
           }
         ]
-      },
-      "xi_sensitivity": {
-        "delta": 3.0,
-        "home_strength": {
-          "p_home_win": 0.0,
-          "p_draw": 0.0,
-          "p_away_win": 0.0
-        },
-        "away_strength": {
-          "p_home_win": -0.0007931238771019533,
-          "p_draw": 0.00021945135899822943,
-          "p_away_win": 0.0005736725181036961
-        }
       }
     },
     {
@@ -1409,9 +784,9 @@
       "home_icon": "https://i.imgur.com/Rpwsjz1.png",
       "away_icon": "https://i.imgur.com/KSIk0Eu.png",
       "predicted": "home_win",
-      "p_home_win": 0.5605318632292553,
-      "p_draw": 0.2430594579343772,
-      "p_away_win": 0.1964086788363675,
+      "p_home_win": 0.6369742155075073,
+      "p_draw": 0.22062698006629944,
+      "p_away_win": 0.14239880442619324,
       "features": {
         "elo_diff": 172.21222476274602,
         "home_elo": 1657.784206703892,
@@ -1970,66 +1345,106 @@
           "page": "https://www.footballsquads.co.uk/ger/2026-2027/bundes/monchen.htm"
         }
       },
+      "xi_sensitivity": {
+        "delta": 3.0,
+        "home_strength": {
+          "p_home_win": 0.015731096267700195,
+          "p_draw": -0.00785854458808899,
+          "p_away_win": -0.00787249207496643
+        },
+        "away_strength": {
+          "p_home_win": -0.024797916412353516,
+          "p_draw": 0.008002996444702148,
+          "p_away_win": 0.01679496467113495
+        }
+      },
       "explanation": {
         "plot": "/explanations/83158.png",
-        "method": "ShapIQ waterfall",
+        "method": "ShapIQ SV waterfall",
         "class": "home_win",
-        "baseline": 0.4615661869129067,
+        "baseline": 0.433178186416626,
         "top_features": [
           {
             "feature": "value_diff",
             "label": "Squad value gap",
-            "shap": 0.06438817565409743
-          },
-          {
-            "feature": "away_played",
-            "label": "Away matches played",
-            "shap": -0.050167799064668485
+            "shap": 0.07482607830564114
           },
           {
             "feature": "home_played",
             "label": "Home matches played",
-            "shap": 0.03081656617769884
+            "shap": 0.026254985385471205
           },
           {
-            "feature": "home_winrate",
-            "label": "Home win rate",
-            "shap": 0.014055333679168398
+            "feature": "away_played",
+            "label": "Away matches played",
+            "shap": -0.023066537442346158
           },
           {
-            "feature": "star_gap",
-            "label": "Star player gap",
-            "shap": -0.013577096021968924
+            "feature": "home_elo",
+            "label": "Home ELO",
+            "shap": 0.01793137830111255
           },
           {
-            "feature": "away_ga5",
-            "label": "Away goals against (5)",
-            "shap": 0.010376091665639943
+            "feature": "form10_diff",
+            "label": "Form (10) gap",
+            "shap": 0.014839470238099993
+          },
+          {
+            "feature": "away_squad_value",
+            "label": "Away squad value",
+            "shap": 0.014721025463965164
+          },
+          {
+            "feature": "home_squad_value",
+            "label": "Home squad value",
+            "shap": 0.011996341493635538
+          },
+          {
+            "feature": "home_xi_strength",
+            "label": "Home XI strength",
+            "shap": 0.011317199976259034
+          },
+          {
+            "feature": "def_vs_att",
+            "label": "Home defence vs away attack",
+            "shap": 0.01104508345679648
+          },
+          {
+            "feature": "gd10_diff",
+            "label": "Goal diff (10) gap",
+            "shap": 0.010937925726639942
+          },
+          {
+            "feature": "elo_diff",
+            "label": "ELO gap",
+            "shap": 0.01044194428593098
+          },
+          {
+            "feature": "away_xi_confirmed",
+            "label": "Away XI confirmed",
+            "shap": 0.010156737977813024
           },
           {
             "feature": "h2h_gd",
             "label": "H2H goal diff",
-            "shap": 0.010109118721093109
+            "shap": -0.009111581017365882
           },
           {
-            "feature": "away_gf5",
-            "label": "Away goals for (5)",
-            "shap": 0.009254035656937484
+            "feature": "form5_diff",
+            "label": "Form (5) gap",
+            "shap": 0.009030481857799916
+          },
+          {
+            "feature": "away_xi_strength",
+            "label": "Away XI strength",
+            "shap": 0.008718925875899775
+          },
+          {
+            "feature": "home_defense",
+            "label": "Home defensive unit",
+            "shap": -0.008524631730989423
           }
         ]
-      },
-      "xi_sensitivity": {
-        "delta": 3.0,
-        "home_strength": {
-          "p_home_win": 0.030576091551890117,
-          "p_draw": 0.01639434491333422,
-          "p_away_win": -0.04697043646522431
-        },
-        "away_strength": {
-          "p_home_win": 0.00611903444689732,
-          "p_draw": -0.0033287590029729697,
-          "p_away_win": -0.0027902754439243227
-        }
       }
     },
     {
@@ -2042,9 +1457,9 @@
       "home_icon": "https://upload.wikimedia.org/wikipedia/commons/9/9e/Logo_Mainz_05.svg",
       "away_icon": "https://upload.wikimedia.org/wikipedia/commons/e/e3/SC_Paderborn_07_Logo.svg",
       "predicted": "home_win",
-      "p_home_win": 0.5376623453639676,
-      "p_draw": 0.40611377214901184,
-      "p_away_win": 0.05622388248702039,
+      "p_home_win": 0.6221415996551514,
+      "p_draw": 0.22714905440807343,
+      "p_away_win": 0.150709331035614,
       "features": {
         "elo_diff": 401.4771215551675,
         "home_elo": 1598.8094739262697,
@@ -2097,7 +1512,7 @@
         "midfield_battle": 0.07200000000000273,
         "att_vs_def": -3.252899999999997,
         "def_vs_att": 3.1292999999999997,
-        "bench_gap": 0.18200000000000216
+        "bench_gap": 0.1819999999999986
       },
       "lineups": {
         "home": {
@@ -2603,66 +2018,106 @@
           "page": "https://www.footballsquads.co.uk/ger/2026-2027/bundes/paderbo.htm"
         }
       },
+      "xi_sensitivity": {
+        "delta": 3.0,
+        "home_strength": {
+          "p_home_win": 0.028005480766296387,
+          "p_draw": -0.01358194649219513,
+          "p_away_win": -0.01442350447177887
+        },
+        "away_strength": {
+          "p_home_win": -0.008269786834716797,
+          "p_draw": 0.0011909455060958862,
+          "p_away_win": 0.007078841328620911
+        }
+      },
       "explanation": {
         "plot": "/explanations/83161.png",
-        "method": "ShapIQ waterfall",
+        "method": "ShapIQ SV waterfall",
         "class": "home_win",
-        "baseline": 0.4615661869129067,
+        "baseline": 0.433178186416626,
         "top_features": [
           {
             "feature": "elo_diff",
             "label": "ELO gap",
-            "shap": 0.07838702502668919
+            "shap": 0.043559029766942245
           },
           {
-            "feature": "away_form5",
-            "label": "Away form (5)",
-            "shap": 0.018138149515219006
+            "feature": "value_diff",
+            "label": "Squad value gap",
+            "shap": 0.03006479220033884
           },
           {
-            "feature": "away_elo",
-            "label": "Away ELO",
-            "shap": 0.01607496209680278
+            "feature": "gd10_diff",
+            "label": "Goal diff (10) gap",
+            "shap": 0.02194097212879787
           },
           {
-            "feature": "home_winrate",
-            "label": "Home win rate",
-            "shap": -0.01573542483920657
-          },
-          {
-            "feature": "away_rest",
-            "label": "Away rest days",
-            "shap": 0.015432383343282847
+            "feature": "form10_diff",
+            "label": "Form (10) gap",
+            "shap": 0.0203466829755467
           },
           {
             "feature": "away_squad_value",
             "label": "Away squad value",
-            "shap": 0.014938774960688399
+            "shap": 0.01730184342697805
           },
           {
-            "feature": "home_mid",
-            "label": "Home midfield",
-            "shap": -0.013220364397348368
+            "feature": "home_played",
+            "label": "Home matches played",
+            "shap": 0.01656742788274008
           },
           {
-            "feature": "away_played",
-            "label": "Away matches played",
-            "shap": 0.012914956182234164
+            "feature": "home_elo",
+            "label": "Home ELO",
+            "shap": 0.013095678792603966
+          },
+          {
+            "feature": "att_vs_def",
+            "label": "Home attack vs away defence",
+            "shap": -0.012261175247141012
+          },
+          {
+            "feature": "home_fwd",
+            "label": "Home forwards",
+            "shap": -0.01122395598404571
+          },
+          {
+            "feature": "h2h_n",
+            "label": "H2H meetings",
+            "shap": 0.010596003128226133
+          },
+          {
+            "feature": "def_vs_att",
+            "label": "Home defence vs away attack",
+            "shap": 0.008867084735804054
+          },
+          {
+            "feature": "h2h_home_winrate",
+            "label": "H2H home win rate",
+            "shap": 0.008552292929878984
+          },
+          {
+            "feature": "star_gap",
+            "label": "Star player gap",
+            "shap": 0.008088112317415304
+          },
+          {
+            "feature": "away_elo",
+            "label": "Away ELO",
+            "shap": 0.0077297077686185765
+          },
+          {
+            "feature": "away_gf5",
+            "label": "Away goals for (5)",
+            "shap": 0.007681925152698793
+          },
+          {
+            "feature": "home_squad_value",
+            "label": "Home squad value",
+            "shap": -0.0076652294354740335
           }
         ]
-      },
-      "xi_sensitivity": {
-        "delta": 3.0,
-        "home_strength": {
-          "p_home_win": 0.0,
-          "p_draw": 0.0,
-          "p_away_win": 0.0
-        },
-        "away_strength": {
-          "p_home_win": 0.042891989905314176,
-          "p_draw": -0.07027620246689803,
-          "p_away_win": 0.027384212561584
-        }
       }
     },
     {
@@ -2675,9 +2130,9 @@
       "home_icon": "https://assets.dfb.de/uploads/000/018/232/small_union-Berlin.jpg",
       "away_icon": "https://i.imgur.com/X8NFkOb.png",
       "predicted": "away_win",
-      "p_home_win": 0.3570743727681416,
-      "p_draw": 0.26826169903444025,
-      "p_away_win": 0.3746639281974182,
+      "p_home_win": 0.3564881682395935,
+      "p_draw": 0.2742118239402771,
+      "p_away_win": 0.3693000078201294,
       "features": {
         "elo_diff": 15.278762324372565,
         "home_elo": 1480.6939822394575,
@@ -3308,66 +2763,106 @@
           "page": "https://www.footballsquads.co.uk/ger/2025-2026/bundes/einfrank.htm"
         }
       },
+      "xi_sensitivity": {
+        "delta": 3.0,
+        "home_strength": {
+          "p_home_win": 0.020634472370147705,
+          "p_draw": -0.001887887716293335,
+          "p_away_win": -0.01874658465385437
+        },
+        "away_strength": {
+          "p_home_win": -0.011794090270996094,
+          "p_draw": -0.0025599896907806396,
+          "p_away_win": 0.014354109764099121
+        }
+      },
       "explanation": {
         "plot": "/explanations/83162.png",
-        "method": "ShapIQ waterfall",
+        "method": "ShapIQ SV waterfall",
         "class": "away_win",
-        "baseline": 0.29306981093406,
+        "baseline": 0.29744166135787964,
         "top_features": [
+          {
+            "feature": "value_diff",
+            "label": "Squad value gap",
+            "shap": 0.06873167779655533
+          },
           {
             "feature": "away_played",
             "label": "Away matches played",
-            "shap": 0.060426872590311716
+            "shap": 0.01497411646354676
           },
           {
             "feature": "home_played",
             "label": "Home matches played",
-            "shap": -0.04579589536095329
+            "shap": -0.014038606652950222
           },
           {
             "feature": "elo_diff",
             "label": "ELO gap",
-            "shap": 0.021742625998526485
+            "shap": 0.011085293381853873
+          },
+          {
+            "feature": "away_xi_strength",
+            "label": "Away XI strength",
+            "shap": -0.010762583870040773
+          },
+          {
+            "feature": "home_elo",
+            "label": "Home ELO",
+            "shap": 0.00969418468659486
+          },
+          {
+            "feature": "h2h_n",
+            "label": "H2H meetings",
+            "shap": -0.008167738056390362
+          },
+          {
+            "feature": "home_squad_value",
+            "label": "Home squad value",
+            "shap": 0.007974667004335443
+          },
+          {
+            "feature": "gk_gap",
+            "label": "Goalkeeper gap",
+            "shap": -0.007034850943462454
+          },
+          {
+            "feature": "away_gf5",
+            "label": "Away goals for (5)",
+            "shap": -0.006955456125135975
           },
           {
             "feature": "home_rest",
             "label": "Home rest days",
-            "shap": 0.018844840747517744
+            "shap": -0.006938980630753791
           },
           {
-            "feature": "value_diff",
-            "label": "Squad value gap",
-            "shap": 0.01812442351187587
+            "feature": "away_attack",
+            "label": "Away attack unit",
+            "shap": -0.005954875192420521
           },
           {
-            "feature": "star_gap",
-            "label": "Star player gap",
-            "shap": 0.015036716834567913
+            "feature": "away_xi_confirmed",
+            "label": "Away XI confirmed",
+            "shap": 0.005931292893705602
           },
           {
-            "feature": "home_xi_strength",
-            "label": "Home XI strength",
-            "shap": -0.013096419795946848
+            "feature": "att_vs_def",
+            "label": "Home attack vs away defence",
+            "shap": 0.005672633903455717
           },
           {
-            "feature": "form5_diff",
-            "label": "Form (5) gap",
-            "shap": 0.012916586776325685
+            "feature": "away_streak",
+            "label": "Away streak",
+            "shap": 0.005464895974600451
+          },
+          {
+            "feature": "xi_strength_diff",
+            "label": "XI strength gap",
+            "shap": 0.005094269154812207
           }
         ]
-      },
-      "xi_sensitivity": {
-        "delta": 3.0,
-        "home_strength": {
-          "p_home_win": 0.008534161161897924,
-          "p_draw": 0.004510696196516117,
-          "p_away_win": -0.013044857358414041
-        },
-        "away_strength": {
-          "p_home_win": 0.010866769641316942,
-          "p_draw": -0.005874112257736208,
-          "p_away_win": -0.00499265738358079
-        }
       }
     },
     {
@@ -3380,9 +2875,9 @@
       "home_icon": "https://upload.wikimedia.org/wikipedia/commons/0/01/1._FC_Koeln_Logo_2014%E2%80%93.svg",
       "away_icon": "https://i.imgur.com/gF0PfEl.png",
       "predicted": "away_win",
-      "p_home_win": 0.34093720954105605,
-      "p_draw": 0.23045799698470773,
-      "p_away_win": 0.4286047934742363,
+      "p_home_win": 0.3084423243999481,
+      "p_draw": 0.26721933484077454,
+      "p_away_win": 0.42433837056159973,
       "features": {
         "elo_diff": -133.28919756490723,
         "home_elo": 1410.802637771596,
@@ -3412,8 +2907,8 @@
         "h2h_draw_rate": 0.25,
         "h2h_gd": -1.0,
         "home_xi_strength": 25.908,
-        "away_xi_strength": 25.956,
-        "xi_strength_diff": -0.047999999999998266,
+        "away_xi_strength": 25.955999999999996,
+        "xi_strength_diff": -0.047999999999994714,
         "home_xi_confirmed": 0.0,
         "away_xi_confirmed": 0.0,
         "home_gk": 2.35,
@@ -3435,7 +2930,7 @@
         "midfield_battle": 0.02400000000000091,
         "att_vs_def": -3.311099999999998,
         "def_vs_att": 3.2498999999999993,
-        "bench_gap": -0.08400000000000318
+        "bench_gap": -0.08399999999999963
       },
       "lineups": {
         "home": {
@@ -3925,66 +3420,811 @@
           "page": "https://www.footballsquads.co.uk/ger/2026-2027/bundes/hoffen.htm"
         }
       },
+      "xi_sensitivity": {
+        "delta": 3.0,
+        "home_strength": {
+          "p_home_win": 0.02973535656929016,
+          "p_draw": 0.0011559128761291504,
+          "p_away_win": -0.030891329050064087
+        },
+        "away_strength": {
+          "p_home_win": -0.010803014039993286,
+          "p_draw": -0.0037397444248199463,
+          "p_away_win": 0.014542728662490845
+        }
+      },
       "explanation": {
         "plot": "/explanations/83163.png",
-        "method": "ShapIQ waterfall",
+        "method": "ShapIQ SV waterfall",
         "class": "away_win",
-        "baseline": 0.29306981093406,
+        "baseline": 0.29744166135787964,
         "top_features": [
           {
-            "feature": "away_played",
-            "label": "Away matches played",
-            "shap": 0.06190290100786016
+            "feature": "value_diff",
+            "label": "Squad value gap",
+            "shap": 0.046156331831363945
           },
           {
             "feature": "elo_diff",
             "label": "ELO gap",
-            "shap": 0.024965317057804762
+            "shap": 0.024494700785812982
           },
           {
-            "feature": "value_diff",
-            "label": "Squad value gap",
-            "shap": 0.022803302526138026
-          },
-          {
-            "feature": "home_played",
-            "label": "Home matches played",
-            "shap": 0.02137753069224598
-          },
-          {
-            "feature": "home_form5",
-            "label": "Home form (5)",
-            "shap": 0.010867996296128675
+            "feature": "away_played",
+            "label": "Away matches played",
+            "shap": 0.0197165254272535
           },
           {
             "feature": "home_elo",
             "label": "Home ELO",
-            "shap": -0.010370437795950621
+            "shap": 0.015850366301704714
           },
           {
-            "feature": "away_gf5",
-            "label": "Away goals for (5)",
-            "shap": -0.010025362419998143
+            "feature": "home_played",
+            "label": "Home matches played",
+            "shap": -0.015155597542332299
           },
           {
-            "feature": "home_winrate",
-            "label": "Home win rate",
-            "shap": 0.008719159577171343
+            "feature": "home_form5",
+            "label": "Home form (5)",
+            "shap": 0.014428027496937385
+          },
+          {
+            "feature": "home_squad_value",
+            "label": "Home squad value",
+            "shap": 0.012948450517682591
+          },
+          {
+            "feature": "home_attack",
+            "label": "Home attack unit",
+            "shap": 0.011578377266207501
+          },
+          {
+            "feature": "home_star",
+            "label": "Home top player",
+            "shap": 0.010254017150076638
+          },
+          {
+            "feature": "away_attack",
+            "label": "Away attack unit",
+            "shap": -0.009888298664657492
+          },
+          {
+            "feature": "form10_diff",
+            "label": "Form (10) gap",
+            "shap": 0.00982133817474153
+          },
+          {
+            "feature": "away_xi_strength",
+            "label": "Away XI strength",
+            "shap": -0.009389340054255664
+          },
+          {
+            "feature": "away_def",
+            "label": "Away defence line",
+            "shap": -0.007326722291314962
+          },
+          {
+            "feature": "h2h_gd",
+            "label": "H2H goal diff",
+            "shap": 0.007187996121692444
+          },
+          {
+            "feature": "att_vs_def",
+            "label": "Home attack vs away defence",
+            "shap": 0.0068776251421203945
+          },
+          {
+            "feature": "home_xi_strength",
+            "label": "Home XI strength",
+            "shap": -0.0068510539507544675
           }
         ]
+      }
+    },
+    {
+      "match_id": 83164,
+      "date": "2026-08-29T13:30:00",
+      "home_team": "SV 07 Elversberg",
+      "away_team": "Bayer 04 Leverkusen",
+      "home_short": "Elversberg",
+      "away_short": "Leverkusen",
+      "home_icon": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/SV_Elversberg_Logo.svg/500px-SV_Elversberg_Logo.svg.png",
+      "away_icon": "https://www.bundesliga-reisefuehrer.de/sites/default/files/B04_Standard_Logo_RGB.png",
+      "predicted": "away_win",
+      "p_home_win": 0.16472798585891724,
+      "p_draw": 0.20262722671031952,
+      "p_away_win": 0.632644772529602,
+      "features": {
+        "elo_diff": -121.36378587022682,
+        "home_elo": 1500.0,
+        "away_elo": 1686.3637858702268,
+        "value_diff": -580.0,
+        "home_squad_value": 40.0,
+        "away_squad_value": 620.0,
+        "form5_diff": -0.09999999999999987,
+        "form10_diff": -0.30000000000000004,
+        "home_form5": 1.3,
+        "away_form5": 1.4,
+        "home_winrate": 0.33,
+        "away_winrate": 0.4,
+        "home_gf5": 1.0,
+        "away_gf5": 1.8,
+        "home_ga5": 1.0,
+        "away_ga5": 1.6,
+        "gd10_diff": -0.5,
+        "home_streak": 0.0,
+        "away_streak": 1.0,
+        "home_rest": 30.0,
+        "away_rest": 90.0,
+        "home_played": 0.0,
+        "away_played": 238.0,
+        "h2h_n": 0.0,
+        "h2h_home_winrate": 0.5,
+        "h2h_draw_rate": 0.25,
+        "h2h_gd": 0.0,
+        "home_xi_strength": 25.98,
+        "away_xi_strength": 27.415999999999997,
+        "xi_strength_diff": -1.4359999999999964,
+        "home_xi_confirmed": 0.0,
+        "away_xi_confirmed": 0.0,
+        "home_gk": 2.35,
+        "away_gk": 2.326,
+        "home_def": 9.372,
+        "away_def": 9.264,
+        "home_mid": 11.878,
+        "away_mid": 12.475999999999999,
+        "home_fwd": 2.38,
+        "away_fwd": 3.35,
+        "home_attack": 7.7251,
+        "away_attack": 8.9642,
+        "home_defense": 11.017,
+        "away_defense": 10.892199999999999,
+        "home_star": 2.402,
+        "away_star": 3.35,
+        "star_gap": -0.948,
+        "gk_gap": 0.02400000000000002,
+        "midfield_battle": -0.597999999999999,
+        "att_vs_def": -3.1670999999999987,
+        "def_vs_att": 2.0527999999999995,
+        "bench_gap": -0.13800000000000168
+      },
+      "lineups": {
+        "home": {
+          "source": "squad_2026",
+          "formation": "4-2-3-1",
+          "players": [
+            {
+              "id": 745025403,
+              "name": "Frank Lehmann",
+              "number": 1,
+              "pos": "G",
+              "grid": null,
+              "strength": 2.35
+            },
+            {
+              "id": 171919479,
+              "name": "Nicholas Mickelson",
+              "number": 2,
+              "pos": "D",
+              "grid": null,
+              "strength": 2.388
+            },
+            {
+              "id": 662909933,
+              "name": "Florian Le Joncour",
+              "number": 3,
+              "pos": "D",
+              "grid": null,
+              "strength": 2.376
+            },
+            {
+              "id": 952461959,
+              "name": "Luis Seifert",
+              "number": 4,
+              "pos": "D",
+              "grid": null,
+              "strength": 2.364
+            },
+            {
+              "id": 115132486,
+              "name": "Lukas Pinckert",
+              "number": 19,
+              "pos": "D",
+              "grid": null,
+              "strength": 2.244
+            },
+            {
+              "id": 596621406,
+              "name": "Amara Condé",
+              "number": 6,
+              "pos": "M",
+              "grid": null,
+              "strength": 2.402
+            },
+            {
+              "id": 288439974,
+              "name": "Maurice Krattenmacher",
+              "number": 7,
+              "pos": "M",
+              "grid": null,
+              "strength": 2.39
+            },
+            {
+              "id": 225127553,
+              "name": "Łukasz Poręba",
+              "number": 8,
+              "pos": "M",
+              "grid": null,
+              "strength": 2.378
+            },
+            {
+              "id": 726705064,
+              "name": "Jason Ceka",
+              "number": 11,
+              "pos": "M",
+              "grid": null,
+              "strength": 2.366
+            },
+            {
+              "id": 478252551,
+              "name": "Raif Adam",
+              "number": 15,
+              "pos": "M",
+              "grid": null,
+              "strength": 2.342
+            },
+            {
+              "id": 96648175,
+              "name": "Luca Pfeiffer",
+              "number": 16,
+              "pos": "F",
+              "grid": null,
+              "strength": 2.38
+            }
+          ],
+          "pool": [
+            {
+              "id": 175305495,
+              "name": "Mohammad Mahmoud",
+              "number": 18,
+              "pos": "F",
+              "grid": null,
+              "strength": 2.356
+            },
+            {
+              "id": 845508112,
+              "name": "Frederik Schmahl",
+              "number": 17,
+              "pos": "M",
+              "grid": null,
+              "strength": 2.318
+            },
+            {
+              "id": 893773098,
+              "name": "Luca Schnellbacher",
+              "number": 24,
+              "pos": "F",
+              "grid": null,
+              "strength": 2.296
+            },
+            {
+              "id": 280911873,
+              "name": "Carlo Sickinger",
+              "number": 23,
+              "pos": "M",
+              "grid": null,
+              "strength": 2.258
+            },
+            {
+              "id": 249844602,
+              "name": "Elias Etringer",
+              "number": 12,
+              "pos": "G",
+              "grid": null,
+              "strength": 2.254
+            },
+            {
+              "id": 503656028,
+              "name": "Lukas Petkov",
+              "number": 25,
+              "pos": "M",
+              "grid": null,
+              "strength": 2.234
+            },
+            {
+              "id": 627348588,
+              "name": "Filimon Gerezgiher",
+              "number": 27,
+              "pos": "M",
+              "grid": null,
+              "strength": 2.222
+            },
+            {
+              "id": 239974570,
+              "name": "Lasse Günther",
+              "number": 21,
+              "pos": "D",
+              "grid": null,
+              "strength": 2.22
+            },
+            {
+              "id": 263721661,
+              "name": "David Mokwa",
+              "number": 42,
+              "pos": "F",
+              "grid": null,
+              "strength": 2.212
+            },
+            {
+              "id": 658350563,
+              "name": "Tom Zimmerschied",
+              "number": 29,
+              "pos": "M",
+              "grid": null,
+              "strength": 2.198
+            },
+            {
+              "id": 488868476,
+              "name": "Nicolas Kristof",
+              "number": 20,
+              "pos": "G",
+              "grid": null,
+              "strength": 2.182
+            },
+            {
+              "id": 481857871,
+              "name": "Jan Gyamerah",
+              "number": 30,
+              "pos": "D",
+              "grid": null,
+              "strength": 2.136
+            },
+            {
+              "id": 380158502,
+              "name": "Maximilian Rohr",
+              "number": 31,
+              "pos": "D",
+              "grid": null,
+              "strength": 2.124
+            },
+            {
+              "id": 593723249,
+              "name": "Tim Boss",
+              "number": 28,
+              "pos": "G",
+              "grid": null,
+              "strength": 2.11
+            },
+            {
+              "id": 56763352,
+              "name": "Felix Keidel",
+              "number": 43,
+              "pos": "D",
+              "grid": null,
+              "strength": 2.1
+            }
+          ],
+          "strength": 25.98,
+          "season": "2026–27",
+          "page": "https://www.footballsquads.co.uk/ger/2026-2027/bundes/elversberg.htm"
+        },
+        "away": {
+          "source": "squad_2026",
+          "formation": "4-2-3-1",
+          "players": [
+            {
+              "id": 566815978,
+              "name": "Mark Flekken",
+              "number": 1,
+              "pos": "G",
+              "grid": null,
+              "strength": 2.326
+            },
+            {
+              "id": 254105768,
+              "name": "Jarell Quansah",
+              "number": 4,
+              "pos": "D",
+              "grid": null,
+              "strength": 2.364
+            },
+            {
+              "id": 956923114,
+              "name": "Loïc Badé",
+              "number": 5,
+              "pos": "D",
+              "grid": null,
+              "strength": 2.352
+            },
+            {
+              "id": 573297818,
+              "name": "Edmond Tapsoba",
+              "number": 12,
+              "pos": "D",
+              "grid": null,
+              "strength": 2.28
+            },
+            {
+              "id": 84104369,
+              "name": "Arthur",
+              "number": 13,
+              "pos": "D",
+              "grid": null,
+              "strength": 2.268
+            },
+            {
+              "id": 836260633,
+              "name": "Exequiel Palacios",
+              "number": 25,
+              "pos": "M",
+              "grid": null,
+              "strength": 2.988
+            },
+            {
+              "id": 937912519,
+              "name": "Ezequiel Fernández",
+              "number": 6,
+              "pos": "M",
+              "grid": null,
+              "strength": 2.39
+            },
+            {
+              "id": 675055799,
+              "name": "Jonas Hofmann",
+              "number": 7,
+              "pos": "M",
+              "grid": null,
+              "strength": 2.378
+            },
+            {
+              "id": 699278847,
+              "name": "Robert Andrich",
+              "number": 8,
+              "pos": "M",
+              "grid": null,
+              "strength": 2.366
+            },
+            {
+              "id": 809293519,
+              "name": "Malik Tillman",
+              "number": 10,
+              "pos": "M",
+              "grid": null,
+              "strength": 2.354
+            },
+            {
+              "id": 392408874,
+              "name": "Victor Boniface",
+              "number": 22,
+              "pos": "F",
+              "grid": null,
+              "strength": 3.35
+            }
+          ],
+          "pool": [
+            {
+              "id": 607245339,
+              "name": "Martin Terrier",
+              "number": 11,
+              "pos": "F",
+              "grid": null,
+              "strength": 2.392
+            },
+            {
+              "id": 615916469,
+              "name": "Patrik Schick",
+              "number": 14,
+              "pos": "F",
+              "grid": null,
+              "strength": 2.356
+            },
+            {
+              "id": 915264597,
+              "name": "Ernest Poku",
+              "number": 19,
+              "pos": "F",
+              "grid": null,
+              "strength": 2.308
+            },
+            {
+              "id": 236314821,
+              "name": "Nathan Tella",
+              "number": 23,
+              "pos": "F",
+              "grid": null,
+              "strength": 2.272
+            },
+            {
+              "id": 124318577,
+              "name": "Eliesse Ben Seghir",
+              "number": 17,
+              "pos": "M",
+              "grid": null,
+              "strength": 2.27
+            },
+            {
+              "id": 846493689,
+              "name": "Tim Oermann",
+              "number": 15,
+              "pos": "D",
+              "grid": null,
+              "strength": 2.244
+            },
+            {
+              "id": 513705204,
+              "name": "Lucas Vázquez",
+              "number": 21,
+              "pos": "M",
+              "grid": null,
+              "strength": 2.234
+            },
+            {
+              "id": 138650794,
+              "name": "Axel Tape",
+              "number": 16,
+              "pos": "D",
+              "grid": null,
+              "strength": 2.232
+            },
+            {
+              "id": 795550044,
+              "name": "Christian Kofane",
+              "number": 35,
+              "pos": "F",
+              "grid": null,
+              "strength": 2.224
+            },
+            {
+              "id": 722694130,
+              "name": "Aleix García",
+              "number": 24,
+              "pos": "M",
+              "grid": null,
+              "strength": 2.21
+            },
+            {
+              "id": 109978212,
+              "name": "Jeremiah Mensah",
+              "number": 27,
+              "pos": "M",
+              "grid": null,
+              "strength": 2.198
+            },
+            {
+              "id": 908508730,
+              "name": "Alex Grimaldo",
+              "number": 20,
+              "pos": "D",
+              "grid": null,
+              "strength": 2.196
+            },
+            {
+              "id": 326035755,
+              "name": "Ibrahim Maza",
+              "number": 30,
+              "pos": "M",
+              "grid": null,
+              "strength": 2.186
+            },
+            {
+              "id": 954760413,
+              "name": "Montrell Culbreath",
+              "number": 42,
+              "pos": "F",
+              "grid": null,
+              "strength": 2.176
+            },
+            {
+              "id": 394891210,
+              "name": "Emmanuel Chigozie Owen",
+              "number": 47,
+              "pos": "F",
+              "grid": null,
+              "strength": 2.128
+            },
+            {
+              "id": 249726952,
+              "name": "Farid Alfa-Ruprecht",
+              "number": 17,
+              "pos": "F",
+              "grid": null,
+              "strength": 2.104
+            },
+            {
+              "id": 324898373,
+              "name": "Naba Mensah",
+              "number": 45,
+              "pos": "M",
+              "grid": null,
+              "strength": 2.102
+            },
+            {
+              "id": 119706997,
+              "name": "Issa Traoré",
+              "number": 41,
+              "pos": "D",
+              "grid": null,
+              "strength": 2.088
+            },
+            {
+              "id": 89391760,
+              "name": "Alejo Sarco",
+              "number": 18,
+              "pos": "F",
+              "grid": null,
+              "strength": 2.08
+            },
+            {
+              "id": 114373993,
+              "name": "Ken Izekor",
+              "number": 38,
+              "pos": "F",
+              "grid": null,
+              "strength": 2.068
+            },
+            {
+              "id": 585013429,
+              "name": "Ben Hawighorst",
+              "number": 43,
+              "pos": "D",
+              "grid": null,
+              "strength": 2.064
+            },
+            {
+              "id": 327637925,
+              "name": "Niklas Lomb",
+              "number": 36,
+              "pos": "G",
+              "grid": null,
+              "strength": 2.062
+            },
+            {
+              "id": 66096742,
+              "name": "Jesper Schlich",
+              "number": 40,
+              "pos": "G",
+              "grid": null,
+              "strength": 2.05
+            },
+            {
+              "id": 26516665,
+              "name": "Ferdinand Pohl",
+              "number": 46,
+              "pos": "D",
+              "grid": null,
+              "strength": 2.04
+            },
+            {
+              "id": 461370214,
+              "name": "Piero Hincapié",
+              "number": 3,
+              "pos": "D",
+              "grid": null,
+              "strength": 2.016
+            },
+            {
+              "id": 365359224,
+              "name": "Andrea Natali",
+              "number": 26,
+              "pos": "D",
+              "grid": null,
+              "strength": 1.992
+            },
+            {
+              "id": 424087411,
+              "name": "Jeanuël Belocian",
+              "number": 44,
+              "pos": "D",
+              "grid": null,
+              "strength": 1.956
+            }
+          ],
+          "strength": 27.416,
+          "season": "2025–26",
+          "page": "https://www.footballsquads.co.uk/ger/2025-2026/bundes/bayerlev.htm"
+        }
       },
       "xi_sensitivity": {
         "delta": 3.0,
         "home_strength": {
-          "p_home_win": 0.02975647447406976,
-          "p_draw": 0.00501503724911162,
-          "p_away_win": -0.034771511723181436
+          "p_home_win": 0.023838147521018982,
+          "p_draw": 0.01147545874118805,
+          "p_away_win": -0.03531366586685181
         },
         "away_strength": {
-          "p_home_win": 0.003413942435002426,
-          "p_draw": -0.001316872059477614,
-          "p_away_win": -0.002097070375524923
+          "p_home_win": -0.001973390579223633,
+          "p_draw": -0.0021203607320785522,
+          "p_away_win": 0.0040937066078186035
         }
+      },
+      "explanation": {
+        "plot": "/explanations/83164.png",
+        "method": "ShapIQ SV waterfall",
+        "class": "away_win",
+        "baseline": 0.29744166135787964,
+        "top_features": [
+          {
+            "feature": "value_diff",
+            "label": "Squad value gap",
+            "shap": 0.15975783420695028
+          },
+          {
+            "feature": "star_gap",
+            "label": "Star player gap",
+            "shap": 0.03014159991491614
+          },
+          {
+            "feature": "away_squad_value",
+            "label": "Away squad value",
+            "shap": 0.029075830005132353
+          },
+          {
+            "feature": "home_mid",
+            "label": "Home midfield",
+            "shap": 0.02509230573076142
+          },
+          {
+            "feature": "xi_strength_diff",
+            "label": "XI strength gap",
+            "shap": 0.024359866762552675
+          },
+          {
+            "feature": "home_form5",
+            "label": "Home form (5)",
+            "shap": 0.019738437126591124
+          },
+          {
+            "feature": "elo_diff",
+            "label": "ELO gap",
+            "shap": 0.01845145416596858
+          },
+          {
+            "feature": "home_played",
+            "label": "Home matches played",
+            "shap": 0.014424073194848737
+          },
+          {
+            "feature": "away_star",
+            "label": "Away top player",
+            "shap": -0.01387775892452889
+          },
+          {
+            "feature": "away_form5",
+            "label": "Away form (5)",
+            "shap": 0.012941848124327074
+          },
+          {
+            "feature": "home_winrate",
+            "label": "Home win rate",
+            "shap": 0.012560114172030585
+          },
+          {
+            "feature": "home_gf5",
+            "label": "Home goals for (5)",
+            "shap": -0.0121821959638132
+          },
+          {
+            "feature": "home_squad_value",
+            "label": "Home squad value",
+            "shap": 0.011672771348374156
+          },
+          {
+            "feature": "def_vs_att",
+            "label": "Home defence vs away attack",
+            "shap": 0.01067679992437061
+          },
+          {
+            "feature": "away_attack",
+            "label": "Away attack unit",
+            "shap": -0.010260340020471279
+          },
+          {
+            "feature": "away_xi_strength",
+            "label": "Away XI strength",
+            "shap": -0.010063731723512864
+          }
+        ]
       }
     },
     {
@@ -3997,9 +4237,9 @@
       "home_icon": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/67/Borussia_Dortmund_logo.svg/960px-Borussia_Dortmund_logo.svg.png",
       "away_icon": "https://upload.wikimedia.org/wikipedia/commons/f/f7/Hamburger_SV_logo.svg",
       "predicted": "home_win",
-      "p_home_win": 0.7056843554738794,
-      "p_draw": 0.2196352228769045,
-      "p_away_win": 0.07468042164921612,
+      "p_home_win": 0.7864088416099548,
+      "p_draw": 0.14353251457214355,
+      "p_away_win": 0.07005862146615982,
       "features": {
         "elo_diff": 342.5163557819824,
         "home_elo": 1787.0430192500642,
@@ -4052,7 +4292,7 @@
         "midfield_battle": 0.6340000000000003,
         "att_vs_def": -1.8907999999999987,
         "def_vs_att": 4.621699999999999,
-        "bench_gap": 0.46399999999999864
+        "bench_gap": 0.4640000000000022
       },
       "lineups": {
         "home": {
@@ -4550,66 +4790,106 @@
           "page": "https://www.footballsquads.co.uk/ger/2025-2026/bundes/hamburg.htm"
         }
       },
+      "xi_sensitivity": {
+        "delta": 3.0,
+        "home_strength": {
+          "p_home_win": 0.0024562478065490723,
+          "p_draw": -0.0015419572591781616,
+          "p_away_win": -0.0009142681956291199
+        },
+        "away_strength": {
+          "p_home_win": -0.019605696201324463,
+          "p_draw": 0.009551286697387695,
+          "p_away_win": 0.010054446756839752
+        }
+      },
       "explanation": {
         "plot": "/explanations/83157.png",
-        "method": "ShapIQ waterfall",
+        "method": "ShapIQ SV waterfall",
         "class": "home_win",
-        "baseline": 0.4615661869129067,
+        "baseline": 0.433178186416626,
         "top_features": [
           {
             "feature": "value_diff",
             "label": "Squad value gap",
-            "shap": 0.0466628789495564
-          },
-          {
-            "feature": "elo_diff",
-            "label": "ELO gap",
-            "shap": 0.04290362952390288
-          },
-          {
-            "feature": "star_gap",
-            "label": "Star player gap",
-            "shap": 0.016185345368999716
-          },
-          {
-            "feature": "home_played",
-            "label": "Home matches played",
-            "shap": 0.01442044852014062
+            "shap": 0.11219656770941974
           },
           {
             "feature": "xi_strength_diff",
             "label": "XI strength gap",
-            "shap": 0.012451662289396072
+            "shap": 0.02821125976133048
           },
           {
-            "feature": "away_rest",
-            "label": "Away rest days",
-            "shap": 0.01065256883603137
+            "feature": "home_elo",
+            "label": "Home ELO",
+            "shap": 0.023837860500554045
           },
           {
-            "feature": "home_xi_strength",
-            "label": "Home XI strength",
-            "shap": 0.010284947278085904
+            "feature": "def_vs_att",
+            "label": "Home defence vs away attack",
+            "shap": 0.023525797337532586
           },
           {
-            "feature": "h2h_draw_rate",
-            "label": "H2H draw rate",
-            "shap": 0.009678249758637021
+            "feature": "gd10_diff",
+            "label": "Goal diff (10) gap",
+            "shap": 0.022133069762918584
+          },
+          {
+            "feature": "elo_diff",
+            "label": "ELO gap",
+            "shap": 0.019311894343134284
+          },
+          {
+            "feature": "form10_diff",
+            "label": "Form (10) gap",
+            "shap": 0.0175926822333194
+          },
+          {
+            "feature": "away_played",
+            "label": "Away matches played",
+            "shap": 0.017136415603387457
+          },
+          {
+            "feature": "star_gap",
+            "label": "Star player gap",
+            "shap": 0.016333247966486098
+          },
+          {
+            "feature": "gk_gap",
+            "label": "Goalkeeper gap",
+            "shap": 0.015214710203108819
+          },
+          {
+            "feature": "away_squad_value",
+            "label": "Away squad value",
+            "shap": 0.01438487184602789
+          },
+          {
+            "feature": "home_winrate",
+            "label": "Home win rate",
+            "shap": 0.010670034525880778
+          },
+          {
+            "feature": "home_squad_value",
+            "label": "Home squad value",
+            "shap": 0.009919808182424524
+          },
+          {
+            "feature": "home_played",
+            "label": "Home matches played",
+            "shap": 0.00985276702216934
+          },
+          {
+            "feature": "home_mid",
+            "label": "Home midfield",
+            "shap": -0.009850650617574688
+          },
+          {
+            "feature": "home_defense",
+            "label": "Home defensive unit",
+            "shap": 0.008346633609871567
           }
         ]
-      },
-      "xi_sensitivity": {
-        "delta": 3.0,
-        "home_strength": {
-          "p_home_win": 0.0,
-          "p_draw": 0.0,
-          "p_away_win": 0.0
-        },
-        "away_strength": {
-          "p_home_win": -0.03196775927997797,
-          "p_draw": 0.009986539740083233,
-          "p_away_win": 0.021981219539894792
-        }
       }
     },
     {
@@ -4622,9 +4902,9 @@
       "home_icon": "https://i.imgur.com/r3mvi0h.png",
       "away_icon": "https://upload.wikimedia.org/wikipedia/commons/b/be/SV-Werder-Bremen-Logo.svg",
       "predicted": "home_win",
-      "p_home_win": 0.45006380563626686,
-      "p_draw": 0.30947609444283364,
-      "p_away_win": 0.24046009992089953,
+      "p_home_win": 0.5297936201095581,
+      "p_draw": 0.2585698962211609,
+      "p_away_win": 0.211636483669281,
       "features": {
         "elo_diff": 214.49895618334403,
         "home_elo": 1581.6886390810898,
@@ -4677,7 +4957,7 @@
         "midfield_battle": -0.3819999999999997,
         "att_vs_def": -3.2877,
         "def_vs_att": 3.004199999999999,
-        "bench_gap": -0.32000000000000384
+        "bench_gap": -0.31999999999999673
       },
       "lineups": {
         "home": {
@@ -5199,66 +5479,106 @@
           "page": "https://www.footballsquads.co.uk/ger/2026-2027/bundes/wbremen.htm"
         }
       },
+      "xi_sensitivity": {
+        "delta": 3.0,
+        "home_strength": {
+          "p_home_win": 0.015534698963165283,
+          "p_draw": -0.006518423557281494,
+          "p_away_win": -0.009016245603561401
+        },
+        "away_strength": {
+          "p_home_win": -0.019585072994232178,
+          "p_draw": 0.003125905990600586,
+          "p_away_win": 0.016459137201309204
+        }
+      },
       "explanation": {
         "plot": "/explanations/83159.png",
-        "method": "ShapIQ waterfall",
+        "method": "ShapIQ SV waterfall",
         "class": "home_win",
-        "baseline": 0.4615661869129067,
+        "baseline": 0.433178186416626,
         "top_features": [
-          {
-            "feature": "away_played",
-            "label": "Away matches played",
-            "shap": -0.05686842982823126
-          },
           {
             "feature": "elo_diff",
             "label": "ELO gap",
-            "shap": 0.028795561615594926
+            "shap": 0.02304037719757567
+          },
+          {
+            "feature": "home_played",
+            "label": "Home matches played",
+            "shap": 0.02172738415196719
+          },
+          {
+            "feature": "away_played",
+            "label": "Away matches played",
+            "shap": -0.02048075571026177
           },
           {
             "feature": "away_gf5",
             "label": "Away goals for (5)",
-            "shap": 0.016645666414527555
+            "shap": 0.01787018969004702
+          },
+          {
+            "feature": "away_attack",
+            "label": "Away attack unit",
+            "shap": 0.01669288480648558
+          },
+          {
+            "feature": "home_elo",
+            "label": "Home ELO",
+            "shap": 0.016592214107651423
+          },
+          {
+            "feature": "gd10_diff",
+            "label": "Goal diff (10) gap",
+            "shap": 0.016000796798094494
           },
           {
             "feature": "home_rest",
             "label": "Home rest days",
-            "shap": -0.014909574106098625
+            "shap": -0.01573882926122037
           },
           {
-            "feature": "star_gap",
-            "label": "Star player gap",
-            "shap": -0.010429815707251454
+            "feature": "xi_strength_diff",
+            "label": "XI strength gap",
+            "shap": -0.015133447311123337
           },
           {
-            "feature": "home_winrate",
-            "label": "Home win rate",
-            "shap": -0.009621175242822994
+            "feature": "away_streak",
+            "label": "Away streak",
+            "shap": 0.014580915739017517
           },
           {
-            "feature": "form5_diff",
-            "label": "Form (5) gap",
-            "shap": -0.00932644546546392
+            "feature": "gk_gap",
+            "label": "Goalkeeper gap",
+            "shap": -0.013030031654680002
           },
           {
-            "feature": "home_mid",
-            "label": "Home midfield",
-            "shap": 0.008043971471280616
+            "feature": "away_form5",
+            "label": "Away form (5)",
+            "shap": -0.011714966613411188
+          },
+          {
+            "feature": "away_xi_strength",
+            "label": "Away XI strength",
+            "shap": 0.011119662868833254
+          },
+          {
+            "feature": "away_squad_value",
+            "label": "Away squad value",
+            "shap": 0.01054291063744801
+          },
+          {
+            "feature": "home_gf5",
+            "label": "Home goals for (5)",
+            "shap": -0.009858463320615997
+          },
+          {
+            "feature": "def_vs_att",
+            "label": "Home defence vs away attack",
+            "shap": 0.00979427804842861
           }
         ]
-      },
-      "xi_sensitivity": {
-        "delta": 3.0,
-        "home_strength": {
-          "p_home_win": 0.008670641717524963,
-          "p_draw": 0.003100762042789529,
-          "p_away_win": -0.011771403760314603
-        },
-        "away_strength": {
-          "p_home_win": 0.003495877904475808,
-          "p_draw": -0.0016351789435073427,
-          "p_away_win": -0.001860698960968521
-        }
       }
     },
     {
@@ -5271,9 +5591,9 @@
       "home_icon": "https://i.imgur.com/sdE62e2.png",
       "away_icon": "https://upload.wikimedia.org/wikipedia/commons/9/97/FC_Schalke_04_Logo.png",
       "predicted": "home_win",
-      "p_home_win": 0.5214847241429684,
-      "p_draw": 0.2846652566007602,
-      "p_away_win": 0.19385001925627135,
+      "p_home_win": 0.49984869360923767,
+      "p_draw": 0.2639711797237396,
+      "p_away_win": 0.2361801266670227,
       "features": {
         "elo_diff": 180.88274901800082,
         "home_elo": 1537.5805165790553,
@@ -5302,9 +5622,9 @@
         "h2h_home_winrate": 0.3333333333333333,
         "h2h_draw_rate": 0.3333333333333333,
         "h2h_gd": 0.3333333333333333,
-        "home_xi_strength": 25.979999999999997,
-        "away_xi_strength": 25.836000000000002,
-        "xi_strength_diff": 0.1439999999999948,
+        "home_xi_strength": 25.98,
+        "away_xi_strength": 25.836,
+        "xi_strength_diff": 0.1440000000000019,
         "home_xi_confirmed": 0.0,
         "away_xi_confirmed": 0.0,
         "home_gk": 2.35,
@@ -5326,7 +5646,7 @@
         "midfield_battle": 0.19200000000000017,
         "att_vs_def": -3.3560999999999988,
         "def_vs_att": 3.394499999999997,
-        "bench_gap": -0.6359999999999975
+        "bench_gap": -0.636000000000001
       },
       "lineups": {
         "home": {
@@ -5856,66 +6176,106 @@
           "page": "https://www.footballsquads.co.uk/ger/2026-2027/bundes/schalke.htm"
         }
       },
+      "xi_sensitivity": {
+        "delta": 3.0,
+        "home_strength": {
+          "p_home_win": 0.01977434754371643,
+          "p_draw": -0.006479114294052124,
+          "p_away_win": -0.013295203447341919
+        },
+        "away_strength": {
+          "p_home_win": -0.017999887466430664,
+          "p_draw": 0.001884758472442627,
+          "p_away_win": 0.016115128993988037
+        }
+      },
       "explanation": {
         "plot": "/explanations/83160.png",
-        "method": "ShapIQ waterfall",
+        "method": "ShapIQ SV waterfall",
         "class": "home_win",
-        "baseline": 0.4615661869129067,
+        "baseline": 0.433178186416626,
         "top_features": [
-          {
-            "feature": "value_diff",
-            "label": "Squad value gap",
-            "shap": -0.01759826028522534
-          },
-          {
-            "feature": "form10_diff",
-            "label": "Form (10) gap",
-            "shap": -0.016186899890338724
-          },
-          {
-            "feature": "home_rest",
-            "label": "Home rest days",
-            "shap": -0.01520702853048464
-          },
           {
             "feature": "away_squad_value",
             "label": "Away squad value",
-            "shap": 0.014892571679456873
+            "shap": 0.01965046029217031
           },
           {
             "feature": "home_played",
             "label": "Home matches played",
-            "shap": 0.014420264677200083
+            "shap": 0.018003023853024415
           },
           {
-            "feature": "away_ga5",
-            "label": "Away goals against (5)",
-            "shap": 0.010740767703048291
+            "feature": "elo_diff",
+            "label": "ELO gap",
+            "shap": 0.01359826084930245
+          },
+          {
+            "feature": "value_diff",
+            "label": "Squad value gap",
+            "shap": -0.013358350798593481
+          },
+          {
+            "feature": "def_vs_att",
+            "label": "Home defence vs away attack",
+            "shap": 0.01154157301338646
+          },
+          {
+            "feature": "home_squad_value",
+            "label": "Home squad value",
+            "shap": -0.009913163478021797
+          },
+          {
+            "feature": "home_defense",
+            "label": "Home defensive unit",
+            "shap": -0.00855406427403698
           },
           {
             "feature": "bench_gap",
             "label": "Bench quality gap",
-            "shap": 0.00982120406718831
+            "shap": 0.005370505879895642
           },
           {
-            "feature": "away_rest",
-            "label": "Away rest days",
-            "shap": 0.009475665868259507
+            "feature": "away_elo",
+            "label": "Away ELO",
+            "shap": 0.005172812095644523
+          },
+          {
+            "feature": "gd10_diff",
+            "label": "Goal diff (10) gap",
+            "shap": 0.005039513818761033
+          },
+          {
+            "feature": "att_vs_def",
+            "label": "Home attack vs away defence",
+            "shap": -0.004540487455941362
+          },
+          {
+            "feature": "away_xi_strength",
+            "label": "Away XI strength",
+            "shap": 0.004442162180918972
+          },
+          {
+            "feature": "home_gk",
+            "label": "Home goalkeeper",
+            "shap": 0.004280848686250597
+          },
+          {
+            "feature": "home_form5",
+            "label": "Home form (5)",
+            "shap": 0.004168106716425209
+          },
+          {
+            "feature": "away_def",
+            "label": "Away defence line",
+            "shap": 0.0031698381369213596
+          },
+          {
+            "feature": "home_xi_strength",
+            "label": "Home XI strength",
+            "shap": 0.0031609946347706487
           }
         ]
-      },
-      "xi_sensitivity": {
-        "delta": 3.0,
-        "home_strength": {
-          "p_home_win": 0.038835695960037886,
-          "p_draw": 0.0013054159026161805,
-          "p_away_win": -0.04014111186265401
-        },
-        "away_strength": {
-          "p_home_win": 0.019202120115429433,
-          "p_draw": -0.00832271057541456,
-          "p_away_win": -0.010879409540014817
-        }
       }
     }
   ]

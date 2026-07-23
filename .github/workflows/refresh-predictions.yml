@@ -48,7 +48,7 @@ jobs:
           TABPFN_NO_BROWSER: '1'
           AF_LINEUP_FETCHES: '30'
           AF_FETCH_PLAYER_STATS: '1'
-        run: python predict.py --skip-shap
+        run: python predict.py
 
       - name: Commit updated predictions
         run: |

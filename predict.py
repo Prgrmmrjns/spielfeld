@@ -1,5 +1,4 @@
 """Predict Bundesliga next-matchday outcomes with TabPFN on engineered features."""
-import argparse
 import json
 import os
 from collections import defaultdict
@@ -12,9 +11,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import requests
-from sklearn.calibration import CalibratedClassifierCV
-from sklearn.ensemble import HistGradientBoostingClassifier
-
 TRAIN_START = pd.Timestamp("2019-07-01")
 MAX_TRAIN = 10000
 HOME_ADV = 65.0
@@ -25,6 +21,7 @@ IMPORTANCE = 45.0
 EXPLAIN_DIR = Path("public/explanations")
 os.environ.setdefault("TABPFN_NO_BROWSER", "1")
 os.environ.setdefault("TABPFN_CLIENT_NO_BROWSER", "1")
+os.environ.setdefault("SCIPY_ARRAY_API", "1")
 
 
 def load_dotenv(path=".env"):
@@ -49,9 +46,20 @@ def load_dotenv(path=".env"):
 
 
 load_dotenv()
-# tabpfn-client reads TABPFN_TOKEN; accept TABPFN_API_KEY as an alias.
-if not os.getenv("TABPFN_TOKEN") and os.getenv("TABPFN_API_KEY"):
-    os.environ["TABPFN_TOKEN"] = os.environ["TABPFN_API_KEY"]
+
+
+def _tabpfn_token() -> str | None:
+    """Resolve TabPFN access token from common env var names."""
+    for key in ("TABPFN_TOKEN", "TABPFN_API_KEY", "TAP_PFN_API_KEY"):
+        value = os.getenv(key)
+        if value:
+            return value.strip().strip('"').strip("'")
+    return None
+
+
+_token = _tabpfn_token()
+if _token:
+    os.environ["TABPFN_TOKEN"] = _token
 
 SHAP_BUDGET = int(os.getenv("SHAP_BUDGET", "64"))
 SHAP_BACKGROUND = int(os.getenv("SHAP_BACKGROUND", "48"))
@@ -704,28 +712,21 @@ def attach_xi_sensitivity(clf, rows, fixture_X, delta: float = 3.0):
 
 
 def train(pool):
-    """Prefer TabPFN when authenticated; otherwise use a local gradient boosting model."""
+    """Train TabPFN (requires TABPFN_API_KEY or TABPFN_TOKEN in env)."""
     X, y = pool[FEATURES].values, pool["outcome"].values
-    token = os.getenv("TABPFN_TOKEN") or os.getenv("TABPFN_API_KEY")
-    if token:
-        try:
-            from tabpfn_client import TabPFNClassifier, set_access_token
-            import tabpfn_client.constants as tabpfn_constants
+    token = _tabpfn_token()
+    if not token:
+        raise SystemExit("TabPFN required: set TABPFN_API_KEY (or TABPFN_TOKEN) in .env")
+    from tabpfn_client import TabPFNClassifier, set_access_token
+    import tabpfn_client.constants as tabpfn_constants
 
-            os.environ["TABPFN_TOKEN"] = token
-            tabpfn_constants.TABPFN_TOKEN = token
-            set_access_token(token)
-            print("Training with TabPFN…")
-            clf = TabPFNClassifier(ignore_pretraining_limits=True, random_state=42)
-            clf.fit(X, y)
-            clf.model_name_ = "TabPFN"
-            return clf
-        except Exception as exc:
-            print(f"TabPFN unavailable ({exc}); falling back to HistGradientBoosting.")
-    base = HistGradientBoostingClassifier(max_depth=5, learning_rate=0.06, max_iter=150, random_state=42)
-    clf = CalibratedClassifierCV(base, method="isotonic", cv=3)
+    os.environ["TABPFN_TOKEN"] = token
+    tabpfn_constants.TABPFN_TOKEN = token
+    set_access_token(token)
+    print("Training with TabPFN…")
+    clf = TabPFNClassifier(ignore_pretraining_limits=True, random_state=42)
     clf.fit(X, y)
-    clf.model_name_ = "HistGradientBoosting"
+    clf.model_name_ = "TabPFN"
     return clf
 
 
@@ -870,17 +871,9 @@ def write_prediction_payload(payload, json_path="predictions.json"):
 
 
 def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--refresh", action="store_true", help="Re-download Bundesliga history")
-    parser.add_argument("--json", default="predictions.json", help="JSON output path")
-    parser.add_argument("--csv", default="predictions.csv", help="CSV output path")
-    parser.add_argument("--skip-shap", action="store_true", help="Skip SHAP plot generation")
-    parser.add_argument("--skip-lineups", action="store_true", help="Skip API-Football lineup enrichment")
-    args = parser.parse_args()
-
     from api_football import ApiFootball
 
-    history = load_history(refresh=args.refresh)
+    history = load_history(refresh=False)
     played = history[history["outcome"].notna()]
     latest = played["date"].max() if len(played) else None
     print(f"Training matches: {len(played)}")
@@ -891,7 +884,7 @@ def main():
     print(f"Next matchday: {meta['matchday_name']} (Saison {meta['season']}/{meta['season'] + 1}) — {len(fixtures)} fixtures")
 
     af = ApiFootball()
-    use_api = bool(af.enabled and not args.skip_lineups)
+    use_api = bool(af.enabled)
     if use_api:
         print("API-Football: syncing squads/lineups…")
     else:
@@ -946,12 +939,11 @@ def main():
     except Exception as exc:
         print(f"  xi sensitivity skipped: {exc}")
 
-    if not args.skip_shap:
-        print("\nGenerating ShapIQ explanations…")
-        rows = explain_matchups(clf, train_pool, fixture_X, rows)
+    print("\nGenerating ShapIQ explanations…")
+    rows = explain_matchups(clf, train_pool, fixture_X, rows)
 
     out = pd.DataFrame([{k: v for k, v in r.items() if k not in ("features", "explanation", "lineups")} for r in rows])
-    out.to_csv(args.csv, index=False)
+    out.to_csv("predictions.csv", index=False)
     provider = "api-football" if use_api else "footballsquads/wikipedia"
     payload = {
         "league": "Bundesliga",
@@ -969,9 +961,9 @@ def main():
         },
         "predictions": rows,
     }
-    write_prediction_payload(payload, args.json)
+    write_prediction_payload(payload, "predictions.json")
 
-    print(f"\n{len(rows)} predictions -> {args.csv}, {args.json}\n")
+    print(f"\n{len(rows)} predictions -> predictions.csv, predictions.json\n")
     for r in rows:
         src = ""
         if r.get("lineups"):

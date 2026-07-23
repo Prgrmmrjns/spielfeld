@@ -1,5 +1,6 @@
 tabpfn-client
 tabpfn-extensions[interpretability]
+setuptools<81
 shap
 matplotlib
 pandas
