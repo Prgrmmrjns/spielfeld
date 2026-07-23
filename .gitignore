@@ -11,6 +11,7 @@ wiki_squads_cache.json
 .env.local
 *.egg-info/
 .DS_Store
-.vercel/
+.vercel/*
+!.vercel/project.json
 .env
 node_modules/
