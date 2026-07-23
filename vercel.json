@@ -1,14 +1,15 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "builds": [
+    { "src": "public/**", "use": "@vercel/static" },
     { "src": "app/main.py", "use": "@vercel/python" }
   ],
-  "functions": {
-    "app/main.py": {
-      "includeFiles": "public/**"
-    }
-  },
   "routes": [
+    { "src": "/css/(.*)", "dest": "/public/css/$1" },
+    { "src": "/js/(.*)", "dest": "/public/js/$1" },
+    { "src": "/data/(.*)", "dest": "/public/data/$1" },
+    { "src": "/explanations/(.*)", "dest": "/public/explanations/$1" },
+    { "src": "/favicon.ico", "dest": "/public/favicon.ico" },
     { "src": "/(.*)", "dest": "app/main.py" }
   ],
   "crons": [
