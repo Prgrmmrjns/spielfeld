@@ -265,8 +265,28 @@ a.brand { color: inherit; }
     gap: 1rem;
     padding: 0.7rem 0.5rem;
   }
+  .match.has-xi .match-btn {
+    grid-template-columns: minmax(12rem, 0.7fr) minmax(22rem, 1.4fr);
+    align-items: start;
+  }
+  .match.has-xi .mini-pitch { display: none; }
   .match-btn:hover { background: rgba(255,255,255,0.03); }
 }
+
+.xi-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem 1rem; }
+.xi-list { list-style: none; margin: 0.35rem 0 0; padding: 0; }
+.xi-list li {
+  display: flex; gap: 0.35rem; align-items: baseline;
+  font-size: 0.82rem; line-height: 1.45; color: rgba(255,255,255,0.88);
+}
+.xi-list .pos {
+  width: 0.9rem; flex: none;
+  font-size: 0.62rem; letter-spacing: 0.04em;
+  color: rgba(255,255,255,0.38);
+}
+.xi-list .p { margin-left: auto; font-size: 0.68rem; color: rgba(255,255,255,0.4); }
+.xi-list li.hit { color: #fff; }
+.xi-list li.miss { color: rgba(255,255,255,0.45); text-decoration: line-through; }
 
 .row-top { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; margin-bottom: 0.4rem; }
 .muted-xs {

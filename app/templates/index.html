@@ -8,7 +8,7 @@
   <link rel="icon" href="/icon.svg" type="image/svg+xml" />
   <link rel="alternate icon" href="/favicon.ico" />
   <link rel="apple-touch-icon" href="/icon.svg" />
-  <link rel="stylesheet" href="/css/main.css?v=icon1" />
+  <link rel="stylesheet" href="/css/main.css?v=xi2" />
 </head>
 <body>
   <div class="page">
@@ -28,7 +28,8 @@
           <p class="eyebrow">{{ payload.matchday_name or "Next Spieltag" }} · {{ payload.season }}</p>
         </div>
         <nav class="site-nav">
-          <a class="on" href="/">Tips</a>
+          <a class="on" href="/">XI</a>
+          <a href="/history">History</a>
           <a href="/about">About</a>
         </nav>
       </header>
@@ -68,7 +69,7 @@
           <div id="matches" class="matches">
             {% if payload.predictions %}
               {% for match in payload.predictions %}
-              <article class="match animate-rise" style="animation-delay: {{ '%.2f'|format(0.05 * loop.index0) }}s">
+              <article class="match {{ 'has-xi' if match.best_xi else '' }} animate-rise" style="animation-delay: {{ '%.2f'|format(0.05 * loop.index0) }}s">
                 <button type="button" class="match-btn" data-match-id="{{ match.match_id }}">
                   <div class="match-main">
                     <div class="row-top">
@@ -99,14 +100,18 @@
 
                   <div class="match-tip">
                     {% if match.best_xi %}
-                    <div class="tip-block">
+                    <div class="xi-pair">
+                      {% for side, short in (('home', match.home_short), ('away', match.away_short)) %}
                       <div>
-                        <p class="muted-xs">Best XI</p>
-                        <p class="tip-value">from last game</p>
+                        <p class="muted-xs">{{ short }} · {{ match.best_xi[side].summary }}</p>
+                        <ol class="xi-list">
+                          {% for p in (match.lineups[side].players if match.lineups and match.lineups[side] else []) %}
+                          <li><span class="pos">{{ p.pos or '—' }}</span> {{ p.name|surname }} <span class="p">{{ (p.strength * 100)|round|int }}%</span></li>
+                          {% endfor %}
+                        </ol>
                       </div>
+                      {% endfor %}
                     </div>
-                    <p class="xi-label">{{ match.home_short }} · {{ match.best_xi.home.summary }}</p>
-                    <p class="xi-label">{{ match.away_short }} · {{ match.best_xi.away.summary }}</p>
                     {% else %}
                     <div class="tip-block">
                       <div>

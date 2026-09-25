@@ -113,8 +113,42 @@ def _xi_label(match: dict) -> str | None:
     return f"{lab(h)} · {lab(a)}"
 
 
+def _surname(name: str) -> str:
+    parts = str(name or "").strip().split()
+    return parts[-1] if parts else "—"
+
+
+def _history_dir() -> Path:
+    return ROOT / "history"
+
+
+def load_history_index() -> list[dict]:
+    folder = _history_dir()
+    rows = []
+    if not folder.is_dir():
+        return rows
+    for path in sorted(folder.glob("*.json")):
+        try:
+            payload = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            continue
+        if not payload.get("faithful"):
+            continue
+        rows.append(payload)
+    rows.sort(key=lambda r: (r.get("season") or 0, r.get("matchday") or 0), reverse=True)
+    return rows
+
+
+def load_history_matchday(season: int, matchday: int) -> dict | None:
+    path = _history_dir() / f"{season}-md{int(matchday):02d}.json"
+    if not path.is_file():
+        return None
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
 templates.env.filters["pct"] = _pct
 templates.env.filters["kickoff"] = _kickoff
+templates.env.filters["surname"] = _surname
 templates.env.globals["tip_label"] = _tip_label
 templates.env.globals["xi_label"] = _xi_label
 
@@ -129,6 +163,30 @@ async def index(request: Request):
             "payload": payload,
             "payload_json": json.dumps(payload, ensure_ascii=False),
         },
+    )
+
+
+@app.get("/history", response_class=HTMLResponse)
+async def history_index(request: Request):
+    payload = load_predictions()
+    return templates.TemplateResponse(
+        request,
+        "history.html",
+        {"payload": payload, "matchdays": load_history_index(), "detail": None},
+    )
+
+
+@app.get("/history/{season}/{matchday}", response_class=HTMLResponse)
+async def history_detail(request: Request, season: int, matchday: int):
+    payload = load_predictions()
+    detail = load_history_matchday(season, matchday)
+    if detail is None:
+        from fastapi import HTTPException
+        raise HTTPException(status_code=404)
+    return templates.TemplateResponse(
+        request,
+        "history.html",
+        {"payload": payload, "matchdays": load_history_index(), "detail": detail},
     )
 
 

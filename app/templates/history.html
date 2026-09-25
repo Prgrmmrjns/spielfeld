@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>History — Spielfeld</title>
+  <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="/css/main.css?v=xi2" />
+</head>
+<body>
+  <div class="page">
+    <div class="bg" aria-hidden="true">
+      <div class="bg-grad"></div>
+      <div class="hero-glow"></div>
+      <div class="bg-grid"></div>
+    </div>
+    <div class="wrap">
+      <header class="site-header">
+        <div class="brand-lockup">
+          <a class="brand" href="/">
+            <img class="brand-mark" src="/icon.svg" width="28" height="28" alt="" />
+            <span>SPIELFELD</span>
+          </a>
+          <p class="eyebrow">History · predicted before the matchday</p>
+        </div>
+        <nav class="site-nav">
+          <a href="/">XI</a>
+          <a class="on" href="/history">History</a>
+          <a href="/about">About</a>
+        </nav>
+      </header>
+      <main class="about">
+        {% if detail %}
+        <section class="about-hero">
+          <h1>{{ detail.season }}/{{ detail.season + 1 }} · {{ detail.matchday_name }}</h1>
+          <p class="hero-copy">
+            {{ detail.correct }}/{{ detail.slots }} names matched the XI that actually started.
+            Trained on {{ detail.train_rows }} earlier player rows, cutoff {{ detail.cutoff[:10] }}.
+          </p>
+          <p><a href="/history">All matchdays</a></p>
+        </section>
+        <section class="tips">
+          {% for fx in detail.fixtures %}
+          <article class="match has-xi">
+            <div class="match-btn" style="cursor: default">
+              <div class="match-main">
+                <p class="home">{{ fx.home.team }}</p>
+                <p class="away">{{ fx.away.team }}</p>
+                <p class="xi-label">{{ fx.home.correct }}/11 · {{ fx.away.correct }}/11</p>
+              </div>
+              <div class="xi-pair">
+                {% for side in (fx.home, fx.away) %}
+                <div>
+                  <p class="muted-xs">Predicted</p>
+                  <ol class="xi-list">
+                    {% for p in side.predicted %}
+                    <li class="{{ 'hit' if p.name in side.actual else 'miss' }}">
+                      <span class="pos">{{ p.pos }}</span> {{ p.name|surname }}
+                    </li>
+                    {% endfor %}
+                  </ol>
+                </div>
+                {% endfor %}
+              </div>
+            </div>
+          </article>
+          {% endfor %}
+        </section>
+        {% else %}
+        <section class="about-hero">
+          <h1>Prior matchdays</h1>
+          <p class="hero-copy">Each file is a TabPFN 3.5 XI predicted only from games already played.</p>
+        </section>
+        <section class="about-grid">
+          {% for md in matchdays %}
+          <article class="about-card">
+            <h2><a href="/history/{{ md.season }}/{{ md.matchday }}">{{ md.season }}/{{ md.season + 1 }} · {{ md.matchday_name }}</a></h2>
+            <p>{{ md.correct }}/{{ md.slots }} correct · {{ md.train_rows }} training rows</p>
+          </article>
+          {% else %}
+          <p>No history files yet.</p>
+          {% endfor %}
+        </section>
+        {% endif %}
+      </main>
+    </div>
+  </div>
+</body>
+</html>

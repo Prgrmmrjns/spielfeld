@@ -9,11 +9,14 @@ import pandas as pd
 
 from xi_table import (
     LAST_SIDES_PATH,
+    MATCHES_CSV,
     PLAYERS_CSV,
     ROOT,
     build_tables,
     upcoming_fixtures,
 )
+
+HISTORY = ROOT / "history"
 
 FEATURES = [
     "team",
@@ -292,5 +295,106 @@ def run() -> None:
     print(f"Wrote {len(rows)} best-XI predictions")
 
 
+def _actual_names(matches: pd.DataFrame, match_id: int, team: str) -> list[str]:
+    hit = matches[(matches["match_id"] == match_id) & (matches["team"] == team)]
+    if hit.empty:
+        return []
+    row = hit.iloc[0]
+    names = []
+    for i in range(1, 12):
+        name = row.get(f"xi_{i}")
+        if isinstance(name, str) and name.strip():
+            names.append(name.strip())
+    return names
+
+
+def write_history() -> None:
+    """Walk-forward XIs: each matchday is fit only on games already played."""
+    _load_dotenv()
+    os.environ.setdefault("TABPFN_NO_BROWSER", "1")
+    os.environ.setdefault("TABPFN_CLIENT_NO_BROWSER", "1")
+    players = pd.read_csv(PLAYERS_CSV)
+    matches = pd.read_csv(MATCHES_CSV)
+    players["date"] = pd.to_datetime(players["date"])
+    HISTORY.mkdir(parents=True, exist_ok=True)
+    days = (
+        players.groupby(["season", "matchday"], as_index=False)["date"]
+        .min()
+        .sort_values(["date", "season", "matchday"])
+    )
+    for day in days.itertuples(index=False):
+        season, matchday = int(day.season), int(day.matchday)
+        path = HISTORY / f"{season}-md{matchday:02d}.json"
+        if path.is_file() and os.getenv("FORCE_HISTORY") != "1":
+            print(f"skip {path.name}")
+            continue
+        cutoff = day.date
+        train = players[players["date"] < cutoff]
+        test = players[(players["season"] == season) & (players["matchday"] == matchday)].copy()
+        if train.empty or train["y_started"].nunique() < 2 or test.empty:
+            print(f"skip {season} MD{matchday}: not enough prior rows")
+            continue
+        print(f"History {season} MD{matchday}: train {len(train)} / predict {len(test)}")
+        clf = _fit(train)
+        test["p"] = _p_start(clf, _frame(test))
+        by_match: dict[int, dict] = {}
+        correct = 0
+        slots = 0
+        for (match_id, team), group in test.groupby(["match_id", "team"], sort=False):
+            scored = [
+                {
+                    "id": int(r.player_id),
+                    "name": r.player_name,
+                    "pos": r.position,
+                    "number": 0,
+                    "p": float(r.p),
+                }
+                for r in group.itertuples(index=False)
+            ]
+            chosen = _pick(scored)
+            predicted = [p["name"] for p in chosen]
+            actual = _actual_names(matches, int(match_id), str(team))
+            hit = [n for n in predicted if n in set(actual)]
+            correct += len(hit)
+            slots += 11
+            meta = matches[(matches["match_id"] == match_id) & (matches["team"] == team)]
+            is_home = int(meta.iloc[0]["is_home"]) if not meta.empty else 0
+            opponent = str(meta.iloc[0]["opponent"]) if not meta.empty else ""
+            block = {
+                "team": team,
+                "opponent": opponent,
+                "predicted": [
+                    {"name": p["name"], "pos": p["pos"], "p": round(p["p"], 3)}
+                    for p in chosen
+                ],
+                "actual": actual,
+                "correct": len(hit),
+            }
+            entry = by_match.setdefault(int(match_id), {"match_id": int(match_id), "home": None, "away": None})
+            entry["home" if is_home else "away"] = block
+        fixtures = [f for f in by_match.values() if f.get("home") and f.get("away")]
+        payload = {
+            "faithful": True,
+            "season": season,
+            "matchday": matchday,
+            "matchday_name": f"{matchday}. Spieltag",
+            "cutoff": pd.Timestamp(cutoff).isoformat(),
+            "train_rows": int(len(train)),
+            "model": "TabPFN-3.5",
+            "correct": correct,
+            "slots": slots,
+            "generated_at": pd.Timestamp.now(tz="UTC").isoformat(),
+            "note": "Fit only on team-matches played before this Spieltag.",
+            "fixtures": fixtures,
+        }
+        path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+        rate = correct / slots if slots else 0
+        print(f"  wrote {path.name} {correct}/{slots} ({rate:.0%})")
+
+
 if __name__ == "__main__":
-    run()
+    import sys
+    if len(sys.argv) > 1 and sys.argv[1] == "history":
+        write_history()
+    else:
+        run()
