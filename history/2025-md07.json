@@ -1,0 +1,1392 @@
+{
+  "faithful": true,
+  "season": 2025,
+  "matchday": 7,
+  "matchday_name": "7. Spieltag",
+  "cutoff": "2025-10-17T18:30:00",
+  "train_rows": 1797,
+  "model": "TabPFN-3.5",
+  "correct": 156,
+  "slots": 198,
+  "generated_at": "2026-09-25T13:17:40.341191+00:00",
+  "note": "Fit only on team-matches played before this Spieltag.",
+  "fixtures": [
+    {
+      "match_id": 77315,
+      "home": {
+        "team": "1. FC Union Berlin",
+        "opponent": "Borussia Mönchengladbach",
+        "predicted": [
+          {
+            "name": "Frederik Rönnow",
+            "pos": "G",
+            "p": 0.948
+          },
+          {
+            "name": "Danilho Doekhi",
+            "pos": "D",
+            "p": 0.943
+          },
+          {
+            "name": "Rani Khedira",
+            "pos": "M",
+            "p": 0.939
+          },
+          {
+            "name": "Leopold Querfeld",
+            "pos": "D",
+            "p": 0.936
+          },
+          {
+            "name": "Christopher Trimmel",
+            "pos": "M",
+            "p": 0.928
+          },
+          {
+            "name": "Andrej Ilic",
+            "pos": "F",
+            "p": 0.896
+          },
+          {
+            "name": "Diogo Leite",
+            "pos": "D",
+            "p": 0.82
+          },
+          {
+            "name": "Janik Haberer",
+            "pos": "M",
+            "p": 0.782
+          },
+          {
+            "name": "Ilyas Ansah",
+            "pos": "F",
+            "p": 0.731
+          },
+          {
+            "name": "Oliver Burke",
+            "pos": "F",
+            "p": 0.702
+          },
+          {
+            "name": "Tom Rothe",
+            "pos": "D",
+            "p": 0.566
+          }
+        ],
+        "actual": [
+          "Frederik Rönnow",
+          "Diogo Leite",
+          "Danilho Doekhi",
+          "Leopold Querfeld",
+          "Aljoscha Kemlein",
+          "Rani Khedira",
+          "Ilyas Ansah",
+          "Christopher Trimmel",
+          "Derrick Köhn",
+          "Tim Skarke",
+          "Andrej Ilic"
+        ],
+        "correct": 8
+      },
+      "away": {
+        "team": "Borussia Mönchengladbach",
+        "opponent": "1. FC Union Berlin",
+        "predicted": [
+          {
+            "name": "Moritz Nicolas",
+            "pos": "G",
+            "p": 0.948
+          },
+          {
+            "name": "Rocco Reitz",
+            "pos": "F",
+            "p": 0.937
+          },
+          {
+            "name": "Nico Elvedi",
+            "pos": "D",
+            "p": 0.937
+          },
+          {
+            "name": "Kevin Diks",
+            "pos": "D",
+            "p": 0.849
+          },
+          {
+            "name": "Joe Scally",
+            "pos": "D",
+            "p": 0.83
+          },
+          {
+            "name": "Yannik Engelhardt",
+            "pos": "M",
+            "p": 0.782
+          },
+          {
+            "name": "Lukas Ullrich",
+            "pos": "D",
+            "p": 0.751
+          },
+          {
+            "name": "Philipp Sander",
+            "pos": "M",
+            "p": 0.696
+          },
+          {
+            "name": "Kevin Stöger",
+            "pos": "M",
+            "p": 0.683
+          },
+          {
+            "name": "Shuto Machino",
+            "pos": "F",
+            "p": 0.678
+          },
+          {
+            "name": "Jens Castrop",
+            "pos": "F",
+            "p": 0.591
+          }
+        ],
+        "actual": [
+          "Moritz Nicolas",
+          "Kevin Diks",
+          "Marvin Friedrich",
+          "Joe Scally",
+          "Nico Elvedi",
+          "Yannik Engelhardt",
+          "Florian Neuhaus",
+          "Philipp Sander",
+          "Haris Tabakovic",
+          "Jens Castrop",
+          "Rocco Reitz"
+        ],
+        "correct": 8
+      }
+    },
+    {
+      "match_id": 77312,
+      "home": {
+        "team": "1. FSV Mainz 05",
+        "opponent": "Bayer 04 Leverkusen",
+        "predicted": [
+          {
+            "name": "Lasse Rieß",
+            "pos": "G",
+            "p": 0.332
+          },
+          {
+            "name": "Danny da Costa",
+            "pos": "D",
+            "p": 0.937
+          },
+          {
+            "name": "Nadiem Amiri",
+            "pos": "M",
+            "p": 0.934
+          },
+          {
+            "name": "Kaishu Sano",
+            "pos": "M",
+            "p": 0.925
+          },
+          {
+            "name": "Phillipp Mwene",
+            "pos": "M",
+            "p": 0.908
+          },
+          {
+            "name": "Dominik Kohr",
+            "pos": "D",
+            "p": 0.873
+          },
+          {
+            "name": "Paul Nebel",
+            "pos": "M",
+            "p": 0.817
+          },
+          {
+            "name": "Jae-sung Lee",
+            "pos": "M",
+            "p": 0.8
+          },
+          {
+            "name": "Arnaud Nordin",
+            "pos": "M",
+            "p": 0.761
+          },
+          {
+            "name": "Andreas Hanche-Olsen",
+            "pos": "D",
+            "p": 0.708
+          },
+          {
+            "name": "Benedict Hollerbach",
+            "pos": "F",
+            "p": 0.687
+          }
+        ],
+        "actual": [
+          "Lasse Rieß",
+          "Stefan Bell",
+          "Danny da Costa",
+          "Dominik Kohr",
+          "Phillipp Mwene",
+          "Kaishu Sano",
+          "Jae-sung Lee",
+          "Paul Nebel",
+          "Nadiem Amiri",
+          "Nikolas Veratschnig",
+          "Benedict Hollerbach"
+        ],
+        "correct": 9
+      },
+      "away": {
+        "team": "Bayer 04 Leverkusen",
+        "opponent": "1. FSV Mainz 05",
+        "predicted": [
+          {
+            "name": "Mark Flekken",
+            "pos": "G",
+            "p": 0.955
+          },
+          {
+            "name": "Alejandro Grimaldo",
+            "pos": "M",
+            "p": 0.935
+          },
+          {
+            "name": "Malik Tillman",
+            "pos": "M",
+            "p": 0.934
+          },
+          {
+            "name": "Edmond Tapsoba",
+            "pos": "D",
+            "p": 0.928
+          },
+          {
+            "name": "Jarell Quansah",
+            "pos": "D",
+            "p": 0.898
+          },
+          {
+            "name": "Loïc Badé",
+            "pos": "D",
+            "p": 0.866
+          },
+          {
+            "name": "Aleix García",
+            "pos": "M",
+            "p": 0.808
+          },
+          {
+            "name": "Robert Andrich",
+            "pos": "M",
+            "p": 0.765
+          },
+          {
+            "name": "Lucas Vázquez",
+            "pos": "M",
+            "p": 0.706
+          },
+          {
+            "name": "Eliesse Ben Seghir",
+            "pos": "F",
+            "p": 0.451
+          },
+          {
+            "name": "Christian Kofane",
+            "pos": "F",
+            "p": 0.392
+          }
+        ],
+        "actual": [
+          "Mark Flekken",
+          "Loïc Badé",
+          "Robert Andrich",
+          "Edmond Tapsoba",
+          "Equi Fernández",
+          "Jonas Hofmann",
+          "Arthur",
+          "Ernest Poku",
+          "Alejandro Grimaldo",
+          "Aleix García",
+          "Christian Kofane"
+        ],
+        "correct": 7
+      }
+    },
+    {
+      "match_id": 77313,
+      "home": {
+        "team": "RB Leipzig",
+        "opponent": "Hamburger SV",
+        "predicted": [
+          {
+            "name": "Péter Gulácsi",
+            "pos": "G",
+            "p": 0.944
+          },
+          {
+            "name": "David Raum",
+            "pos": "D",
+            "p": 0.93
+          },
+          {
+            "name": "Ridle Baku",
+            "pos": "D",
+            "p": 0.923
+          },
+          {
+            "name": "Willi Orbán",
+            "pos": "D",
+            "p": 0.921
+          },
+          {
+            "name": "Castello Lukeba",
+            "pos": "D",
+            "p": 0.915
+          },
+          {
+            "name": "Johan Bakayoko",
+            "pos": "F",
+            "p": 0.913
+          },
+          {
+            "name": "Christoph Baumgartner",
+            "pos": "M",
+            "p": 0.894
+          },
+          {
+            "name": "Rômulo",
+            "pos": "F",
+            "p": 0.817
+          },
+          {
+            "name": "Nicolas Seiwald",
+            "pos": "M",
+            "p": 0.815
+          },
+          {
+            "name": "Antonio Nusa",
+            "pos": "F",
+            "p": 0.615
+          },
+          {
+            "name": "Assan Ouédraogo",
+            "pos": "M",
+            "p": 0.524
+          }
+        ],
+        "actual": [
+          "Péter Gulácsi",
+          "Willi Orbán",
+          "Ridle Baku",
+          "David Raum",
+          "Castello Lukeba",
+          "Nicolas Seiwald",
+          "Christoph Baumgartner",
+          "Assan Ouédraogo",
+          "Antonio Nusa",
+          "Johan Bakayoko",
+          "Rômulo"
+        ],
+        "correct": 11
+      },
+      "away": {
+        "team": "Hamburger SV",
+        "opponent": "RB Leipzig",
+        "predicted": [
+          {
+            "name": "Daniel Heuer Fernandes",
+            "pos": "G",
+            "p": 0.958
+          },
+          {
+            "name": "Nicolai Remberg",
+            "pos": "M",
+            "p": 0.942
+          },
+          {
+            "name": "Miro Muheim",
+            "pos": "M",
+            "p": 0.917
+          },
+          {
+            "name": "Ransford Königsdörffer",
+            "pos": "F",
+            "p": 0.873
+          },
+          {
+            "name": "Daniel Elfadli",
+            "pos": "D",
+            "p": 0.872
+          },
+          {
+            "name": "Giorgi Gocholeishvili",
+            "pos": "M",
+            "p": 0.85
+          },
+          {
+            "name": "Luka Vuskovic",
+            "pos": "D",
+            "p": 0.81
+          },
+          {
+            "name": "Nicolás Capaldo",
+            "pos": "D",
+            "p": 0.672
+          },
+          {
+            "name": "Jean-Luc Dompé",
+            "pos": "F",
+            "p": 0.626
+          },
+          {
+            "name": "Rayan Philippe",
+            "pos": "F",
+            "p": 0.579
+          },
+          {
+            "name": "Albert Sambi Lokonga",
+            "pos": "M",
+            "p": 0.348
+          }
+        ],
+        "actual": [
+          "Daniel Heuer Fernandes",
+          "Daniel Elfadli",
+          "Nicolás Capaldo",
+          "Luka Vuskovic",
+          "William Mikelbrencis",
+          "Albert Sambi Lokonga",
+          "Nicolai Remberg",
+          "Miro Muheim",
+          "Jean-Luc Dompé",
+          "Ransford Königsdörffer",
+          "Rayan Philippe"
+        ],
+        "correct": 10
+      }
+    },
+    {
+      "match_id": 77314,
+      "home": {
+        "team": "VfL Wolfsburg",
+        "opponent": "VfB Stuttgart",
+        "predicted": [
+          {
+            "name": "Kamil Grabara",
+            "pos": "G",
+            "p": 0.937
+          },
+          {
+            "name": "Moritz Jenz",
+            "pos": "D",
+            "p": 0.936
+          },
+          {
+            "name": "Maximilian Arnold",
+            "pos": "M",
+            "p": 0.935
+          },
+          {
+            "name": "Kilian Fischer",
+            "pos": "D",
+            "p": 0.932
+          },
+          {
+            "name": "Konstantinos Koulierakis",
+            "pos": "D",
+            "p": 0.921
+          },
+          {
+            "name": "Vini Souza",
+            "pos": "M",
+            "p": 0.915
+          },
+          {
+            "name": "Joakim Maehle",
+            "pos": "D",
+            "p": 0.878
+          },
+          {
+            "name": "Andreas Skov Olsen",
+            "pos": "F",
+            "p": 0.747
+          },
+          {
+            "name": "Mohamed Amoura",
+            "pos": "F",
+            "p": 0.698
+          },
+          {
+            "name": "Lovro Majer",
+            "pos": "M",
+            "p": 0.61
+          },
+          {
+            "name": "Dzenan Pejcinovic",
+            "pos": "F",
+            "p": 0.528
+          }
+        ],
+        "actual": [
+          "Kamil Grabara",
+          "Kilian Fischer",
+          "Konstantinos Koulierakis",
+          "Moritz Jenz",
+          "Aaron Zehnter",
+          "Vini Souza",
+          "Christian Eriksen",
+          "Mattias Svanberg",
+          "Adam Daghim",
+          "Joakim Maehle",
+          "Jonas Wind"
+        ],
+        "correct": 6
+      },
+      "away": {
+        "team": "VfB Stuttgart",
+        "opponent": "VfL Wolfsburg",
+        "predicted": [
+          {
+            "name": "Alexander Nübel",
+            "pos": "G",
+            "p": 0.934
+          },
+          {
+            "name": "Ermedin Demirovic",
+            "pos": "F",
+            "p": 0.914
+          },
+          {
+            "name": "Bilal El Khannouss",
+            "pos": "M",
+            "p": 0.87
+          },
+          {
+            "name": "Maximilian Mittelstädt",
+            "pos": "D",
+            "p": 0.851
+          },
+          {
+            "name": "Jeff Chabot",
+            "pos": "D",
+            "p": 0.839
+          },
+          {
+            "name": "Jamie Leweling",
+            "pos": "F",
+            "p": 0.836
+          },
+          {
+            "name": "Atakan Karazor",
+            "pos": "M",
+            "p": 0.835
+          },
+          {
+            "name": "Luca Jaquez",
+            "pos": "D",
+            "p": 0.795
+          },
+          {
+            "name": "Angelo Stiller",
+            "pos": "M",
+            "p": 0.765
+          },
+          {
+            "name": "Josha Vagnoman",
+            "pos": "D",
+            "p": 0.692
+          },
+          {
+            "name": "Tiago Tomás",
+            "pos": "F",
+            "p": 0.51
+          }
+        ],
+        "actual": [
+          "Alexander Nübel",
+          "Ramon Hendriks",
+          "Luca Jaquez",
+          "Jeff Chabot",
+          "Angelo Stiller",
+          "Maximilian Mittelstädt",
+          "Bilal El Khannouss",
+          "Lorenz Assignon",
+          "Nikolas Nartey",
+          "Chema Andrés",
+          "Tiago Tomás"
+        ],
+        "correct": 7
+      }
+    },
+    {
+      "match_id": 77317,
+      "home": {
+        "team": "1. FC Heidenheim 1846",
+        "opponent": "SV Werder Bremen",
+        "predicted": [
+          {
+            "name": "Diant Ramaj",
+            "pos": "G",
+            "p": 0.942
+          },
+          {
+            "name": "Patrick Mainka",
+            "pos": "D",
+            "p": 0.924
+          },
+          {
+            "name": "Arijon Ibrahimovic",
+            "pos": "F",
+            "p": 0.88
+          },
+          {
+            "name": "Jan Schöppner",
+            "pos": "M",
+            "p": 0.837
+          },
+          {
+            "name": "Jonas Föhrenbach",
+            "pos": "D",
+            "p": 0.836
+          },
+          {
+            "name": "Niklas Dorsch",
+            "pos": "M",
+            "p": 0.801
+          },
+          {
+            "name": "Omar Traoré",
+            "pos": "D",
+            "p": 0.764
+          },
+          {
+            "name": "Mikkel Kaufmann",
+            "pos": "F",
+            "p": 0.716
+          },
+          {
+            "name": "Luca Kerber",
+            "pos": "F",
+            "p": 0.691
+          },
+          {
+            "name": "Benedikt Gimber",
+            "pos": "D",
+            "p": 0.627
+          },
+          {
+            "name": "Tim Siersleben",
+            "pos": "D",
+            "p": 0.505
+          }
+        ],
+        "actual": [
+          "Diant Ramaj",
+          "Tim Siersleben",
+          "Patrick Mainka",
+          "Jonas Föhrenbach",
+          "Omar Traoré",
+          "Jan Schöppner",
+          "Niklas Dorsch",
+          "Budu Zivzivadze",
+          "Adrian Beck",
+          "Arijon Ibrahimovic",
+          "Mikkel Kaufmann"
+        ],
+        "correct": 9
+      },
+      "away": {
+        "team": "SV Werder Bremen",
+        "opponent": "1. FC Heidenheim 1846",
+        "predicted": [
+          {
+            "name": "Karl Hein",
+            "pos": "G",
+            "p": 0.506
+          },
+          {
+            "name": "Felix Agu",
+            "pos": "D",
+            "p": 0.929
+          },
+          {
+            "name": "Romano Schmid",
+            "pos": "F",
+            "p": 0.923
+          },
+          {
+            "name": "Senne Lynen",
+            "pos": "M",
+            "p": 0.918
+          },
+          {
+            "name": "Yukinari Sugawara",
+            "pos": "D",
+            "p": 0.894
+          },
+          {
+            "name": "Cameron Puertas",
+            "pos": "M",
+            "p": 0.894
+          },
+          {
+            "name": "Marco Friedl",
+            "pos": "D",
+            "p": 0.885
+          },
+          {
+            "name": "Jens Stage",
+            "pos": "M",
+            "p": 0.885
+          },
+          {
+            "name": "Samuel Mbangula",
+            "pos": "F",
+            "p": 0.848
+          },
+          {
+            "name": "Justin Njinmah",
+            "pos": "F",
+            "p": 0.817
+          },
+          {
+            "name": "Karim Coulibaly",
+            "pos": "D",
+            "p": 0.815
+          }
+        ],
+        "actual": [
+          "Mio Backhaus",
+          "Yukinari Sugawara",
+          "Amos Pieper",
+          "Karim Coulibaly",
+          "Marco Friedl",
+          "Jens Stage",
+          "Cameron Puertas",
+          "Patrice Covic",
+          "Samuel Mbangula",
+          "Marco Grüll",
+          "Romano Schmid"
+        ],
+        "correct": 7
+      }
+    },
+    {
+      "match_id": 77318,
+      "home": {
+        "team": "1. FC Köln",
+        "opponent": "FC Augsburg",
+        "predicted": [
+          {
+            "name": "Marvin Schwäbe",
+            "pos": "G",
+            "p": 0.934
+          },
+          {
+            "name": "Timo Hübers",
+            "pos": "D",
+            "p": 0.933
+          },
+          {
+            "name": "Eric Martel",
+            "pos": "M",
+            "p": 0.933
+          },
+          {
+            "name": "Sebastian Sebulonsen",
+            "pos": "M",
+            "p": 0.932
+          },
+          {
+            "name": "Jakub Kamiński",
+            "pos": "F",
+            "p": 0.896
+          },
+          {
+            "name": "Jan Thielmann",
+            "pos": "M",
+            "p": 0.894
+          },
+          {
+            "name": "Joël Schmied",
+            "pos": "D",
+            "p": 0.838
+          },
+          {
+            "name": "Ísak Jóhannesson",
+            "pos": "M",
+            "p": 0.822
+          },
+          {
+            "name": "Kristoffer Lund",
+            "pos": "M",
+            "p": 0.738
+          },
+          {
+            "name": "Tom Krauß",
+            "pos": "M",
+            "p": 0.441
+          },
+          {
+            "name": "Dominique Heintz",
+            "pos": "D",
+            "p": 0.391
+          }
+        ],
+        "actual": [
+          "Marvin Schwäbe",
+          "Joël Schmied",
+          "Dominique Heintz",
+          "Timo Hübers",
+          "Eric Martel",
+          "Ísak Jóhannesson",
+          "Sebastian Sebulonsen",
+          "Kristoffer Lund",
+          "Luca Waldschmidt",
+          "Jakub Kamiński",
+          "Jan Thielmann"
+        ],
+        "correct": 10
+      },
+      "away": {
+        "team": "FC Augsburg",
+        "opponent": "1. FC Köln",
+        "predicted": [
+          {
+            "name": "Finn Dahmen",
+            "pos": "G",
+            "p": 0.946
+          },
+          {
+            "name": "Chrislain Matsima",
+            "pos": "D",
+            "p": 0.929
+          },
+          {
+            "name": "Han-Noah Massengo",
+            "pos": "M",
+            "p": 0.889
+          },
+          {
+            "name": "Fabian Rieder",
+            "pos": "F",
+            "p": 0.862
+          },
+          {
+            "name": "Mert Kömür",
+            "pos": "F",
+            "p": 0.821
+          },
+          {
+            "name": "Elias Saad",
+            "pos": "F",
+            "p": 0.818
+          },
+          {
+            "name": "Kristijan Jakic",
+            "pos": "D",
+            "p": 0.81
+          },
+          {
+            "name": "Robin Fellhauer",
+            "pos": "F",
+            "p": 0.717
+          },
+          {
+            "name": "Dimitrios Giannoulis",
+            "pos": "D",
+            "p": 0.65
+          },
+          {
+            "name": "Keven Schlotterbeck",
+            "pos": "D",
+            "p": 0.618
+          },
+          {
+            "name": "Elvis Rexhbecaj",
+            "pos": "M",
+            "p": 0.539
+          }
+        ],
+        "actual": [
+          "Finn Dahmen",
+          "Chrislain Matsima",
+          "Kristijan Jakic",
+          "Noahkai Banks",
+          "Han-Noah Massengo",
+          "Dimitrios Giannoulis",
+          "Robin Fellhauer",
+          "Anton Kade",
+          "Fabian Rieder",
+          "Elias Saad",
+          "Mert Kömür"
+        ],
+        "correct": 9
+      }
+    },
+    {
+      "match_id": 77310,
+      "home": {
+        "team": "FC Bayern München",
+        "opponent": "Borussia Dortmund",
+        "predicted": [
+          {
+            "name": "Manuel Neuer",
+            "pos": "G",
+            "p": 0.942
+          },
+          {
+            "name": "Konrad Laimer",
+            "pos": "D",
+            "p": 0.921
+          },
+          {
+            "name": "Luis Díaz",
+            "pos": "F",
+            "p": 0.917
+          },
+          {
+            "name": "Harry Kane",
+            "pos": "F",
+            "p": 0.914
+          },
+          {
+            "name": "Jonathan Tah",
+            "pos": "D",
+            "p": 0.909
+          },
+          {
+            "name": "Dayot Upamecano",
+            "pos": "D",
+            "p": 0.837
+          },
+          {
+            "name": "Leon Goretzka",
+            "pos": "M",
+            "p": 0.827
+          },
+          {
+            "name": "Serge Gnabry",
+            "pos": "F",
+            "p": 0.822
+          },
+          {
+            "name": "Michael Olise",
+            "pos": "F",
+            "p": 0.8
+          },
+          {
+            "name": "Joshua Kimmich",
+            "pos": "M",
+            "p": 0.672
+          },
+          {
+            "name": "Sacha Boey",
+            "pos": "D",
+            "p": 0.602
+          }
+        ],
+        "actual": [
+          "Manuel Neuer",
+          "Dayot Upamecano",
+          "Jonathan Tah",
+          "Sacha Boey",
+          "Konrad Laimer",
+          "Joshua Kimmich",
+          "Aleksandar Pavlovic",
+          "Harry Kane",
+          "Nicolas Jackson",
+          "Luis Díaz",
+          "Michael Olise"
+        ],
+        "correct": 9
+      },
+      "away": {
+        "team": "Borussia Dortmund",
+        "opponent": "FC Bayern München",
+        "predicted": [
+          {
+            "name": "Gregor Kobel",
+            "pos": "G",
+            "p": 0.945
+          },
+          {
+            "name": "Waldemar Anton",
+            "pos": "D",
+            "p": 0.941
+          },
+          {
+            "name": "Ramy Bensebaini",
+            "pos": "D",
+            "p": 0.935
+          },
+          {
+            "name": "Daniel Svensson",
+            "pos": "M",
+            "p": 0.933
+          },
+          {
+            "name": "Nico Schlotterbeck",
+            "pos": "D",
+            "p": 0.891
+          },
+          {
+            "name": "Yan Couto",
+            "pos": "M",
+            "p": 0.859
+          },
+          {
+            "name": "Maximilian Beier",
+            "pos": "F",
+            "p": 0.855
+          },
+          {
+            "name": "Marcel Sabitzer",
+            "pos": "M",
+            "p": 0.828
+          },
+          {
+            "name": "Serhou Guirassy",
+            "pos": "F",
+            "p": 0.808
+          },
+          {
+            "name": "Karim Adeyemi",
+            "pos": "F",
+            "p": 0.792
+          },
+          {
+            "name": "Felix Nmecha",
+            "pos": "M",
+            "p": 0.72
+          }
+        ],
+        "actual": [
+          "Gregor Kobel",
+          "Waldemar Anton",
+          "Nico Schlotterbeck",
+          "Niklas Süle",
+          "Felix Nmecha",
+          "Pascal Groß",
+          "Marcel Sabitzer",
+          "Daniel Svensson",
+          "Julian Ryerson",
+          "Serhou Guirassy",
+          "Karim Adeyemi"
+        ],
+        "correct": 8
+      }
+    },
+    {
+      "match_id": 77311,
+      "home": {
+        "team": "SC Freiburg",
+        "opponent": "Eintracht Frankfurt",
+        "predicted": [
+          {
+            "name": "Noah Atubolu",
+            "pos": "G",
+            "p": 0.949
+          },
+          {
+            "name": "Matthias Ginter",
+            "pos": "D",
+            "p": 0.94
+          },
+          {
+            "name": "Vincenzo Grifo",
+            "pos": "F",
+            "p": 0.926
+          },
+          {
+            "name": "Maximilian Eggestein",
+            "pos": "M",
+            "p": 0.923
+          },
+          {
+            "name": "Patrick Osterhage",
+            "pos": "M",
+            "p": 0.893
+          },
+          {
+            "name": "Niklas Beste",
+            "pos": "F",
+            "p": 0.884
+          },
+          {
+            "name": "Philipp Lienhart",
+            "pos": "D",
+            "p": 0.848
+          },
+          {
+            "name": "Lucas Höler",
+            "pos": "F",
+            "p": 0.825
+          },
+          {
+            "name": "Johan Manzambi",
+            "pos": "F",
+            "p": 0.66
+          },
+          {
+            "name": "Christian Günter",
+            "pos": "D",
+            "p": 0.53
+          },
+          {
+            "name": "Junior Adamu",
+            "pos": "F",
+            "p": 0.529
+          }
+        ],
+        "actual": [
+          "Noah Atubolu",
+          "Philipp Lienhart",
+          "Lukas Kübler",
+          "Matthias Ginter",
+          "Jordy Makengo",
+          "Maximilian Eggestein",
+          "Derry Scherhant",
+          "Lucas Höler",
+          "Niklas Beste",
+          "Junior Adamu",
+          "Johan Manzambi"
+        ],
+        "correct": 8
+      },
+      "away": {
+        "team": "Eintracht Frankfurt",
+        "opponent": "SC Freiburg",
+        "predicted": [
+          {
+            "name": "Kauã Santos",
+            "pos": "G",
+            "p": 0.695
+          },
+          {
+            "name": "Robin Koch",
+            "pos": "D",
+            "p": 0.925
+          },
+          {
+            "name": "Arthur Theate",
+            "pos": "D",
+            "p": 0.92
+          },
+          {
+            "name": "Ritsu Doan",
+            "pos": "F",
+            "p": 0.91
+          },
+          {
+            "name": "Can Uzun",
+            "pos": "M",
+            "p": 0.876
+          },
+          {
+            "name": "Farès Chaïbi",
+            "pos": "M",
+            "p": 0.755
+          },
+          {
+            "name": "Nnamdi Collins",
+            "pos": "D",
+            "p": 0.752
+          },
+          {
+            "name": "Jean-Mattéo Bahoya",
+            "pos": "F",
+            "p": 0.745
+          },
+          {
+            "name": "Jonathan Burkardt",
+            "pos": "F",
+            "p": 0.742
+          },
+          {
+            "name": "Hugo Larsson",
+            "pos": "M",
+            "p": 0.692
+          },
+          {
+            "name": "Nathaniel Brown",
+            "pos": "D",
+            "p": 0.601
+          }
+        ],
+        "actual": [
+          "Kauã Santos",
+          "Arthur Theate",
+          "Robin Koch",
+          "Aurèle Amenda",
+          "Rasmus Nissen Kristensen",
+          "Farès Chaïbi",
+          "Hugo Larsson",
+          "Can Uzun",
+          "Jonathan Burkardt",
+          "Ritsu Doan",
+          "Nathaniel Brown"
+        ],
+        "correct": 9
+      }
+    },
+    {
+      "match_id": 77316,
+      "home": {
+        "team": "FC St. Pauli",
+        "opponent": "TSG Hoffenheim",
+        "predicted": [
+          {
+            "name": "Nikola Vasilj",
+            "pos": "G",
+            "p": 0.953
+          },
+          {
+            "name": "Eric Smith",
+            "pos": "D",
+            "p": 0.942
+          },
+          {
+            "name": "Danel Sinani",
+            "pos": "M",
+            "p": 0.932
+          },
+          {
+            "name": "Hauke Wahl",
+            "pos": "D",
+            "p": 0.927
+          },
+          {
+            "name": "James Sands",
+            "pos": "M",
+            "p": 0.914
+          },
+          {
+            "name": "Louis Oppie",
+            "pos": "M",
+            "p": 0.914
+          },
+          {
+            "name": "Mathias Pereira Lage",
+            "pos": "F",
+            "p": 0.91
+          },
+          {
+            "name": "Joel Chima Fujita",
+            "pos": "M",
+            "p": 0.897
+          },
+          {
+            "name": "Arkadiusz Pyrka",
+            "pos": "M",
+            "p": 0.697
+          },
+          {
+            "name": "Adam Dzwigala",
+            "pos": "D",
+            "p": 0.636
+          },
+          {
+            "name": "Lars Ritzka",
+            "pos": "D",
+            "p": 0.43
+          }
+        ],
+        "actual": [
+          "Nikola Vasilj",
+          "Eric Smith",
+          "Lars Ritzka",
+          "Adam Dzwigala",
+          "James Sands",
+          "Danel Sinani",
+          "Arkadiusz Pyrka",
+          "Joel Chima Fujita",
+          "Louis Oppie",
+          "Martijn Kaars",
+          "Mathias Pereira Lage"
+        ],
+        "correct": 10
+      },
+      "away": {
+        "team": "TSG Hoffenheim",
+        "opponent": "FC St. Pauli",
+        "predicted": [
+          {
+            "name": "Oliver Baumann",
+            "pos": "G",
+            "p": 0.932
+          },
+          {
+            "name": "Vladimír Coufal",
+            "pos": "D",
+            "p": 0.929
+          },
+          {
+            "name": "Bernardo",
+            "pos": "D",
+            "p": 0.928
+          },
+          {
+            "name": "Leon Avdullahu",
+            "pos": "M",
+            "p": 0.921
+          },
+          {
+            "name": "Fisnik Asllani",
+            "pos": "F",
+            "p": 0.921
+          },
+          {
+            "name": "Robin Hranac",
+            "pos": "D",
+            "p": 0.919
+          },
+          {
+            "name": "Bazoumana Touré",
+            "pos": "F",
+            "p": 0.877
+          },
+          {
+            "name": "Wouter Burger",
+            "pos": "M",
+            "p": 0.821
+          },
+          {
+            "name": "Tim Lemperle",
+            "pos": "F",
+            "p": 0.793
+          },
+          {
+            "name": "Albian Hajdari",
+            "pos": "D",
+            "p": 0.719
+          },
+          {
+            "name": "Andrej Kramaric",
+            "pos": "F",
+            "p": 0.633
+          }
+        ],
+        "actual": [
+          "Oliver Baumann",
+          "Robin Hranac",
+          "Bernardo",
+          "Albian Hajdari",
+          "Vladimír Coufal",
+          "Leon Avdullahu",
+          "Wouter Burger",
+          "Fisnik Asllani",
+          "Tim Lemperle",
+          "Andrej Kramaric",
+          "Bazoumana Touré"
+        ],
+        "correct": 11
+      }
+    }
+  ]
+}
