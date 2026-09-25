@@ -4,10 +4,6 @@ import os
 from collections import defaultdict
 from pathlib import Path
 
-import matplotlib
-
-matplotlib.use("Agg")
-import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import requests
@@ -783,6 +779,11 @@ def _top_shap_features(sv, n=16):
 
 def explain_matchups(clf, train_X, fixture_X, rows, out_dir=EXPLAIN_DIR, budget=SHAP_BUDGET):
     """Build SHAP waterfall plots for each fixture (TabPFN shapiq or shap fallback)."""
+    import matplotlib
+
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+
     out_dir = Path(out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
     labels = np.array([FEATURE_LABELS.get(f, f) for f in FEATURES])
@@ -973,4 +974,5 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    from xi_model import run
+    run()

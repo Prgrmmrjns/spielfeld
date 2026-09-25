@@ -7,6 +7,7 @@ bundesliga_results.csv
 predictions.csv
 /predictions.json
 api_football_cache.json
+data/cache/
 wiki_squads_cache.json
 .env.local
 *.egg-info/

@@ -41,20 +41,24 @@
               SPIELFELD
             </h1>
             <p class="hero-copy">
+              {% if payload.task == "best_xi" %}
+              Best XI for each club this Spieltag, predicted from that club’s last game.
+              {% else %}
               Next-matchday tips with live XIs, pitch boards, and a ShapIQ lab for lineup what-ifs.
+              {% endif %}
             </p>
           </div>
           <div class="hero-actions animate-rise delay-1">
             <a class="cta" href="#tips">Matchday tips</a>
-            <p class="hero-meta"><a href="/about">{{ payload.model }} · {{ payload.train_matches }} matches · About</a></p>
+            <p class="hero-meta"><a href="/about">{{ payload.model }} · {{ payload.train_rows or payload.train_matches }} rows · About</a></p>
           </div>
         </section>
 
         <section id="tips" class="tips">
           <div class="tips-head">
             <div>
-              <h2>Matchday tips</h2>
-              <p>Open a matchup for the 11v11 board, XI swaps, and ShapIQ drivers.</p>
+              <h2>{% if payload.task == "best_xi" %}Matchday XIs{% else %}Matchday tips{% endif %}</h2>
+              <p>{% if payload.task == "best_xi" %}Open a matchup for the predicted elevens, built from each side’s previous game.{% else %}Open a matchup for the 11v11 board, XI swaps, and ShapIQ drivers.{% endif %}</p>
             </div>
             <div class="tips-meta">
               <p id="lineups-stamp"></p>
@@ -94,6 +98,16 @@
                   <div class="mini-pitch" data-mini-pitch="{{ match.match_id }}" aria-hidden="true"></div>
 
                   <div class="match-tip">
+                    {% if match.best_xi %}
+                    <div class="tip-block">
+                      <div>
+                        <p class="muted-xs">Best XI</p>
+                        <p class="tip-value">from last game</p>
+                      </div>
+                    </div>
+                    <p class="xi-label">{{ match.home_short }} · {{ match.best_xi.home.summary }}</p>
+                    <p class="xi-label">{{ match.away_short }} · {{ match.best_xi.away.summary }}</p>
+                    {% else %}
                     <div class="tip-block">
                       <div>
                         <p class="muted-xs">Tip</p>
@@ -118,6 +132,7 @@
                         <span class="pct">{{ match.p_away_win|pct }}%</span>
                       </div>
                     </div>
+                    {% endif %}
                   </div>
                 </button>
               </article>
@@ -151,6 +166,6 @@
   </div>
 
   <script id="payload-data" type="application/json">{{ payload_json | safe }}</script>
-  <script src="/js/app.js?v=preset1"></script>
+  <script src="/js/app.js?v=xi1"></script>
 </body>
 </html>

@@ -42,48 +42,48 @@
           <article class="about-card animate-rise">
             <h2>What you see</h2>
             <p>
-              For the next Bundesliga Spieltag we show a tip for each match —
-              home win, draw, or away win — with percentages. Open a match for the pitch board,
-              player swaps, and ShapIQ drivers.
+              For the next Bundesliga Spieltag we predict a best XI for each club
+              from that club’s previous match: who started, who was on the bench,
+              the result, and the next opponent. Open a match for the pitch board.
             </p>
           </article>
 
           <article class="about-card animate-rise delay-1">
             <h2>How much data?</h2>
             <p>
-              The current model was trained on
-              <strong>{{ payload.train_matches or "—" }} finished Bundesliga matches</strong>
-              (from OpenLigaDB results, seasons from 2019/20 onward, capped for training size).
+              The training table is <strong>{{ payload.train_rows or "—" }} player rows</strong>
+              from <strong>{{ payload.train_matches or "—" }} team-matches</strong>.
+              One row is one player who started the previous game or sat on that bench.
+              The label is whether they started the next game.
+              Files: <code>data/xi_matches.csv</code> (one row per team-match) and
+              <code>data/xi_players.csv</code> (the TabPFN table).
             </p>
             <p>
               Model in use: <strong>{{ payload.model or "—" }}</strong>.
               Predictions generated: <strong>{{ payload.generated_at or "—" }}</strong>.
-              Lineups provider: <strong>{{ payload.lineups_provider or "—" }}</strong>.
             </p>
             <p>
-              <strong>Player information is in the model.</strong>
-              Each tip uses starting-XI features: whole-XI strength, GK/DEF/MID/FWD lines,
-              top-player edge, and matchups such as home attack vs away defence.
-              {% if payload.uses_player_xi %}This run was built with those player-XI inputs on.{% endif %}
+              OpenLigaDB supplies fixtures and results. Transfermarkt supplies the
+              starting XI and the bench after each game. Ratings, market values, and
+              tracking data are not in the table.
             </p>
             <p class="muted">
-              Match history is still results + engineered features — not raw tracking data —
-              but who is expected to play feeds the probability, not only the lab UI.
+              After a matchday finishes, the refresh job appends those games and refits
+              TabPFN 3.5 through the Prior Labs API. A run with no new games does not refit.
             </p>
           </article>
 
           <article class="about-card animate-rise">
             <h2>What is TabPFN?</h2>
             <p>
-              <strong>TabPFN</strong> is a “tabular prior-data fitted network”: a model family built for
-              spreadsheet-style data (rows of matches, columns of features). Think of it as a strong
-              modern classifier for tables — here, home / draw / away.
+              <strong>TabPFN 3.5</strong> is a tabular foundation model. The app calls the
+              Prior Labs API (<code>TabPFN-3.5</code> via <code>tabpfn-client</code>) and fits
+              one classifier: the chance a player starts, given the last XI.
             </p>
             <p>
-              We engineer features such as ELO-style ratings, recent form, goals, rest days,
-              head-to-head, squad value, and <strong>player XI lines / matchups</strong>.
-              TabPFN learns the mapping from those features to home / draw / away
-              probabilities — including the player XI line and matchup features.
+              The best XI is the most likely goalkeeper plus the ten most likely outfield
+              players from last game’s starters and substitutes. Players outside that
+              squad are not candidates.
             </p>
           </article>
 
@@ -111,19 +111,11 @@
           <article class="about-card animate-rise">
             <h2>Lineups &amp; Best XI</h2>
             <p>
-              Before tipping a matchday we resolve an XI per side. Prefer API-Football confirmed /
-              last XIs when a key is set; otherwise published 2025–27 squad lists
-              (footballsquads / Wikipedia) and an estimated eleven. Those player ratings go into
-              the prediction features, then into the pitch lab.
-            </p>
-            <p>
-              <strong>Best XI</strong> rebuilds the side from the strongest available players
-              (best GK + top outfield). The tip can move when the XI strength gap changes.
-              If the board is already optimal you will see “already strongest by rating”.
+              The pitch shows the predicted XI. Shirt strength on the board is that player’s
+              predicted start probability. The lab can still swap in someone from the previous bench.
             </p>
             <p class="muted">
-              Squad-list strengths are estimates, not Transfermarkt. Confirmed matchday lineups
-              win when API-Football is configured.
+              {{ payload.data_note or "Lineups come from published match reports, not a live team sheet." }}
             </p>
           </article>
 

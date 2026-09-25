@@ -4,7 +4,7 @@
 
 # Spielfeld
 
-Bundesliga matchday tips with TabPFN, live XIs, an 11v11 pitch board, and ShapIQ explanations.
+Bundesliga best-XI predictions with TabPFN 3.5, from each club’s last game.
 
 **Live:** [spielfeld.vercel.app](https://spielfeld.vercel.app)
 
@@ -41,17 +41,16 @@ Open [http://localhost:8000](http://localhost:8000).
 | `/api/refresh-lineups` | Cron / manual lineup refresh |
 
 ```bash
-python scripts/refresh_lineups.py   # refresh XIs in baked JSON
-python predict.py                   # retrain TabPFN + ShapIQ + write predictions
+python predict.py                   # append new matchday rows, refit TabPFN 3.5, write XIs
 ```
 
-## Starting XIs
+## Best XI
 
-1. **Confirmed** API-Football lineups when published  
-2. Else **last starting XI** from the club’s most recent finished match  
-3. Else squad estimate (Wikipedia / footballsquads)
+The model sees who started the last game and who was on the bench, plus the result, rest, and the next opponent. It predicts who starts next. The XI is the likeliest goalkeeper and the ten likeliest outfield players from that group.
 
-Refresh paths: Vercel daily cron → `GET /api/refresh-lineups`, browser poll every 15 min, or GitHub Action running `predict.py`.
+Tables: `data/xi_matches.csv` (one row per team-match) and `data/xi_players.csv` (training rows).
+
+GitHub Actions runs `predict.py` on matchday evenings and each morning. If OpenLigaDB has no newly finished matchday, it does not refit.
 
 ## Vercel
 
@@ -59,16 +58,13 @@ FastAPI entry: `app/main.py`. Static assets in `public/` (CSS, JS, icon, SHAP pl
 
 Set `API_FOOTBALL_KEY` in the Vercel project env. `TABPFN_API_KEY` is only needed for GitHub Actions / local `predict.py`.
 
-## Features (model)
+## Training columns
 
-| Feature | Description |
+| Column | Source |
 |---|---|
-| `elo_diff` | ELO gap with home advantage |
-| `form5_diff` / `form10_diff` | Points-per-game form gaps |
-| `home_gf5` / `home_ga5` | Recent goals for / against |
-| `h2h_*` | Head-to-head win/draw/goal-diff stats |
-| `home_rest` / `away_rest` | Days since last match |
-| `value_diff` | Approximate squad-value gap |
-| `*_xi_*` / line & star gaps | Starting-XI strength and player-derived units |
+| `team`, `opponent`, `is_home`, `matchday` | OpenLigaDB |
+| `rest_days`, `last_points`, `last_gd` | previous OpenLigaDB result |
+| `player_name`, `position`, `started_last`, `on_bench_last` | Transfermarkt last XI / bench |
+| `y_started` | Transfermarkt XI of the match being predicted |
 
-Data: [OpenLigaDB](https://www.openligadb.de/) (`bl1`) + [API-Football](https://www.api-football.com/) / squad lists.
+Data: [OpenLigaDB](https://www.openligadb.de/) (`bl1`) and Transfermarkt lineups. API-Football is optional and is not required for this table.

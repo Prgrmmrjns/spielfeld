@@ -49,6 +49,16 @@ def predictions_path() -> Path:
     return path
 
 
+def _keep_predicted(match: dict) -> bool:
+    """TabPFN best XIs are the baked lineup. Live refresh must not replace them."""
+    lineups = match.get("lineups") or {}
+    sources = {
+        (lineups.get("home") or {}).get("source"),
+        (lineups.get("away") or {}).get("source"),
+    }
+    return "predicted" in sources
+
+
 def _stale_api_season(season: int | None) -> bool:
     """Free API-Football plans often stop at 2024 — treat that as stale for 2026 UI."""
     if season is None:
@@ -92,6 +102,9 @@ def build_live_lineups(payload: dict | None = None) -> dict:
             mid = p.get("match_id")
             if mid is None:
                 continue
+            if _keep_predicted(p):
+                out[str(mid)] = p.get("lineups")
+                continue
             fx = None
             try:
                 fx = af.find_fixture(p["home_team"], p["away_team"], p.get("date"), season=season)
@@ -133,6 +146,9 @@ def build_live_lineups(payload: dict | None = None) -> dict:
         for p in preds:
             mid = p.get("match_id")
             if mid is None:
+                continue
+            if _keep_predicted(p):
+                out[str(mid)] = p.get("lineups")
                 continue
             baked = p.get("lineups") or {}
             home = dict(baked.get("home") or {})

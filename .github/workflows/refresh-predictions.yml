@@ -3,12 +3,17 @@ name: Refresh Bundesliga predictions
 on:
   workflow_dispatch:
   schedule:
-    # Hourly Fri–Mon (UTC) around Bundesliga match windows
-    - cron: '15 * * * 5-1'
+    # After typical Bundesliga kickoffs, plus a morning catch-up. Exits if the table is current.
+    - cron: '20 6 * * *'
+    - cron: '30 21 * * 5'
+    - cron: '30 16,19 * * 6,0'
+    - cron: '30 20 * * 1'
   push:
     branches: [main]
     paths:
       - 'predict.py'
+      - 'xi_table.py'
+      - 'xi_model.py'
       - 'api_football.py'
       - '.github/workflows/refresh-predictions.yml'
 
@@ -40,7 +45,7 @@ jobs:
           restore-keys: |
             api-football-cache-
 
-      - name: Run predictions (TabPFN + API-Football XIs)
+      - name: Run best-XI predictions (TabPFN 3.5)
         env:
           TABPFN_API_KEY: ${{ secrets.TABPFN_API_KEY }}
           TABPFN_TOKEN: ${{ secrets.TABPFN_API_KEY }}
@@ -54,10 +59,11 @@ jobs:
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add app/data/predictions.json public/data/predictions.json public/explanations || true
+          git add app/data/predictions.json public/data/predictions.json public/explanations \
+            data/xi_matches.csv data/xi_players.csv data/lineups.json data/last_sides.json || true
           if git diff --staged --quiet; then
             echo 'No prediction changes'
           else
-            git commit -m "chore: refresh matchday predictions and lineups"
+            git commit -m "chore: append matchday XI rows and refit TabPFN"
             git push
           fi

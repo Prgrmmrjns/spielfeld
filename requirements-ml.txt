@@ -1,4 +1,4 @@
-tabpfn-client
+tabpfn-client>=0.6
 tabpfn-extensions[interpretability]
 setuptools<81
 shap

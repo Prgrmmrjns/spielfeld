@@ -7,6 +7,12 @@
     globalBoost: 0,
   }
 
+  if (state.data.task === 'best_xi') {
+    document.querySelectorAll('[data-mode="shap"]').forEach(el => { el.hidden = true })
+    const impact = document.getElementById('live-impact')
+    if (impact) impact.hidden = true
+  }
+
   const modal = document.getElementById('modal')
   const stamp = document.getElementById('lineups-stamp')
 
@@ -21,6 +27,7 @@
     if (source === 'squad_estimate') return 'Squad estimate'
     if (source === 'wiki_squad') return 'Wikipedia squad (2025–27)'
     if (source === 'squad_2026') return 'Squad 2025–27'
+    if (source === 'predicted') return 'Predicted XI'
     return 'XI pending'
   }
 
@@ -30,10 +37,12 @@
     if (source === 'squad_estimate') return 'squad est.'
     if (source === 'wiki_squad') return 'wiki 25–27'
     if (source === 'squad_2026') return 'squad 25–27'
+    if (source === 'predicted') return 'predicted'
     return 'pending'
   }
 
   function tipLabel(match) {
+    if (match.best_xi?.home?.summary || match.best_xi?.away?.summary) return 'Best XI'
     if (match.predicted === 'home_win') return match.home_short
     if (match.predicted === 'away_win') return match.away_short
     return 'Draw'
