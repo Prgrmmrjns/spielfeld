@@ -28,7 +28,7 @@
           <p class="eyebrow">About · how the tips work</p>
         </div>
         <nav class="site-nav">
-          <a href="/">XI</a>
+          <a href="/">Tips</a>
           <a href="/history">History</a>
           <a class="on" href="/about">About</a>
         </nav>
@@ -43,21 +43,18 @@
           <article class="about-card animate-rise">
             <h2>What you see</h2>
             <p>
-              For the next Bundesliga Spieltag we predict a best XI for each club
-              from that club’s previous match: who started, who was on the bench,
-              the result, and the next opponent. Open a match for the pitch board.
+              For the next Bundesliga Spieltag we show the chance of a home win, a draw,
+              or an away win. The features are the players who started each side’s previous game.
             </p>
           </article>
 
           <article class="about-card animate-rise delay-1">
             <h2>How much data?</h2>
             <p>
-              The training table is <strong>{{ payload.train_rows or "—" }} player rows</strong>
-              from <strong>{{ payload.train_matches or "—" }} team-matches</strong>.
-              One row is one player who started the previous game or sat on that bench.
-              The label is whether they started the next game.
-              Files: <code>data/xi_matches.csv</code> (one row per team-match) and
-              <code>data/xi_players.csv</code> (the TabPFN table).
+              The training table is <strong>{{ payload.train_matches or "—" }} matches</strong>.
+              One row is one match. The columns are the eleven names from each side’s previous game,
+              plus rest and the last result. The label is home win, draw, or away win.
+              File: <code>data/results.csv</code>.
             </p>
             <p>
               Model in use: <strong>{{ payload.model or "—" }}</strong>.

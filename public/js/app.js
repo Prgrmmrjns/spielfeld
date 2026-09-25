@@ -7,8 +7,10 @@
     globalBoost: 0,
   }
 
-  if (state.data.task === 'best_xi') {
+  if (state.data.task === 'result' || state.data.task === 'best_xi') {
     document.querySelectorAll('[data-mode="shap"]').forEach(el => { el.hidden = true })
+  }
+  if (state.data.task === 'best_xi') {
     const impact = document.getElementById('live-impact')
     if (impact) impact.hidden = true
   }

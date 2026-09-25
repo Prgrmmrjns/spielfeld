@@ -12,9 +12,15 @@ from xi_table import (
     MATCHES_CSV,
     PLAYERS_CSV,
     ROOT,
+    _order_xi,
     build_tables,
     upcoming_fixtures,
 )
+
+RESULTS_CSV = ROOT / "data" / "results.csv"
+RESULT_TEXT = [f"home_p{i}" for i in range(1, 12)] + [f"away_p{i}" for i in range(1, 12)]
+RESULT_NUM = ["home_rest", "away_rest", "home_last_points", "away_last_points", "home_last_gd", "away_last_gd"]
+RESULT_FEATURES = RESULT_TEXT + RESULT_NUM
 
 HISTORY = ROOT / "history"
 
@@ -198,6 +204,115 @@ def _current_payload() -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def _result_frame(df: pd.DataFrame) -> pd.DataFrame:
+    out = df[RESULT_FEATURES].copy()
+    for col in RESULT_TEXT:
+        out[col] = out[col].fillna("").astype("string")
+    for col in RESULT_NUM:
+        out[col] = pd.to_numeric(out[col], errors="coerce")
+    return out
+
+
+def build_results(matches: pd.DataFrame | None = None) -> pd.DataFrame:
+    """One row per match. Features are each side's previous starting XI."""
+    if matches is None:
+        matches = pd.read_csv(MATCHES_CSV)
+    home = matches[matches["is_home"] == 1]
+    away = matches[matches["is_home"] == 0]
+    merged = home.merge(away, on="match_id", suffixes=("_h", "_a"))
+    has_xi = (
+        merged["last_1_h"].fillna("").astype(str).str.len().gt(0)
+        & merged["last_1_a"].fillna("").astype(str).str.len().gt(0)
+    )
+    merged = merged.loc[has_xi].copy()
+    out = pd.DataFrame({
+        "season": merged["season_h"].astype(int),
+        "matchday": merged["matchday_h"].astype(int),
+        "match_id": merged["match_id"].astype(int),
+        "date": merged["date_h"],
+        "home_team": merged["team_h"],
+        "away_team": merged["team_a"],
+        "home_rest": merged["rest_days_h"],
+        "away_rest": merged["rest_days_a"],
+        "home_last_points": merged["last_points_h"],
+        "away_last_points": merged["last_points_a"],
+        "home_last_gd": merged["last_gd_h"],
+        "away_last_gd": merged["last_gd_a"],
+    })
+    for i in range(1, 12):
+        out[f"home_p{i}"] = merged[f"last_{i}_h"].fillna("").astype(str).values
+        out[f"away_p{i}"] = merged[f"last_{i}_a"].fillna("").astype(str).values
+    gf = pd.to_numeric(merged["gf_h"], errors="coerce")
+    ga = pd.to_numeric(merged["ga_h"], errors="coerce")
+    out["outcome"] = [
+        "home_win" if h > a else ("away_win" if h < a else "draw")
+        for h, a in zip(gf, ga)
+    ]
+    out = out.loc[gf.notna() & ga.notna()].reset_index(drop=True)
+    RESULTS_CSV.parent.mkdir(parents=True, exist_ok=True)
+    out.to_csv(RESULTS_CSV, index=False)
+    print(f"Result table: {len(out)} matches with both previous XIs -> {RESULTS_CSV.name}")
+    return out
+
+
+def _fit_results(results: pd.DataFrame):
+    y = results["outcome"].astype(str)
+    print(
+        f"Training TabPFN {MODEL_VERSION} on {len(results)} matches "
+        f"({y.value_counts().to_dict()})…"
+    )
+    token = _token()
+    if not token:
+        raise SystemExit("TabPFN required: set TABPFN_API_KEY in .env")
+    os.environ["TABPFN_TOKEN"] = token
+    from tabpfn_client import TabPFNClassifier, init, set_access_token
+    from tabpfn_client.config import Config
+
+    set_access_token(token)
+    Config.is_initialized = False
+    init()
+    clf = TabPFNClassifier.create_default_for_version(MODEL_VERSION)
+    clf.fit(_result_frame(results), y)
+    return clf
+
+
+def _outcome_probs(clf, frame: pd.DataFrame) -> list[dict]:
+    proba = clf.predict_proba(frame)
+    classes = [str(c) for c in list(clf.classes_)]
+
+    def one(row) -> dict:
+        packed = {"home_win": 0.0, "draw": 0.0, "away_win": 0.0}
+        for label, value in zip(classes, row):
+            if label in packed:
+                packed[label] = float(value)
+        return packed
+
+    return [one(row) for row in proba]
+
+
+def _names_from_side(side: dict | None) -> list[str]:
+    if not side:
+        return [""] * 11
+    ordered = _order_xi(side.get("xi") or [])[:11]
+    names = [p.get("name") or "" for p in ordered]
+    return names + [""] * (11 - len(names))
+
+
+def _lineup_from_side(side: dict | None) -> dict:
+    if not side:
+        return {"source": "unknown", "players": [], "pool": []}
+    players = []
+    for p in _order_xi(side.get("xi") or [])[:11]:
+        players.append({
+            "id": p.get("id"),
+            "name": p.get("name"),
+            "number": p.get("number"),
+            "pos": p.get("pos"),
+            "strength": 1,
+        })
+    return {"source": "last_xi", "formation": None, "players": players, "pool": []}
+
+
 def run() -> None:
     _load_dotenv()
     os.environ.setdefault("TABPFN_NO_BROWSER", "1")
@@ -207,7 +322,7 @@ def run() -> None:
     print(f"Next matchday: {meta['matchday_name']} ({meta['season']}) — {len(fixtures)} fixtures")
     baked = _current_payload()
     same_md = (
-        baked.get("task") == "best_xi"
+        baked.get("task") == "result"
         and baked.get("matchday") == meta["matchday"]
         and str(baked.get("season", "")).startswith(str(meta["season"]))
         and "3.5" in str(baked.get("model", ""))
@@ -215,50 +330,44 @@ def run() -> None:
     if stats["added_lineups"] == 0 and same_md and os.getenv("FORCE_RETRAIN") != "1":
         print("No new matchday rows — TabPFN refit skipped")
         return
-    if not PLAYERS_CSV.is_file():
-        raise SystemExit(f"Missing training table {PLAYERS_CSV}")
-    players = pd.read_csv(PLAYERS_CSV)
-    if players.empty:
-        raise SystemExit("Training table is empty — no previous-XI rows yet")
-    clf = _fit(players)
+    results = build_results()
+    if results.empty:
+        raise SystemExit("No matches with a previous XI on both sides")
+    clf = _fit_results(results)
     version = "TabPFN-3.5"
     meta_info = getattr(clf, "last_meta", None)
     if isinstance(meta_info, dict) and meta_info.get("model_version"):
         version = f"TabPFN-3.5 ({meta_info['model_version']})"
 
     sides = json.loads(LAST_SIDES_PATH.read_text(encoding="utf-8"))
-    rows = []
+    pred_rows = []
     for fx in fixtures:
         kick = pd.to_datetime(fx["date"], utc=True).tz_localize(None)
-        lineups = {}
-        best = {}
-        for side_name, key, opp, is_home in (
-            ("home", fx["home_key"], fx["away_team"], 1),
-            ("away", fx["away_key"], fx["home_team"], 0),
-        ):
-            side = sides.get(key)
-            if not side:
-                lineups[side_name] = {"source": "unknown", "players": [], "pool": []}
-                best[side_name] = {"summary": "no last XI", "changes": None}
-                continue
-            packed = _predict_side(clf, side, opp, is_home, meta["matchday"], kick)
-            best[side_name] = {
-                "changes": packed["changes"],
-                "incoming": packed["incoming"],
-                "outgoing": packed["outgoing"],
-                "summary": packed["summary"],
-                "mean_p": packed["mean_p"],
-                "last_result": packed["last_result"],
-            }
-            lineups[side_name] = {
-                "source": "predicted",
-                "formation": None,
-                "players": packed["players"],
-                "pool": packed["pool"],
-                "strength": packed["strength"],
-            }
-            print(f"  {side['team']}: {packed['summary']}")
-        rows.append({
+        home = sides.get(fx["home_key"])
+        away = sides.get(fx["away_key"])
+        home_names = _names_from_side(home)
+        away_names = _names_from_side(away)
+        home_kick = pd.to_datetime(home["date"]) if home else kick
+        away_kick = pd.to_datetime(away["date"]) if away else kick
+        row = {
+            "home_rest": int((kick - home_kick).days) if home else 7,
+            "away_rest": int((kick - away_kick).days) if away else 7,
+            "home_last_points": home["points"] if home else 1,
+            "away_last_points": away["points"] if away else 1,
+            "home_last_gd": home["gd"] if home else 0,
+            "away_last_gd": away["gd"] if away else 0,
+        }
+        for i, name in enumerate(home_names, start=1):
+            row[f"home_p{i}"] = name
+        for i, name in enumerate(away_names, start=1):
+            row[f"away_p{i}"] = name
+        probs = _outcome_probs(clf, _result_frame(pd.DataFrame([row])))[0]
+        predicted = max(probs, key=probs.get)
+        print(
+            f"  {fx['home_short']} vs {fx['away_short']}: {predicted} "
+            f"H {probs['home_win']:.0%} D {probs['draw']:.0%} A {probs['away_win']:.0%}"
+        )
+        pred_rows.append({
             "match_id": fx["match_id"],
             "date": pd.to_datetime(fx["date"], utc=True).isoformat(),
             "home_team": fx["home_team"],
@@ -267,9 +376,14 @@ def run() -> None:
             "away_short": fx["away_short"],
             "home_icon": fx["home_icon"],
             "away_icon": fx["away_icon"],
-            "predicted": None,
-            "lineups": lineups,
-            "best_xi": best,
+            "predicted": predicted,
+            "p_home_win": probs["home_win"],
+            "p_draw": probs["draw"],
+            "p_away_win": probs["away_win"],
+            "lineups": {
+                "home": _lineup_from_side(home),
+                "away": _lineup_from_side(away),
+            },
         })
 
     payload = {
@@ -279,20 +393,19 @@ def run() -> None:
         "matchday_name": meta["matchday_name"],
         "generated_at": pd.Timestamp.now(tz="UTC").isoformat(),
         "model": version,
-        "task": "best_xi",
-        "train_rows": int(len(players)),
-        "train_matches": int(stats["team_matches"]),
-        "lineups_provider": "tabpfn-3.5",
-        "table": "data/xi_players.csv",
+        "task": "result",
+        "train_rows": int(len(results)),
+        "train_matches": int(len(results)),
+        "lineups_provider": "last-xi",
+        "table": "data/results.csv",
         "match_table": "data/xi_matches.csv",
         "data_note": (
-            "OpenLigaDB fixtures and results. Transfermarkt starting XIs and benches. "
-            "Each new finished matchday appends rows, then TabPFN 3.5 is refit via the API."
+            "Win, draw, or away win. Features are the eleven players from each side’s previous game."
         ),
-        "predictions": rows,
+        "predictions": pred_rows,
     }
     _write(payload)
-    print(f"Wrote {len(rows)} best-XI predictions")
+    print(f"Wrote {len(pred_rows)} match predictions")
 
 
 def _actual_names(matches: pd.DataFrame, match_id: int, team: str) -> list[str]:
@@ -308,17 +421,24 @@ def _actual_names(matches: pd.DataFrame, match_id: int, team: str) -> list[str]:
     return names
 
 
+def _result_label(code: str, home: str, away: str) -> str:
+    if code == "home_win":
+        return home
+    if code == "away_win":
+        return away
+    return "Draw"
+
+
 def write_history() -> None:
-    """Walk-forward XIs: each matchday is fit only on games already played."""
+    """Walk-forward match tips: each Spieltag is fit only on games already played."""
     _load_dotenv()
     os.environ.setdefault("TABPFN_NO_BROWSER", "1")
     os.environ.setdefault("TABPFN_CLIENT_NO_BROWSER", "1")
-    players = pd.read_csv(PLAYERS_CSV)
-    matches = pd.read_csv(MATCHES_CSV)
-    players["date"] = pd.to_datetime(players["date"])
+    results = build_results()
+    results["date"] = pd.to_datetime(results["date"])
     HISTORY.mkdir(parents=True, exist_ok=True)
     days = (
-        players.groupby(["season", "matchday"], as_index=False)["date"]
+        results.groupby(["season", "matchday"], as_index=False)["date"]
         .min()
         .sort_values(["date", "season", "matchday"])
     )
@@ -329,52 +449,37 @@ def write_history() -> None:
             print(f"skip {path.name}")
             continue
         cutoff = day.date
-        train = players[players["date"] < cutoff]
-        test = players[(players["season"] == season) & (players["matchday"] == matchday)].copy()
-        if train.empty or train["y_started"].nunique() < 2 or test.empty:
-            print(f"skip {season} MD{matchday}: not enough prior rows")
+        train = results[results["date"] < cutoff]
+        test = results[(results["season"] == season) & (results["matchday"] == matchday)].copy()
+        if train.empty or train["outcome"].nunique() < 2 or test.empty:
+            print(f"skip {season} MD{matchday}: not enough prior matches")
             continue
         print(f"History {season} MD{matchday}: train {len(train)} / predict {len(test)}")
-        clf = _fit(train)
-        test["p"] = _p_start(clf, _frame(test))
-        by_match: dict[int, dict] = {}
+        clf = _fit_results(train)
+        probs = _outcome_probs(clf, _result_frame(test))
+        fixtures = []
         correct = 0
-        slots = 0
-        for (match_id, team), group in test.groupby(["match_id", "team"], sort=False):
-            scored = [
-                {
-                    "id": int(r.player_id),
-                    "name": r.player_name,
-                    "pos": r.position,
-                    "number": 0,
-                    "p": float(r.p),
-                }
-                for r in group.itertuples(index=False)
-            ]
-            chosen = _pick(scored)
-            predicted = [p["name"] for p in chosen]
-            actual = _actual_names(matches, int(match_id), str(team))
-            hit = [n for n in predicted if n in set(actual)]
-            correct += len(hit)
-            slots += 11
-            meta = matches[(matches["match_id"] == match_id) & (matches["team"] == team)]
-            is_home = int(meta.iloc[0]["is_home"]) if not meta.empty else 0
-            opponent = str(meta.iloc[0]["opponent"]) if not meta.empty else ""
-            block = {
-                "team": team,
-                "opponent": opponent,
-                "predicted": [
-                    {"name": p["name"], "pos": p["pos"], "p": round(p["p"], 3)}
-                    for p in chosen
-                ],
+        for row, prob in zip(test.itertuples(index=False), probs):
+            predicted = max(prob, key=prob.get)
+            actual = str(row.outcome)
+            hit = predicted == actual
+            correct += int(hit)
+            fixtures.append({
+                "match_id": int(row.match_id),
+                "home_team": row.home_team,
+                "away_team": row.away_team,
+                "p_home_win": prob["home_win"],
+                "p_draw": prob["draw"],
+                "p_away_win": prob["away_win"],
+                "predicted": predicted,
                 "actual": actual,
-                "correct": len(hit),
-            }
-            entry = by_match.setdefault(int(match_id), {"match_id": int(match_id), "home": None, "away": None})
-            entry["home" if is_home else "away"] = block
-        fixtures = [f for f in by_match.values() if f.get("home") and f.get("away")]
+                "predicted_label": _result_label(predicted, row.home_team, row.away_team),
+                "actual_label": _result_label(actual, row.home_team, row.away_team),
+                "correct": hit,
+            })
         payload = {
             "faithful": True,
+            "task": "result",
             "season": season,
             "matchday": matchday,
             "matchday_name": f"{matchday}. Spieltag",
@@ -382,14 +487,14 @@ def write_history() -> None:
             "train_rows": int(len(train)),
             "model": "TabPFN-3.5",
             "correct": correct,
-            "slots": slots,
+            "slots": len(fixtures),
             "generated_at": pd.Timestamp.now(tz="UTC").isoformat(),
-            "note": "Fit only on team-matches played before this Spieltag.",
+            "note": "Fit only on matches played before this Spieltag. Features are each side’s previous XI.",
             "fixtures": fixtures,
         }
         path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
-        rate = correct / slots if slots else 0
-        print(f"  wrote {path.name} {correct}/{slots} ({rate:.0%})")
+        rate = correct / len(fixtures) if fixtures else 0
+        print(f"  wrote {path.name} {correct}/{len(fixtures)} ({rate:.0%})")
 
 
 if __name__ == "__main__":

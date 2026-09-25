@@ -60,7 +60,7 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add app/data/predictions.json public/data/predictions.json public/explanations \
-            data/xi_matches.csv data/xi_players.csv data/lineups.json data/last_sides.json || true
+            data/xi_matches.csv data/xi_players.csv data/results.csv data/lineups.json data/last_sides.json || true
           if git diff --staged --quiet; then
             echo 'No prediction changes'
           else

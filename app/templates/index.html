@@ -28,7 +28,7 @@
           <p class="eyebrow">{{ payload.matchday_name or "Next Spieltag" }} · {{ payload.season }}</p>
         </div>
         <nav class="site-nav">
-          <a class="on" href="/">XI</a>
+          <a class="on" href="/">Tips</a>
           <a href="/history">History</a>
           <a href="/about">About</a>
         </nav>
@@ -42,11 +42,7 @@
               SPIELFELD
             </h1>
             <p class="hero-copy">
-              {% if payload.task == "best_xi" %}
-              Best XI for each club this Spieltag, predicted from that club’s last game.
-              {% else %}
-              Next-matchday tips with live XIs, pitch boards, and a ShapIQ lab for lineup what-ifs.
-              {% endif %}
+              Home, draw, or away — from the players in each side’s last game.
             </p>
           </div>
           <div class="hero-actions animate-rise delay-1">
@@ -58,8 +54,8 @@
         <section id="tips" class="tips">
           <div class="tips-head">
             <div>
-              <h2>{% if payload.task == "best_xi" %}Matchday XIs{% else %}Matchday tips{% endif %}</h2>
-              <p>{% if payload.task == "best_xi" %}Open a matchup for the predicted elevens, built from each side’s previous game.{% else %}Open a matchup for the 11v11 board, XI swaps, and ShapIQ drivers.{% endif %}</p>
+              <h2>Matchday tips</h2>
+              <p>Win, draw, and loss chances. The model sees the eleven from each club’s previous match.</p>
             </div>
             <div class="tips-meta">
               <p id="lineups-stamp"></p>
@@ -69,7 +65,7 @@
           <div id="matches" class="matches">
             {% if payload.predictions %}
               {% for match in payload.predictions %}
-              <article class="match {{ 'has-xi' if match.best_xi else '' }} animate-rise" style="animation-delay: {{ '%.2f'|format(0.05 * loop.index0) }}s">
+              <article class="match animate-rise" style="animation-delay: {{ '%.2f'|format(0.05 * loop.index0) }}s">
                 <button type="button" class="match-btn" data-match-id="{{ match.match_id }}">
                   <div class="match-main">
                     <div class="row-top">
@@ -99,20 +95,6 @@
                   <div class="mini-pitch" data-mini-pitch="{{ match.match_id }}" aria-hidden="true"></div>
 
                   <div class="match-tip">
-                    {% if match.best_xi %}
-                    <div class="xi-pair">
-                      {% for side, short in (('home', match.home_short), ('away', match.away_short)) %}
-                      <div>
-                        <p class="muted-xs">{{ short }} · {{ match.best_xi[side].summary }}</p>
-                        <ol class="xi-list">
-                          {% for p in (match.lineups[side].players if match.lineups and match.lineups[side] else []) %}
-                          <li><span class="pos">{{ p.pos or '—' }}</span> {{ p.name|surname }} <span class="p">{{ (p.strength * 100)|round|int }}%</span></li>
-                          {% endfor %}
-                        </ol>
-                      </div>
-                      {% endfor %}
-                    </div>
-                    {% else %}
                     <div class="tip-block">
                       <div>
                         <p class="muted-xs">Tip</p>
@@ -137,7 +119,6 @@
                         <span class="pct">{{ match.p_away_win|pct }}%</span>
                       </div>
                     </div>
-                    {% endif %}
                   </div>
                 </button>
               </article>

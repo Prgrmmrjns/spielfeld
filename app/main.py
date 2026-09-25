@@ -74,12 +74,6 @@ def _kickoff(date_str: str) -> str:
 
 
 def _tip_label(match: dict) -> str:
-    best = match.get("best_xi") or {}
-    if best:
-        home = (best.get("home") or {}).get("summary")
-        away = (best.get("away") or {}).get("summary")
-        if home or away:
-            return "Best XI"
     pred = match.get("predicted")
     if pred == "home_win":
         return match.get("home_short") or "Home"
