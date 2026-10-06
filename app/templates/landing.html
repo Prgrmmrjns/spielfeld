@@ -1,0 +1,150 @@
+{% macro card(d) %}
+              <article class="ex-card full">
+                <span class="ex-tag mono">{{ d.model }}</span>
+                <h3>{{ d.title }}</h3>
+                <p class="ex-q">{{ d.question }}</p>
+                <div class="xp" data-domain="{{ d.domain }}"></div>
+                <p class="legend-line">Each dot is one design the model scored. Every input is set on every trial. Greener means a higher prediction.</p>
+                <p class="ex-foot"><span>{{ d.holdout }}</span></p>
+              </article>
+{% endmacro %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Spielfeld — what-if scenarios for TabPFN</title>
+  <meta name="description" content="What-if modeling with TabPFN-3.5: find the input values, inside a feasible range, that give the highest or lowest class probability, or hit a target value or range." />
+  <link rel="icon" href="/icon.svg?v=2" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,500&family=Source+Sans+3:wght@400;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
+  <link rel="stylesheet" href="/css/main.css?v=lab22" />
+</head>
+<body>
+  <div class="page lab">
+    <div class="wrap">
+      <header class="site-header">
+        <div class="brand-lockup">
+          <a class="brand" href="/">
+            <img class="brand-mark" src="/icon.svg?v=2" width="28" height="28" alt="" />
+            <span>SPIELFELD</span>
+          </a>
+          <p class="eyebrow">What-if modeling with TabPFN-3.5</p>
+        </div>
+        {% include '_nav.html' %}
+      </header>
+
+      <main class="tabbed">
+        <div class="tab-ov on" id="overview">
+        <section class="hero2">
+          <div class="hero-copy">
+            <p class="kicker"><span class="live"></span>What-if scenarios for TabPFN</p>
+            <h1>Which input values give the <em>outcome you want</em>?</h1>
+            <p class="lede">Pick a goal for a trained model, such as the highest chance of survival. Spielfeld tries many what-if changes to the inputs, within realistic ranges, and tells you which ones get closest.</p>
+            <p class="uses"><b>Healthcare</b> best clinical practice · <b>Football</b> best starting XI · <b>Diabetes</b> best insulin dosing</p>
+            {% set ex = ((domains|selectattr('domain', 'equalto', 'mortality')|list)[0].rows or [none])[0] %}
+            {% if ex %}
+            <div class="example">
+              <span class="mono">example</span>
+              <p>A heart-failure patient has a <b>{{ ex.base|round|int }}%</b> predicted chance of survival. <b>Goal: highest survival.</b> Spielfeld may change any of ejection fraction, sodium, creatinine, blood pressure, smoking and anaemia, within clinical ranges. The best input values according to the model: <b>{{ ex.set|join(', ') }}</b>, which gives <b>{{ ex.best|round|int }}%</b>.</p>
+            </div>
+            {% endif %}
+          </div>
+          <figure class="hero-fig card-glass">
+            <div class="fig-head"><span id="hero-title">Higher survival</span></div>
+            <div id="hero-x"></div>
+            <figcaption>Greener is a higher chance of survival. Click a dot.</figcaption>
+          </figure>
+        </section>
+        </div>
+
+        <details class="sec" id="method">
+          <summary><span class="sec-title">Methodology<em>The what-if as a formula, and how the search runs. Open for debate.</em></span></summary>
+          <div class="sec-body">
+            <div class="defs one">
+              <div><span class="tex" data-k="objective"></span><p><b>The question.</b> <i>f</i> is TabPFN's prediction for one case. <i>S</i> is which inputs may change, <i>v</i> is their new values inside the feasible range <i>F<sub>S</sub></i>, and the rest of the case stays as it is. do(<i>X<sub>S</sub></i> = <i>v</i>) sets those inputs and reads the model. The search keeps the pair (<i>S</i>*, <i>v</i>*) with the highest score: the highest chance of the class you care about, or a target value or range for a regression.</p></div>
+            </div>
+            <h4>Pipeline</h4>
+            <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+              <defs>
+                <symbol id="i-db" viewBox="0 0 24 24"><ellipse cx="12" cy="5.5" rx="7.5" ry="3"/><path d="M4.5 5.5v6.5c0 1.7 3.4 3 7.5 3s7.5-1.3 7.5-3V5.5M4.5 12v6.5c0 1.7 3.4 3 7.5 3s7.5-1.3 7.5-3V12"/></symbol>
+                <symbol id="i-chip" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2"/><rect x="9.5" y="9.5" width="5" height="5" rx="1"/><path d="M9 3v3M15 3v3M9 18v3M15 18v3M3 9h3M3 15h3M18 9h3M18 15h3"/></symbol>
+                <symbol id="i-sliders" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/><circle cx="9" cy="7" r="2.2"/><circle cx="15" cy="12" r="2.2"/><circle cx="8" cy="17" r="2.2"/></symbol>
+                <symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 3v5M12 16v5M3 12h5M16 12h5M6 6l3 3M15 15l3 3M18 6l-3 3M9 15l-3 3"/></symbol>
+                <symbol id="i-bars" viewBox="0 0 24 24"><path d="M4 20h16"/><rect x="5.5" y="12" width="3" height="8" rx="1"/><rect x="10.5" y="7" width="3" height="13" rx="1"/><rect x="15.5" y="14" width="3" height="6" rx="1"/></symbol>
+                <symbol id="i-loop" viewBox="0 0 24 24"><path d="M20 12a8 8 0 0 1-13.7 5.6M4 12a8 8 0 0 1 13.7-5.6"/><path d="M18 3v4h-4M6 21v-4h4"/></symbol>
+                <symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="1" /></symbol>
+                <symbol id="i-flask" viewBox="0 0 24 24"><path d="M9 3h6M10 3v6l-5 9a2 2 0 0 0 1.8 3h10.4a2 2 0 0 0 1.8-3l-5-9V3"/><path d="M7.5 15h9"/></symbol>
+              </defs>
+            </svg>
+            <div class="pipe">
+              <div class="pp">
+                <span class="pp-h mono">1 · Set up, once</span>
+                <ul><li><svg class="ic"><use href="#i-db"/></svg><div><b>Data</b><span>Rows of inputs x and outcome y.</span></div></li><li><svg class="ic"><use href="#i-chip"/></svg><div><b>Fit the model</b><span>TabPFN-3.5 reads the rows in context. No training run.</span></div></li><li><svg class="ic"><use href="#i-sliders"/></svg><div><b>Feasible ranges</b><span>Allowed values for each feature.</span></div></li></ul>
+              </div>
+              <div class="pp-arrow" aria-hidden="true">→</div>
+              <div class="pp loop">
+                <span class="pp-h mono">2 · Search loop, many rounds</span>
+                <ul><li><svg class="ic"><use href="#i-spark"/></svg><div><b>Propose</b><span>An optimization algorithm suggests a batch of input combinations.</span></div></li><li><svg class="ic"><use href="#i-bars"/></svg><div><b>Score</b><span>One TabPFN call predicts the whole batch.</span></div></li><li><svg class="ic"><use href="#i-loop"/></svg><div><b>Learn and repeat</b><span>The scores steer the next batch, until a budget of trials is spent.</span></div></li></ul>
+              </div>
+              <div class="pp-arrow" aria-hidden="true">→</div>
+              <div class="pp">
+                <span class="pp-h mono">3 · Result</span>
+                <ul><li><svg class="ic"><use href="#i-target"/></svg><div><b>Best design</b><span>The inputs with the best prediction, shown with its value.</span></div></li><li><svg class="ic"><use href="#i-flask"/></svg><div><b>Test it</b><span>The model's answer, to try in the real setting.</span></div></li></ul>
+              </div>
+            </div>
+          </div>
+        </details>
+
+        <details class="sec" id="background">
+          <summary><span class="sec-title">Background<em>Where the idea comes from, and what it builds on</em></span></summary>
+          <div class="sec-body">
+            <div class="origin">
+              <p>My brother has diabetes. Every day he asks what insulin dose will keep him in range after a meal. Spielfeld puts that question to a fitted model and searches for an answer. I want to follow it into a paper. The method is open for debate, and I am open to working on it with others.</p>
+            </div>
+            <div class="defs three bg">
+              <div><span class="rel-head mono">Pearl · do-operator</span>
+                <div class="rowviz"><span>X</span><span class="chg">do(X = v)</span><span>Y</span></div>
+                <p><b>Intervene, don't condition.</b> do(X = v) sets a variable instead of observing it. This is the formal language of a what-if. Spielfeld applies it to the inputs of a trained model.</p></div>
+              <div><span class="rel-head mono">PDP and ICE · one feature</span>
+                <div class="rowviz"><span>x₁</span><span class="chg">v</span><span>x₃</span><span>x₄</span><span>x₅</span></div>
+                <p><b>One what-if at a time.</b> ICE moves one feature of one case and holds the rest. PDP averages those curves over the data.</p></div>
+              <div class="hi"><span class="rel-head mono">Spielfeld · several features</span>
+                <div class="rowviz"><span>x₁</span><span class="chg">v₂</span><span>x₃</span><span class="chg">v₄</span><span class="chg">v₅</span></div>
+                <p><b>Many at once, towards a goal.</b> It changes any number of features jointly, inside feasible ranges, and searches for the combination that reaches the goal. No one-feature plot shows such a combination.</p></div>
+            </div>
+          </div>
+        </details>
+
+        <details class="sec" id="mortality">
+          <summary><span class="sec-title">Healthcare<em>Derive the best clinical practice from a trained model: highest predicted survival</em></span></summary>
+          <div class="sec-body">{% for d in domains|selectattr('domain', 'equalto', 'mortality') %}{{ card(d) }}{% endfor %}</div>
+        </details>
+        <details class="sec" id="football">
+          <summary><span class="sec-title">Football<em>Come up with the best starting XI: highest win probability</em></span></summary>
+          <div class="sec-body">
+            {% for d in domains|selectattr('domain', 'equalto', 'football') %}{{ card(d) }}{% endfor %}
+            <div class="caveat big slim">
+              <div>
+                <p><b>The football data is not ready.</b> This is only an idea of where the method would fit: choosing a starting XI. Squads cover four matchdays, so new signings are missing and some positions have no replacement. Players are names only (market values are 0). Do not read it as lineup advice.</p>
+              </div>
+            </div>
+          </div>
+        </details>
+        <details class="sec" id="glucose">
+          <summary><span class="sec-title">Diabetes<em>Come up with the best insulin dosing: glucose in range</em></span></summary>
+          <div class="sec-body">{% for d in domains|selectattr('domain', 'equalto', 'glucose') %}{{ card(d) }}{% endfor %}</div>
+        </details>
+      </main>
+
+      <footer class="foot">
+        <span>Spielfeld · Prior Labs TabPFN-3.5 hackathon, 2026</span>
+        <span>TabPFN-3.5 (Prior Labs) · UCI Heart Failure (CC BY 4.0) · AZT1D (CC BY 4.0) · Bundesliga match data</span>
+      </footer>
+    </div>
+  </div>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="/js/landing.js?v=21"></script>
+</body>
+</html>

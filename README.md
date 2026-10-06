@@ -1,70 +1,56 @@
-<p align="center">
-  <img src="public/icon.svg" width="96" height="96" alt="Spielfeld" />
-</p>
-
 # Spielfeld
 
-Bundesliga best-XI predictions with TabPFN 3.5, from each club’s last game.
+What-if modeling with TabPFN-3.5. You fit a model, name a goal, and give each input a feasible range. Spielfeld searches the combinations inside those ranges and keeps the one with the highest score: the highest chance of a class, or a target value or range for a regression.
+
+Example: which clinical values, inside clinical ranges, give a heart-failure patient the highest predicted chance of survival.
 
 **Live:** [spielfeld.vercel.app](https://spielfeld.vercel.app)
 
-## Setup
+Prior Labs TabPFN 3.5 hackathon entry.
+
+## Use it
 
 ```bash
-git clone https://github.com/Prgrmmrjns/spielfeld.git
-cd spielfeld
-pip install -r requirements.txt          # FastAPI web
-pip install -r requirements-ml.txt       # predict.py + ShapIQ
+pip install -e "extension[client]"
 ```
 
-Put secrets in `.env`:
+`TABPFN_API_KEY` in the environment (or a `.env` file). `fit_classifier` and `fit_regressor` build TabPFN-3.5. Any model with `predict_proba` or `predict` can be passed in the same way.
 
-| Variable | Purpose |
-|---|---|
-| `TABPFN_API_KEY` | Prior Labs TabPFN (required for `predict.py`) |
-| `API_FOOTBALL_KEY` | Optional live squads / starting XIs (league 78) |
+```python
+import pandas as pd
+from spielfeld import Knob, whatif
+from spielfeld.models import fit_classifier, proba
 
-## Web UI
+model = fit_classifier(X_train, y_train)
+to_frame = lambda states: pd.DataFrame(states)[list(X_train.columns)]
+score = proba(model, to_frame, cls=0)          # the model goes in here
+
+case = X_train.iloc[0].to_dict()
+knobs = [
+    Knob("ejection_fraction", low=15, high=80, step=5),
+    Knob("smoking", choices=[0, 1]),
+]
+w = whatif(score, case, knobs)                  # goal="max"
+w.best.actions                                  # which inputs change
+w.best.values[w.best.best_mask]                 # the score of that design
+```
+
+`goal="min"` searches the lowest score. For a regression, fit with `fit_regressor` and pass `in_range(model, to_frame, 70, 180)` or `near(model, to_frame, target, tol)` as `score`, with `goal="max"`.
+
+A `Knob` is one feature: a numeric range (`low`, `high`, `step`) or a list of `choices`. `expect=1` or `expect=-1` keeps that feature on the side prior knowledge allows. `k` caps how many features may change; the default lets every knob move. `Support` scores how far a design sits from the training rows.
+
+`whatif` returns a `WhatIf`: `base` is the score of the case as it stands, `best` is the design the search kept.
+
+`do()` sets the model's inputs and reads the prediction. That reading is a causal effect when the model is causal.
+
+More on the search: [extension/README.md](extension/README.md).
+
+## Run the site
 
 ```bash
+python3.12 -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
 uvicorn app.main:app --reload --port 8000
 ```
 
-Open [http://localhost:8000](http://localhost:8000).
-
-| Route | Purpose |
-|---|---|
-| `/` | Matchday tips, XI board, ShapIQ lab |
-| `/about` | How the model and lab work |
-| `/api/predictions` | Baked predictions JSON |
-| `/api/lineups` | Live / estimated starting XIs |
-| `/api/refresh-lineups` | Cron / manual lineup refresh |
-
-```bash
-python predict.py                   # append new matchday rows, refit TabPFN 3.5, write XIs
-```
-
-## Best XI
-
-The model sees who started the last game and who was on the bench, plus the result, rest, and the next opponent. It predicts who starts next. The XI is the likeliest goalkeeper and the ten likeliest outfield players from that group.
-
-Tables: `data/xi_matches.csv` (one row per team-match) and `data/xi_players.csv` (training rows).
-
-GitHub Actions runs `predict.py` on matchday evenings and each morning. If OpenLigaDB has no newly finished matchday, it does not refit.
-
-## Vercel
-
-FastAPI entry: `app/main.py`. Static assets in `public/` (CSS, JS, icon, SHAP plots).
-
-Set `API_FOOTBALL_KEY` in the Vercel project env. `TABPFN_API_KEY` is only needed for GitHub Actions / local `predict.py`.
-
-## Training columns
-
-| Column | Source |
-|---|---|
-| `team`, `opponent`, `is_home`, `matchday` | OpenLigaDB |
-| `rest_days`, `last_points`, `last_gd` | previous OpenLigaDB result |
-| `player_name`, `position`, `started_last`, `on_bench_last` | Transfermarkt last XI / bench |
-| `y_started` | Transfermarkt XI of the match being predicted |
-
-Data: [OpenLigaDB](https://www.openligadb.de/) (`bl1`) and Transfermarkt lineups. API-Football is optional and is not required for this table.
+The page reads the cached results in `public/data/scenarios/`. How the three cases were built, and how to rebuild them: [reproduction.md](reproduction.md).

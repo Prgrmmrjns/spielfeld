@@ -1,0 +1,22 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "spielfeld"
+version = "0.1.0"
+description = "TabPFN extension: what-if search over feasible feature ranges."
+readme = "README.md"
+license = "Apache-2.0"
+requires-python = ">=3.12"
+dependencies = ["optuna>=4", "numpy", "pandas"]
+
+[project.optional-dependencies]
+local = ["tabpfn>=8.4"]
+client = ["tabpfn-client>=0.6"]
+test = ["pytest"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/spielfeld"]
+[tool.pytest.ini_options]
+markers = ["client_compatible", "local_compatible"]

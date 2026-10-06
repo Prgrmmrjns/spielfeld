@@ -1,0 +1,10 @@
+.venv
+.git
+.cursor
+datasets
+scripts
+extension
+logs.md
+__pycache__
+*.pyc
+.pytest_cache

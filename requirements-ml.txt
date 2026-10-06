@@ -1,9 +1,8 @@
 tabpfn-client>=0.6
-tabpfn-extensions[interpretability]
 setuptools<81
-shap
-matplotlib
 pandas
 numpy
+pyarrow
 scikit-learn
 requests
+-e ./extension
