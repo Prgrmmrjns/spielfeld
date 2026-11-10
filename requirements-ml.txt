@@ -1,8 +1,0 @@
-tabpfn-client>=0.6
-setuptools<81
-pandas
-numpy
-pyarrow
-scikit-learn
-requests
--e ./extension

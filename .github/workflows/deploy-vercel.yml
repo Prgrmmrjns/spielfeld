@@ -1,32 +1,25 @@
 name: Deploy to Vercel
 
+# GitHub-linked Vercel project already deploys on merge to main.
+# Keep a manual/prod deploy path for parity with the previous repo setup.
 on:
-  push:
-    branches: [main]
-    paths-ignore:
-      - '**.md'
-      - '.github/workflows/refresh-predictions.yml'
   workflow_dispatch:
-
-concurrency:
-  group: deploy-vercel
-  cancel-in-progress: true
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-node@v4
         with:
-          node-version: '22'
-
+          node-version: "22"
       - name: Install Vercel CLI
         run: npm install -g vercel@latest
-
-      - name: Link Vercel project
-        run: vercel link --yes --project=spielfeld --token=${{ secrets.VERCEL_TOKEN }}
-
       - name: Deploy production
-        run: vercel deploy --prod --yes --token=${{ secrets.VERCEL_TOKEN }}
+        run: |
+          vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+          vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+          vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}

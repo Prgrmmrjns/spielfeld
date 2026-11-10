@@ -1,1 +1,0 @@
-"""Spielfeld FastAPI web app."""

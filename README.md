@@ -1,56 +1,91 @@
-# Spielfeld
+# Spielfeld — Bundesliga match forecasts
 
-What-if modeling with TabPFN-3.5. You fit a model, name a goal, and give each input a feasible range. Spielfeld searches the combinations inside those ranges and keeps the one with the highest score: the highest chance of a class, or a target value or range for a regression.
-
-Example: which clinical values, inside clinical ranges, give a heart-failure patient the highest predicted chance of survival.
+Walk-forward **LightGBM** probabilities for Bundesliga fixtures, with feature-group ablation, calibration, and player-availability what-ifs. Built as a portfolio project for Jonas.
 
 **Live:** [spielfeld.vercel.app](https://spielfeld.vercel.app)
 
-Prior Labs TabPFN 3.5 hackathon entry.
+## What’s here
 
-## Use it
+- **Dataset** — seasons 2019/20 → 2026/27: results + odds + shots/xG from [football-data.co.uk](https://www.football-data.co.uk/), fixtures/goals/teams from [OpenLigaDB](https://www.openligadb.de/). Elo, form, rest days, H2H, table state, and scorer-strength features are built **pre-kickoff only** (no leakage).
+- **Model** — LightGBM multiclass (H/D/A) on engineered non-odds features, then a **learned blend** with bookmaker implied probabilities (trees alone distort calibrated market odds).
+- **Validation** — season walk-forward OOF metrics vs bookmaker and Elo baselines (log loss, Brier, accuracy + home-win calibration).
+- **Analysis** — feature-group ablation + TreeSHAP; selected feature set is driven by ablation evidence.
+- **Player impact** — counterfactual “player out” by shrinking squad-strength features and re-scoring (market blend held fixed).
+- **App** — Next.js UI: matchday slate, match detail, team pages, player impact, model/findings, track record.
+- **DB** — Neon Postgres schema in `db/migrations/`; weekly job upserts forecasts when `DATABASE_URL` is set.
+- **Weekly refresh** — GitHub Action Mondays 07:00 Berlin (`0 6 * * 1` UTC).
+
+## Headline metrics (walk-forward OOF)
+
+| Model | Log loss | Brier | Accuracy | N |
+|---|---:|---:|---:|---:|
+| Spielfeld blend | ~0.971 | ~0.577 | ~53.9% | 1305 |
+| Bookmaker implied | ~0.971 | ~0.577 | ~53.7% | 1305 |
+| Elo only | ~0.998 | ~0.596 | ~51.2% | 1305 |
+| LightGBM only | ~1.026 | ~0.609 | ~50.4% | 1305 |
+
+Exact numbers are regenerated in `public/data/metrics.json` / the Model page after each pipeline run. The blend matches the market while staying slightly ahead on this backtest; Elo and pure trees trail.
+
+### Ablation (top findings)
+
+Removing groups one at a time (higher Δ log loss ⇒ more useful):
+
+- **rest / H2H**, **form**, **Elo**, and **table** state consistently help.
+- **Player scorer-strength** features help modestly and unlock the what-if UI.
+- **Shots/xG rolling** features are sparse historically (xG only in recent football-data files) and are weaker alone.
+- **Odds** are not fed into the trees; they enter via the post-hoc blend (weight typically ~0.9+ toward the market).
+
+## Data sources & licenses
+
+| Source | Use | Terms |
+|---|---|---|
+| [OpenLigaDB](https://www.openligadb.de/) API | Fixtures, results, goals, teams | Free community API — attribution appreciated |
+| [football-data.co.uk](https://www.football-data.co.uk/) CSV | Results, odds, shots, xG | Free for non-commercial / research use; see their site |
+| ClubElo / FBref / Transfermarkt | **Not scraped** here (blocked / ToS) | — |
+
+Market values / full lineups are out of scope until a licensed feed is added. Player impact uses OpenLiga goal scorers as an availability/strength proxy.
+
+## Local development
 
 ```bash
-pip install -e "extension[client]"
-```
-
-`TABPFN_API_KEY` in the environment (or a `.env` file). `fit_classifier` and `fit_regressor` build TabPFN-3.5. Any model with `predict_proba` or `predict` can be passed in the same way.
-
-```python
-import pandas as pd
-from spielfeld import Knob, whatif
-from spielfeld.models import fit_classifier, proba
-
-model = fit_classifier(X_train, y_train)
-to_frame = lambda states: pd.DataFrame(states)[list(X_train.columns)]
-score = proba(model, to_frame, cls=0)          # the model goes in here
-
-case = X_train.iloc[0].to_dict()
-knobs = [
-    Knob("ejection_fraction", low=15, high=80, step=5),
-    Knob("smoking", choices=[0, 1]),
-]
-w = whatif(score, case, knobs)                  # goal="max"
-w.best.actions                                  # which inputs change
-w.best.values[w.best.best_mask]                 # the score of that design
-```
-
-`goal="min"` searches the lowest score. For a regression, fit with `fit_regressor` and pass `in_range(model, to_frame, 70, 180)` or `near(model, to_frame, target, tol)` as `score`, with `goal="max"`.
-
-A `Knob` is one feature: a numeric range (`low`, `high`, `step`) or a list of `choices`. `expect=1` or `expect=-1` keeps that feature on the side prior knowledge allows. `k` caps how many features may change; the default lets every knob move. `Support` scores how far a design sits from the training rows.
-
-`whatif` returns a `WhatIf`: `base` is the score of the case as it stands, `best` is the design the search kept.
-
-`do()` sets the model's inputs and reads the prediction. That reading is a causal effect when the model is causal.
-
-More on the search: [extension/README.md](extension/README.md).
-
-## Run the site
-
-```bash
-python3.12 -m venv .venv && source .venv/bin/activate
+python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
-uvicorn app.main:app --reload --port 8000
+python pipeline/run_all.py          # downloads data, trains, writes public/data/*
+
+npm install
+npm run dev                         # http://localhost:3000
 ```
 
-The page reads the cached results in `public/data/scenarios/`. How the three cases were built, and how to rebuild them: [reproduction.md](reproduction.md).
+Tests:
+
+```bash
+pytest pipeline/tests -q
+npm run build
+```
+
+## Database (Neon on Vercel project `spielfeld`)
+
+Vercel already exposes `DATABASE_URL`, `DATABASE_URL_UNPOOLED`, `POSTGRES_URL`, etc. The app reads them via `@neondatabase/serverless` when present; pages also work from committed `public/data/*.json` artifacts (so previews stay useful before the first DB seed).
+
+Migrations: `db/migrations/001_init.sql`  
+Sync: `python -m pipeline.export.db_sync` (no-op without `DATABASE_URL`)
+
+### Manual setup still required
+
+1. **GitHub Actions secret `DATABASE_URL`** (and optionally `DATABASE_URL_UNPOOLED`) — copy the Neon connection string from the Vercel project env so the Monday job can migrate + upsert.
+2. **First seed** — run the weekly workflow once (`workflow_dispatch`) after adding the secret, or locally with `DATABASE_URL` exported.
+3. Remove obsolete **`TABPFN_API_KEY`** from Vercel when convenient (unused).
+
+## Deploy
+
+GitHub-linked Vercel project **spielfeld** (`prj_7ew4JWlbbebM0Vywnv4ccXTp4A5S`) deploys on merge to `main`. Heavy ML runs offline in Actions / locally — not inside Vercel request handlers.
+
+## Repo layout
+
+```
+pipeline/           ingest → features → train/ablation/forecast/player impact
+db/migrations/      Neon schema
+public/data/        committed JSON artifacts consumed by the UI
+src/app/            Next.js App Router UI
+.github/workflows/  CI + weekly refresh
+```

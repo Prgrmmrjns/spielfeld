@@ -1,0 +1,129 @@
+{
+  "features": [
+    {
+      "feature": "elo_diff",
+      "mean_abs_shap": 0.20567717454320095
+    },
+    {
+      "feature": "elo_home",
+      "mean_abs_shap": 0.10710790273562502
+    },
+    {
+      "feature": "form_gd_away_5",
+      "mean_abs_shap": 0.06876119429745059
+    },
+    {
+      "feature": "scorer_depth_away",
+      "mean_abs_shap": 0.06718786694398271
+    },
+    {
+      "feature": "h2h_home_win_rate",
+      "mean_abs_shap": 0.06439819514321236
+    },
+    {
+      "feature": "home_form_home_5",
+      "mean_abs_shap": 0.05017463555827719
+    },
+    {
+      "feature": "player_strength_diff",
+      "mean_abs_shap": 0.04839845435095593
+    },
+    {
+      "feature": "form_pts_home_5",
+      "mean_abs_shap": 0.04407254371219417
+    },
+    {
+      "feature": "form_gd_home_5",
+      "mean_abs_shap": 0.038670984775977184
+    },
+    {
+      "feature": "elo_away",
+      "mean_abs_shap": 0.03794776244686377
+    },
+    {
+      "feature": "gd_home",
+      "mean_abs_shap": 0.037563230633257186
+    },
+    {
+      "feature": "away_form_away_5",
+      "mean_abs_shap": 0.03685062453362898
+    },
+    {
+      "feature": "pts_home",
+      "mean_abs_shap": 0.03677634644305315
+    },
+    {
+      "feature": "scorer_depth_home",
+      "mean_abs_shap": 0.032744894522005734
+    },
+    {
+      "feature": "top_scorer_goals_home",
+      "mean_abs_shap": 0.0326894827334154
+    },
+    {
+      "feature": "squad_goals_home_5",
+      "mean_abs_shap": 0.02786533340621248
+    },
+    {
+      "feature": "rest_days_home",
+      "mean_abs_shap": 0.02773334025399491
+    },
+    {
+      "feature": "gd_away",
+      "mean_abs_shap": 0.026854998320388703
+    },
+    {
+      "feature": "rank_home",
+      "mean_abs_shap": 0.025870424369099684
+    },
+    {
+      "feature": "form_pts_home_10",
+      "mean_abs_shap": 0.02519586288278024
+    },
+    {
+      "feature": "h2h_games",
+      "mean_abs_shap": 0.02497435207605968
+    },
+    {
+      "feature": "top_scorer_goals_away",
+      "mean_abs_shap": 0.024916265766869464
+    },
+    {
+      "feature": "rank_diff",
+      "mean_abs_shap": 0.02476171558285973
+    },
+    {
+      "feature": "form_pts_away_10",
+      "mean_abs_shap": 0.02454658354332827
+    },
+    {
+      "feature": "rest_diff",
+      "mean_abs_shap": 0.02439146416176461
+    },
+    {
+      "feature": "pts_away",
+      "mean_abs_shap": 0.021519432215320995
+    },
+    {
+      "feature": "squad_goals_away_5",
+      "mean_abs_shap": 0.021462028895057807
+    },
+    {
+      "feature": "form_pts_away_5",
+      "mean_abs_shap": 0.021008815625357124
+    },
+    {
+      "feature": "rank_away",
+      "mean_abs_shap": 0.020668342644851
+    },
+    {
+      "feature": "rest_days_away",
+      "mean_abs_shap": 0.015118505047633278
+    },
+    {
+      "feature": "pts_diff",
+      "mean_abs_shap": 0.012869288665472631
+    }
+  ],
+  "n_samples": 81
+}
