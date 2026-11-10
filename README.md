@@ -4,6 +4,12 @@ Walk-forward **LightGBM** probabilities for Bundesliga fixtures, with feature-gr
 
 **Live:** [spielfeld.vercel.app](https://spielfeld.vercel.app)
 
+![Matchday](docs/screenshots/matchday.png)
+
+![Model findings](docs/screenshots/model.png)
+
+![Player impact](docs/screenshots/players.png)
+
 ## What’s here
 
 - **Dataset** — seasons 2019/20 → 2026/27: results + odds + shots/xG from [football-data.co.uk](https://www.football-data.co.uk/), fixtures/goals/teams from [OpenLigaDB](https://www.openligadb.de/). Elo, form, rest days, H2H, table state, and scorer-strength features are built **pre-kickoff only** (no leakage).
