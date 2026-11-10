@@ -1,0 +1,510 @@
+{
+  "full": {
+    "log_loss": 1.0163455167609112,
+    "brier": 0.6031853460557106,
+    "accuracy": 0.49885057471264366,
+    "n": 1305
+  },
+  "leave_one_group_out": {
+    "elo": {
+      "log_loss": 1.0179492875617544,
+      "brier": 0.6031956081119374,
+      "accuracy": 0.5118773946360153,
+      "n": 1305,
+      "removed": [
+        "elo_home",
+        "elo_away",
+        "elo_diff"
+      ]
+    },
+    "form": {
+      "log_loss": 1.0198848888669587,
+      "brier": 0.6055467215089646,
+      "accuracy": 0.496551724137931,
+      "n": 1305,
+      "removed": [
+        "form_pts_home_5",
+        "form_pts_away_5",
+        "form_gd_home_5",
+        "form_gd_away_5",
+        "form_pts_home_10",
+        "form_pts_away_10",
+        "home_form_home_5",
+        "away_form_away_5"
+      ]
+    },
+    "rest_h2h": {
+      "log_loss": 1.021703135788693,
+      "brier": 0.6072411162354153,
+      "accuracy": 0.49961685823754787,
+      "n": 1305,
+      "removed": [
+        "rest_days_home",
+        "rest_days_away",
+        "rest_diff",
+        "h2h_home_win_rate",
+        "h2h_games"
+      ]
+    },
+    "shots_xg": {
+      "log_loss": 1.0117986472744256,
+      "brier": 0.6026943093838384,
+      "accuracy": 0.5080459770114942,
+      "n": 1305,
+      "removed": [
+        "roll_hs_for_5",
+        "roll_as_for_5",
+        "roll_hst_for_5",
+        "roll_ast_for_5",
+        "roll_hs_against_5",
+        "roll_as_against_5",
+        "roll_hxg_for_5",
+        "roll_axg_for_5",
+        "roll_hxg_against_5",
+        "roll_axg_against_5",
+        "shots_for_diff",
+        "xg_for_diff"
+      ]
+    },
+    "odds": {
+      "log_loss": 1.0255124006855418,
+      "brier": 0.6085053990156468,
+      "accuracy": 0.5042145593869731,
+      "n": 1305,
+      "removed": [
+        "odds_home",
+        "odds_draw",
+        "odds_away",
+        "imp_home",
+        "imp_draw",
+        "imp_away"
+      ]
+    },
+    "table": {
+      "log_loss": 1.0175583983812029,
+      "brier": 0.6043581306297724,
+      "accuracy": 0.5049808429118774,
+      "n": 1305,
+      "removed": [
+        "rank_home",
+        "rank_away",
+        "pts_home",
+        "pts_away",
+        "gd_home",
+        "gd_away",
+        "rank_diff",
+        "pts_diff"
+      ]
+    },
+    "players": {
+      "log_loss": 1.017345784988483,
+      "brier": 0.6042154268055785,
+      "accuracy": 0.5042145593869731,
+      "n": 1305,
+      "removed": [
+        "squad_goals_home_5",
+        "squad_goals_away_5",
+        "top_scorer_goals_home",
+        "top_scorer_goals_away",
+        "scorer_depth_home",
+        "scorer_depth_away",
+        "player_strength_diff"
+      ]
+    }
+  },
+  "group_only": {
+    "elo": {
+      "log_loss": 1.0242618034782027,
+      "brier": 0.612853321974686,
+      "accuracy": 0.4896551724137931,
+      "n": 1305,
+      "features": [
+        "elo_home",
+        "elo_away",
+        "elo_diff"
+      ]
+    },
+    "form": {
+      "log_loss": 1.0400684565152067,
+      "brier": 0.6232966748575012,
+      "accuracy": 0.4812260536398467,
+      "n": 1305,
+      "features": [
+        "form_pts_home_5",
+        "form_pts_away_5",
+        "form_gd_home_5",
+        "form_gd_away_5",
+        "form_pts_home_10",
+        "form_pts_away_10",
+        "home_form_home_5",
+        "away_form_away_5"
+      ]
+    },
+    "rest_h2h": {
+      "log_loss": 1.0641433496123345,
+      "brier": 0.6372495880347367,
+      "accuracy": 0.46360153256704983,
+      "n": 1305,
+      "features": [
+        "rest_days_home",
+        "rest_days_away",
+        "rest_diff",
+        "h2h_home_win_rate",
+        "h2h_games"
+      ]
+    },
+    "shots_xg": {
+      "log_loss": 1.05278863901296,
+      "brier": 0.6274891642172277,
+      "accuracy": 0.47662835249042146,
+      "n": 1305,
+      "features": [
+        "roll_hs_for_5",
+        "roll_as_for_5",
+        "roll_hst_for_5",
+        "roll_ast_for_5",
+        "roll_hs_against_5",
+        "roll_as_against_5",
+        "roll_hxg_for_5",
+        "roll_axg_for_5",
+        "roll_hxg_against_5",
+        "roll_axg_against_5",
+        "shots_for_diff",
+        "xg_for_diff"
+      ]
+    },
+    "odds": {
+      "log_loss": 1.0030505309907354,
+      "brier": 0.5962893925310986,
+      "accuracy": 0.5026819923371647,
+      "n": 1305,
+      "features": [
+        "odds_home",
+        "odds_draw",
+        "odds_away",
+        "imp_home",
+        "imp_draw",
+        "imp_away"
+      ]
+    },
+    "table": {
+      "log_loss": 1.041321475776083,
+      "brier": 0.623561936245603,
+      "accuracy": 0.48735632183908045,
+      "n": 1305,
+      "features": [
+        "rank_home",
+        "rank_away",
+        "pts_home",
+        "pts_away",
+        "gd_home",
+        "gd_away",
+        "rank_diff",
+        "pts_diff"
+      ]
+    },
+    "players": {
+      "log_loss": 1.0574119629498329,
+      "brier": 0.6317645880344257,
+      "accuracy": 0.4804597701149425,
+      "n": 1305,
+      "features": [
+        "squad_goals_home_5",
+        "squad_goals_away_5",
+        "top_scorer_goals_home",
+        "top_scorer_goals_away",
+        "scorer_depth_home",
+        "scorer_depth_away",
+        "player_strength_diff"
+      ]
+    }
+  },
+  "findings": [
+    {
+      "group": "odds",
+      "delta_log_loss_when_removed": 0.009166883924630609,
+      "useful": true,
+      "leave_one_out": {
+        "log_loss": 1.0255124006855418,
+        "brier": 0.6085053990156468,
+        "accuracy": 0.5042145593869731,
+        "n": 1305,
+        "removed": [
+          "odds_home",
+          "odds_draw",
+          "odds_away",
+          "imp_home",
+          "imp_draw",
+          "imp_away"
+        ]
+      },
+      "alone": {
+        "log_loss": 1.0030505309907354,
+        "brier": 0.5962893925310986,
+        "accuracy": 0.5026819923371647,
+        "n": 1305,
+        "features": [
+          "odds_home",
+          "odds_draw",
+          "odds_away",
+          "imp_home",
+          "imp_draw",
+          "imp_away"
+        ]
+      }
+    },
+    {
+      "group": "rest_h2h",
+      "delta_log_loss_when_removed": 0.005357619027781757,
+      "useful": true,
+      "leave_one_out": {
+        "log_loss": 1.021703135788693,
+        "brier": 0.6072411162354153,
+        "accuracy": 0.49961685823754787,
+        "n": 1305,
+        "removed": [
+          "rest_days_home",
+          "rest_days_away",
+          "rest_diff",
+          "h2h_home_win_rate",
+          "h2h_games"
+        ]
+      },
+      "alone": {
+        "log_loss": 1.0641433496123345,
+        "brier": 0.6372495880347367,
+        "accuracy": 0.46360153256704983,
+        "n": 1305,
+        "features": [
+          "rest_days_home",
+          "rest_days_away",
+          "rest_diff",
+          "h2h_home_win_rate",
+          "h2h_games"
+        ]
+      }
+    },
+    {
+      "group": "form",
+      "delta_log_loss_when_removed": 0.003539372106047489,
+      "useful": true,
+      "leave_one_out": {
+        "log_loss": 1.0198848888669587,
+        "brier": 0.6055467215089646,
+        "accuracy": 0.496551724137931,
+        "n": 1305,
+        "removed": [
+          "form_pts_home_5",
+          "form_pts_away_5",
+          "form_gd_home_5",
+          "form_gd_away_5",
+          "form_pts_home_10",
+          "form_pts_away_10",
+          "home_form_home_5",
+          "away_form_away_5"
+        ]
+      },
+      "alone": {
+        "log_loss": 1.0400684565152067,
+        "brier": 0.6232966748575012,
+        "accuracy": 0.4812260536398467,
+        "n": 1305,
+        "features": [
+          "form_pts_home_5",
+          "form_pts_away_5",
+          "form_gd_home_5",
+          "form_gd_away_5",
+          "form_pts_home_10",
+          "form_pts_away_10",
+          "home_form_home_5",
+          "away_form_away_5"
+        ]
+      }
+    },
+    {
+      "group": "elo",
+      "delta_log_loss_when_removed": 0.001603770800843174,
+      "useful": true,
+      "leave_one_out": {
+        "log_loss": 1.0179492875617544,
+        "brier": 0.6031956081119374,
+        "accuracy": 0.5118773946360153,
+        "n": 1305,
+        "removed": [
+          "elo_home",
+          "elo_away",
+          "elo_diff"
+        ]
+      },
+      "alone": {
+        "log_loss": 1.0242618034782027,
+        "brier": 0.612853321974686,
+        "accuracy": 0.4896551724137931,
+        "n": 1305,
+        "features": [
+          "elo_home",
+          "elo_away",
+          "elo_diff"
+        ]
+      }
+    },
+    {
+      "group": "table",
+      "delta_log_loss_when_removed": 0.0012128816202916504,
+      "useful": true,
+      "leave_one_out": {
+        "log_loss": 1.0175583983812029,
+        "brier": 0.6043581306297724,
+        "accuracy": 0.5049808429118774,
+        "n": 1305,
+        "removed": [
+          "rank_home",
+          "rank_away",
+          "pts_home",
+          "pts_away",
+          "gd_home",
+          "gd_away",
+          "rank_diff",
+          "pts_diff"
+        ]
+      },
+      "alone": {
+        "log_loss": 1.041321475776083,
+        "brier": 0.623561936245603,
+        "accuracy": 0.48735632183908045,
+        "n": 1305,
+        "features": [
+          "rank_home",
+          "rank_away",
+          "pts_home",
+          "pts_away",
+          "gd_home",
+          "gd_away",
+          "rank_diff",
+          "pts_diff"
+        ]
+      }
+    },
+    {
+      "group": "players",
+      "delta_log_loss_when_removed": 0.001000268227571821,
+      "useful": true,
+      "leave_one_out": {
+        "log_loss": 1.017345784988483,
+        "brier": 0.6042154268055785,
+        "accuracy": 0.5042145593869731,
+        "n": 1305,
+        "removed": [
+          "squad_goals_home_5",
+          "squad_goals_away_5",
+          "top_scorer_goals_home",
+          "top_scorer_goals_away",
+          "scorer_depth_home",
+          "scorer_depth_away",
+          "player_strength_diff"
+        ]
+      },
+      "alone": {
+        "log_loss": 1.0574119629498329,
+        "brier": 0.6317645880344257,
+        "accuracy": 0.4804597701149425,
+        "n": 1305,
+        "features": [
+          "squad_goals_home_5",
+          "squad_goals_away_5",
+          "top_scorer_goals_home",
+          "top_scorer_goals_away",
+          "scorer_depth_home",
+          "scorer_depth_away",
+          "player_strength_diff"
+        ]
+      }
+    },
+    {
+      "group": "shots_xg",
+      "delta_log_loss_when_removed": -0.0045468694864856385,
+      "useful": false,
+      "leave_one_out": {
+        "log_loss": 1.0117986472744256,
+        "brier": 0.6026943093838384,
+        "accuracy": 0.5080459770114942,
+        "n": 1305,
+        "removed": [
+          "roll_hs_for_5",
+          "roll_as_for_5",
+          "roll_hst_for_5",
+          "roll_ast_for_5",
+          "roll_hs_against_5",
+          "roll_as_against_5",
+          "roll_hxg_for_5",
+          "roll_axg_for_5",
+          "roll_hxg_against_5",
+          "roll_axg_against_5",
+          "shots_for_diff",
+          "xg_for_diff"
+        ]
+      },
+      "alone": {
+        "log_loss": 1.05278863901296,
+        "brier": 0.6274891642172277,
+        "accuracy": 0.47662835249042146,
+        "n": 1305,
+        "features": [
+          "roll_hs_for_5",
+          "roll_as_for_5",
+          "roll_hst_for_5",
+          "roll_ast_for_5",
+          "roll_hs_against_5",
+          "roll_as_against_5",
+          "roll_hxg_for_5",
+          "roll_axg_for_5",
+          "roll_hxg_against_5",
+          "roll_axg_against_5",
+          "shots_for_diff",
+          "xg_for_diff"
+        ]
+      }
+    }
+  ],
+  "selected_groups": [
+    "rest_h2h",
+    "form",
+    "elo",
+    "table",
+    "players"
+  ],
+  "selected_features": [
+    "rest_days_home",
+    "rest_days_away",
+    "rest_diff",
+    "h2h_home_win_rate",
+    "h2h_games",
+    "form_pts_home_5",
+    "form_pts_away_5",
+    "form_gd_home_5",
+    "form_gd_away_5",
+    "form_pts_home_10",
+    "form_pts_away_10",
+    "home_form_home_5",
+    "away_form_away_5",
+    "elo_home",
+    "elo_away",
+    "elo_diff",
+    "rank_home",
+    "rank_away",
+    "pts_home",
+    "pts_away",
+    "gd_home",
+    "gd_away",
+    "rank_diff",
+    "pts_diff",
+    "squad_goals_home_5",
+    "squad_goals_away_5",
+    "top_scorer_goals_home",
+    "top_scorer_goals_away",
+    "scorer_depth_home",
+    "scorer_depth_away",
+    "player_strength_diff"
+  ],
+  "odds_usage": "blended_post_hoc"
+}

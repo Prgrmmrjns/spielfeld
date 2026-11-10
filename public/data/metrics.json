@@ -1,0 +1,384 @@
+{
+  "fold_metrics": [
+    {
+      "name": "blend_2022",
+      "n": 306,
+      "log_loss": 0.9944437116954199,
+      "brier": 0.5938508375662477,
+      "accuracy": 0.5294117647058824,
+      "season": 2022,
+      "blend_w": 0.9500000000000001
+    },
+    {
+      "name": "lgbm_2022",
+      "n": 306,
+      "log_loss": 1.033148123508058,
+      "brier": 0.6194775536597982,
+      "accuracy": 0.4738562091503268,
+      "season": 2022
+    },
+    {
+      "name": "book_2022",
+      "n": 306,
+      "log_loss": 0.9959418771351647,
+      "brier": 0.5944976890319831,
+      "accuracy": 0.5294117647058824,
+      "season": 2022
+    },
+    {
+      "name": "elo_2022",
+      "n": 306,
+      "log_loss": 0.9956197078694733,
+      "brier": 0.5964904777588493,
+      "accuracy": 0.5065359477124183,
+      "season": 2022
+    },
+    {
+      "name": "blend_2023",
+      "n": 306,
+      "log_loss": 0.9491754816382246,
+      "brier": 0.5618563988061628,
+      "accuracy": 0.5522875816993464,
+      "season": 2023,
+      "blend_w": 0.75
+    },
+    {
+      "name": "lgbm_2023",
+      "n": 306,
+      "log_loss": 1.0000519285879954,
+      "brier": 0.593227418204813,
+      "accuracy": 0.5098039215686274,
+      "season": 2023
+    },
+    {
+      "name": "book_2023",
+      "n": 306,
+      "log_loss": 0.9469881851356313,
+      "brier": 0.5599993244378401,
+      "accuracy": 0.5424836601307189,
+      "season": 2023
+    },
+    {
+      "name": "elo_2023",
+      "n": 306,
+      "log_loss": 1.0030702727440786,
+      "brier": 0.5995659635214121,
+      "accuracy": 0.4934640522875817,
+      "season": 2023
+    },
+    {
+      "name": "blend_2024",
+      "n": 306,
+      "log_loss": 0.9904330830661291,
+      "brier": 0.5915794832994119,
+      "accuracy": 0.5196078431372549,
+      "season": 2024,
+      "blend_w": 0.9500000000000001
+    },
+    {
+      "name": "lgbm_2024",
+      "n": 306,
+      "log_loss": 1.05139832279492,
+      "brier": 0.629394751152171,
+      "accuracy": 0.47058823529411764,
+      "season": 2024
+    },
+    {
+      "name": "book_2024",
+      "n": 306,
+      "log_loss": 0.9900288585781899,
+      "brier": 0.5912994385243137,
+      "accuracy": 0.5196078431372549,
+      "season": 2024
+    },
+    {
+      "name": "elo_2024",
+      "n": 306,
+      "log_loss": 1.02302650977182,
+      "brier": 0.6138499965356107,
+      "accuracy": 0.4803921568627451,
+      "season": 2024
+    },
+    {
+      "name": "blend_2025",
+      "n": 306,
+      "log_loss": 0.9532538441548539,
+      "brier": 0.562948393057698,
+      "accuracy": 0.5490196078431373,
+      "season": 2025,
+      "blend_w": 1.0
+    },
+    {
+      "name": "lgbm_2025",
+      "n": 306,
+      "log_loss": 1.0070952258969217,
+      "brier": 0.5945604113187883,
+      "accuracy": 0.49673202614379086,
+      "season": 2025
+    },
+    {
+      "name": "book_2025",
+      "n": 306,
+      "log_loss": 0.9532538441548539,
+      "brier": 0.5629483930576981,
+      "accuracy": 0.5490196078431373,
+      "season": 2025
+    },
+    {
+      "name": "elo_2025",
+      "n": 306,
+      "log_loss": 0.9804551530533674,
+      "brier": 0.582721757480314,
+      "accuracy": 0.5555555555555556,
+      "season": 2025
+    },
+    {
+      "name": "blend_2026",
+      "n": 81,
+      "log_loss": 0.9652534079672473,
+      "brier": 0.5742432590738193,
+      "accuracy": 0.5679012345679012,
+      "season": 2026,
+      "blend_w": 1.0
+    },
+    {
+      "name": "lgbm_2026",
+      "n": 81,
+      "log_loss": 1.0384720515067656,
+      "brier": 0.6160875514890916,
+      "accuracy": 0.4567901234567901,
+      "season": 2026
+    },
+    {
+      "name": "book_2026",
+      "n": 81,
+      "log_loss": 0.9652534079672473,
+      "brier": 0.5742432590738193,
+      "accuracy": 0.5679012345679012,
+      "season": 2026
+    },
+    {
+      "name": "elo_2026",
+      "n": 81,
+      "log_loss": 0.9574619939540272,
+      "brier": 0.5711549702917958,
+      "accuracy": 0.5555555555555556,
+      "season": 2026
+    }
+  ],
+  "overall": {
+    "model": {
+      "name": "blend_oof",
+      "n": 1305,
+      "log_loss": 0.9714185432452591,
+      "brier": 0.5773529873411591,
+      "accuracy": 0.539463601532567
+    },
+    "lgbm_only": {
+      "name": "lgbm_oof",
+      "n": 1305,
+      "log_loss": 1.0238884888989608,
+      "brier": 0.6095947071090428,
+      "accuracy": 0.48582375478927203
+    },
+    "elo": {
+      "name": "elo_oof",
+      "n": 1305,
+      "log_loss": 0.9978689229138163,
+      "brier": 0.5964810577427344,
+      "accuracy": 0.5118773946360153
+    },
+    "bookmaker": {
+      "name": "book_oof",
+      "n": 1305,
+      "log_loss": 0.9711621702195571,
+      "brier": 0.5770035452650121,
+      "accuracy": 0.5371647509578544
+    },
+    "calibration_home": {
+      "fraction_positives": [
+        0.14634146341463414,
+        0.24539877300613497,
+        0.31901840490797545,
+        0.3803680981595092,
+        0.48466257668711654,
+        0.5398773006134969,
+        0.6073619631901841,
+        0.7852760736196319
+      ],
+      "mean_predicted": [
+        0.17875605733528585,
+        0.29499521778942955,
+        0.3572969723037837,
+        0.41003378525906753,
+        0.4614328797777574,
+        0.5290051604647069,
+        0.616274569653147,
+        0.7601492891113365
+      ]
+    },
+    "mean_blend_weight": 0.93
+  },
+  "feature_importance": [
+    {
+      "feature": "elo_home",
+      "importance": 498
+    },
+    {
+      "feature": "elo_away",
+      "importance": 359
+    },
+    {
+      "feature": "form_gd_away_5",
+      "importance": 351
+    },
+    {
+      "feature": "elo_diff",
+      "importance": 343
+    },
+    {
+      "feature": "gd_away",
+      "importance": 290
+    },
+    {
+      "feature": "gd_home",
+      "importance": 250
+    },
+    {
+      "feature": "scorer_depth_home",
+      "importance": 246
+    },
+    {
+      "feature": "h2h_home_win_rate",
+      "importance": 240
+    },
+    {
+      "feature": "form_pts_home_5",
+      "importance": 226
+    },
+    {
+      "feature": "form_pts_home_10",
+      "importance": 221
+    },
+    {
+      "feature": "form_gd_home_5",
+      "importance": 218
+    },
+    {
+      "feature": "rest_days_home",
+      "importance": 214
+    },
+    {
+      "feature": "pts_away",
+      "importance": 212
+    },
+    {
+      "feature": "squad_goals_away_5",
+      "importance": 204
+    },
+    {
+      "feature": "away_form_away_5",
+      "importance": 198
+    },
+    {
+      "feature": "player_strength_diff",
+      "importance": 196
+    },
+    {
+      "feature": "squad_goals_home_5",
+      "importance": 194
+    },
+    {
+      "feature": "form_pts_away_10",
+      "importance": 193
+    },
+    {
+      "feature": "scorer_depth_away",
+      "importance": 187
+    },
+    {
+      "feature": "home_form_home_5",
+      "importance": 183
+    },
+    {
+      "feature": "pts_home",
+      "importance": 181
+    },
+    {
+      "feature": "top_scorer_goals_home",
+      "importance": 170
+    },
+    {
+      "feature": "pts_diff",
+      "importance": 169
+    },
+    {
+      "feature": "h2h_games",
+      "importance": 167
+    },
+    {
+      "feature": "rank_home",
+      "importance": 159
+    },
+    {
+      "feature": "form_pts_away_5",
+      "importance": 148
+    },
+    {
+      "feature": "top_scorer_goals_away",
+      "importance": 134
+    },
+    {
+      "feature": "rank_diff",
+      "importance": 127
+    },
+    {
+      "feature": "rest_days_away",
+      "importance": 97
+    },
+    {
+      "feature": "rank_away",
+      "importance": 82
+    },
+    {
+      "feature": "rest_diff",
+      "importance": 77
+    }
+  ],
+  "feature_cols": [
+    "rest_days_home",
+    "rest_days_away",
+    "rest_diff",
+    "h2h_home_win_rate",
+    "h2h_games",
+    "form_pts_home_5",
+    "form_pts_away_5",
+    "form_gd_home_5",
+    "form_gd_away_5",
+    "form_pts_home_10",
+    "form_pts_away_10",
+    "home_form_home_5",
+    "away_form_away_5",
+    "elo_home",
+    "elo_away",
+    "elo_diff",
+    "rank_home",
+    "rank_away",
+    "pts_home",
+    "pts_away",
+    "gd_home",
+    "gd_away",
+    "rank_diff",
+    "pts_diff",
+    "squad_goals_home_5",
+    "squad_goals_away_5",
+    "top_scorer_goals_home",
+    "top_scorer_goals_away",
+    "scorer_depth_home",
+    "scorer_depth_away",
+    "player_strength_diff"
+  ],
+  "blend_weight": 0.9500000000000001,
+  "n_train": 2223,
+  "notes": "LightGBM trains on non-odds features only; final probabilities are a learned blend with bookmaker implied odds to preserve market calibration."
+}

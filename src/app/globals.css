@@ -1,0 +1,99 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: #0c1410;
+  --bg-elevated: #132019;
+  --pitch: #1a3a28;
+  --pitch-line: rgba(232, 236, 220, 0.14);
+  --ink: #eef2e6;
+  --muted: #9aab9a;
+  --accent: #e23d2d;
+  --accent-soft: #f07855;
+  --home: #3ecf8e;
+  --draw: #d4b56a;
+  --away: #6aa7e8;
+  --stroke: rgba(238, 242, 230, 0.12);
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  color: var(--ink);
+  background:
+    radial-gradient(1200px 600px at 10% -10%, rgba(226, 61, 45, 0.18), transparent 55%),
+    radial-gradient(900px 500px at 90% 0%, rgba(62, 207, 142, 0.12), transparent 50%),
+    linear-gradient(180deg, #101a14 0%, var(--bg) 40%, #0a100d 100%);
+  font-family: var(--font-body), Georgia, serif;
+}
+
+::selection {
+  background: rgba(226, 61, 45, 0.35);
+}
+
+.pitch-grid {
+  background-image:
+    linear-gradient(var(--pitch-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--pitch-line) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.55), transparent 85%);
+}
+
+.display {
+  font-family: var(--font-display), Impact, sans-serif;
+  letter-spacing: 0.02em;
+}
+
+.prob-bar {
+  display: grid;
+  grid-template-columns: var(--h) var(--d) var(--a);
+  height: 0.65rem;
+  border-radius: 999px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.prob-bar > span:nth-child(1) {
+  background: var(--home);
+}
+.prob-bar > span:nth-child(2) {
+  background: var(--draw);
+}
+.prob-bar > span:nth-child(3) {
+  background: var(--away);
+}
+
+.glass {
+  background: rgba(19, 32, 25, 0.72);
+  border: 1px solid var(--stroke);
+  backdrop-filter: blur(10px);
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.rise {
+  animation: rise 0.7s ease both;
+}
+
+.rise-delay-1 {
+  animation-delay: 0.08s;
+}
+.rise-delay-2 {
+  animation-delay: 0.16s;
+}
+.rise-delay-3 {
+  animation-delay: 0.24s;
+}

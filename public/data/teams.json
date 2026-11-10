@@ -1,0 +1,128 @@
+[
+  {
+    "slug": "koeln",
+    "ol_team_id": 65,
+    "name": "1. FC K\u00f6ln",
+    "short_name": "K\u00f6ln",
+    "icon_url": "https://upload.wikimedia.org/wikipedia/commons/0/01/1._FC_Koeln_Logo_2014%E2%80%93.svg"
+  },
+  {
+    "slug": "union",
+    "ol_team_id": 80,
+    "name": "Union Berlin",
+    "short_name": "Union Berlin",
+    "icon_url": "https://assets.dfb.de/uploads/000/018/232/small_union-Berlin.jpg"
+  },
+  {
+    "slug": "mainz",
+    "ol_team_id": 81,
+    "name": "Mainz 05",
+    "short_name": "Mainz",
+    "icon_url": "https://upload.wikimedia.org/wikipedia/commons/9/9e/Logo_Mainz_05.svg"
+  },
+  {
+    "slug": "leverkusen",
+    "ol_team_id": 6,
+    "name": "Bayer Leverkusen",
+    "short_name": "Leverkusen",
+    "icon_url": "https://upload.wikimedia.org/wikipedia/de/f/f7/Bayer_Leverkusen_Logo.svg"
+  },
+  {
+    "slug": "dortmund",
+    "ol_team_id": 7,
+    "name": "Borussia Dortmund",
+    "short_name": "Dortmund",
+    "icon_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/67/Borussia_Dortmund_logo.svg/960px-Borussia_Dortmund_logo.svg.png"
+  },
+  {
+    "slug": "gladbach",
+    "ol_team_id": 87,
+    "name": "Borussia M\u00f6nchengladbach",
+    "short_name": "Gladbach",
+    "icon_url": "https://i.imgur.com/KSIk0Eu.png"
+  },
+  {
+    "slug": "frankfurt",
+    "ol_team_id": 91,
+    "name": "Eintracht Frankfurt",
+    "short_name": "Frankfurt",
+    "icon_url": "https://i.imgur.com/X8NFkOb.png"
+  },
+  {
+    "slug": "augsburg",
+    "ol_team_id": 95,
+    "name": "FC Augsburg",
+    "short_name": "Augsburg",
+    "icon_url": "https://i.imgur.com/sdE62e2.png"
+  },
+  {
+    "slug": "bayern",
+    "ol_team_id": 40,
+    "name": "Bayern M\u00fcnchen",
+    "short_name": "Bayern",
+    "icon_url": "https://upload.wikimedia.org/wikipedia/commons/1/1f/Logo_FC_Bayern_M%C3%BCnchen_%282002%E2%80%932017%29.svg"
+  },
+  {
+    "slug": "schalke",
+    "ol_team_id": 9,
+    "name": "Schalke 04",
+    "short_name": "S04",
+    "icon_url": "https://upload.wikimedia.org/wikipedia/commons/9/97/FC_Schalke_04_Logo.png"
+  },
+  {
+    "slug": "hamburg",
+    "ol_team_id": 100,
+    "name": "Hamburger SV",
+    "short_name": "HSV",
+    "icon_url": "https://upload.wikimedia.org/wikipedia/commons/f/f7/Hamburger_SV_logo.svg"
+  },
+  {
+    "slug": "leipzig",
+    "ol_team_id": 1635,
+    "name": "RB Leipzig",
+    "short_name": "Leipzig",
+    "icon_url": "https://i.imgur.com/Rpwsjz1.png"
+  },
+  {
+    "slug": "freiburg",
+    "ol_team_id": 112,
+    "name": "SC Freiburg",
+    "short_name": "Freiburg",
+    "icon_url": "https://i.imgur.com/r3mvi0h.png"
+  },
+  {
+    "slug": "paderborn",
+    "ol_team_id": 31,
+    "name": "Paderborn",
+    "short_name": "Paderborn",
+    "icon_url": "https://upload.wikimedia.org/wikipedia/commons/e/e3/SC_Paderborn_07_Logo.svg"
+  },
+  {
+    "slug": "elversberg",
+    "ol_team_id": 198,
+    "name": "SV Elversberg",
+    "short_name": "Elversberg",
+    "icon_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/SV_Elversberg_Logo.svg/500px-SV_Elversberg_Logo.svg.png"
+  },
+  {
+    "slug": "bremen",
+    "ol_team_id": 134,
+    "name": "Werder Bremen",
+    "short_name": "Bremen",
+    "icon_url": "https://upload.wikimedia.org/wikipedia/commons/b/be/SV-Werder-Bremen-Logo.svg"
+  },
+  {
+    "slug": "hoffenheim",
+    "ol_team_id": 175,
+    "name": "TSG Hoffenheim",
+    "short_name": "Hoffenheim",
+    "icon_url": "https://i.imgur.com/gF0PfEl.png"
+  },
+  {
+    "slug": "stuttgart",
+    "ol_team_id": 16,
+    "name": "VfB Stuttgart",
+    "short_name": "Stuttgart",
+    "icon_url": "https://i.imgur.com/v0tkpNx.png"
+  }
+]

@@ -1,0 +1,65 @@
+name: Weekly Bundesliga refresh
+
+# After the Bundesliga weekend — Monday 07:00 Europe/Berlin
+on:
+  schedule:
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+
+concurrency:
+  group: weekly-refresh
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install Python deps
+        run: pip install -r requirements.txt
+
+      - name: Run pipeline
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DATABASE_URL_UNPOOLED: ${{ secrets.DATABASE_URL_UNPOOLED }}
+        run: python pipeline/run_all.py
+
+      - name: Sync artifacts into public/data
+        run: |
+          mkdir -p public/data
+          cp -f data/artifacts/forecasts.json \
+                data/artifacts/metrics.json \
+                data/artifacts/ablation.json \
+                data/artifacts/shap_importance.json \
+                data/artifacts/player_impact.json \
+                data/artifacts/track_record.json \
+                data/artifacts/findings.md \
+                data/artifacts/oof_predictions.json \
+                public/data/ || true
+          test -f data/artifacts/feature_importance.csv && cp -f data/artifacts/feature_importance.csv public/data/
+          test -f data/artifacts/pipeline_summary.json && cp -f data/artifacts/pipeline_summary.json public/data/
+          python - <<'PY'
+          import json
+          from pipeline.ingest.openliga import teams_frame
+          open("public/data/teams.json","w").write(json.dumps(teams_frame().to_dict(orient="records"), indent=2))
+          PY
+
+      - name: Commit updated artifacts
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/data data/artifacts data/processed/features.csv || true
+          if git diff --staged --quiet; then
+            echo "No artifact changes"
+          else
+            git commit -m "chore: weekly Bundesliga forecast refresh"
+            git push
+          fi
