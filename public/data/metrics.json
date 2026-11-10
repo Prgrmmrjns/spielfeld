@@ -3,18 +3,18 @@
     {
       "name": "blend_2022",
       "n": 306,
-      "log_loss": 0.9944437116954199,
-      "brier": 0.5938508375662477,
-      "accuracy": 0.5294117647058824,
+      "log_loss": 0.9951173773137892,
+      "brier": 0.5943140556009003,
+      "accuracy": 0.5261437908496732,
       "season": 2022,
       "blend_w": 0.9500000000000001
     },
     {
       "name": "lgbm_2022",
       "n": 306,
-      "log_loss": 1.033148123508058,
-      "brier": 0.6194775536597982,
-      "accuracy": 0.4738562091503268,
+      "log_loss": 1.0413162865766759,
+      "brier": 0.6259674367147338,
+      "accuracy": 0.47058823529411764,
       "season": 2022
     },
     {
@@ -36,18 +36,18 @@
     {
       "name": "blend_2023",
       "n": 306,
-      "log_loss": 0.9491754816382246,
-      "brier": 0.5618563988061628,
-      "accuracy": 0.5522875816993464,
+      "log_loss": 0.9469444387182196,
+      "brier": 0.5601316038337691,
+      "accuracy": 0.545751633986928,
       "season": 2023,
-      "blend_w": 0.75
+      "blend_w": 0.8500000000000001
     },
     {
       "name": "lgbm_2023",
       "n": 306,
-      "log_loss": 1.0000519285879954,
-      "brier": 0.593227418204813,
-      "accuracy": 0.5098039215686274,
+      "log_loss": 1.0001904954032352,
+      "brier": 0.5932374749613399,
+      "accuracy": 0.5196078431372549,
       "season": 2023
     },
     {
@@ -69,18 +69,18 @@
     {
       "name": "blend_2024",
       "n": 306,
-      "log_loss": 0.9904330830661291,
-      "brier": 0.5915794832994119,
-      "accuracy": 0.5196078431372549,
+      "log_loss": 0.9913724630952409,
+      "brier": 0.5921451893571468,
+      "accuracy": 0.5065359477124183,
       "season": 2024,
-      "blend_w": 0.9500000000000001
+      "blend_w": 0.9
     },
     {
       "name": "lgbm_2024",
       "n": 306,
-      "log_loss": 1.05139832279492,
-      "brier": 0.629394751152171,
-      "accuracy": 0.47058823529411764,
+      "log_loss": 1.058000983765831,
+      "brier": 0.6320889730431294,
+      "accuracy": 0.4869281045751634,
       "season": 2024
     },
     {
@@ -111,9 +111,9 @@
     {
       "name": "lgbm_2025",
       "n": 306,
-      "log_loss": 1.0070952258969217,
-      "brier": 0.5945604113187883,
-      "accuracy": 0.49673202614379086,
+      "log_loss": 1.0096416454379646,
+      "brier": 0.5961276332274957,
+      "accuracy": 0.5,
       "season": 2025
     },
     {
@@ -144,9 +144,9 @@
     {
       "name": "lgbm_2026",
       "n": 81,
-      "log_loss": 1.0384720515067656,
-      "brier": 0.6160875514890916,
-      "accuracy": 0.4567901234567901,
+      "log_loss": 1.0180133337516757,
+      "brier": 0.6088394779385125,
+      "accuracy": 0.4691358024691358,
       "season": 2026
     },
     {
@@ -170,16 +170,16 @@
     "model": {
       "name": "blend_oof",
       "n": 1305,
-      "log_loss": 0.9714185432452591,
-      "brier": 0.5773529873411591,
-      "accuracy": 0.539463601532567
+      "log_loss": 0.9712736335399775,
+      "brier": 0.5771898176175714,
+      "accuracy": 0.5340996168582376
     },
     "lgbm_only": {
       "name": "lgbm_oof",
       "n": 1305,
-      "log_loss": 1.0238884888989608,
-      "brier": 0.6095947071090428,
-      "accuracy": 0.48582375478927203
+      "log_loss": 1.0267117240276629,
+      "brier": 0.6116681855974784,
+      "accuracy": 0.49272030651341
     },
     "elo": {
       "name": "elo_oof",
@@ -198,151 +198,123 @@
     "calibration_home": {
       "fraction_positives": [
         0.14634146341463414,
-        0.24539877300613497,
-        0.31901840490797545,
-        0.3803680981595092,
-        0.48466257668711654,
-        0.5398773006134969,
-        0.6073619631901841,
-        0.7852760736196319
+        0.22699386503067484,
+        0.32515337423312884,
+        0.3987730061349693,
+        0.4662576687116564,
+        0.558282208588957,
+        0.588957055214724,
+        0.7975460122699386
       ],
       "mean_predicted": [
-        0.17875605733528585,
-        0.29499521778942955,
-        0.3572969723037837,
-        0.41003378525906753,
-        0.4614328797777574,
-        0.5290051604647069,
-        0.616274569653147,
-        0.7601492891113365
+        0.1766356390980158,
+        0.2961124091195628,
+        0.3586947495028496,
+        0.4103114511626461,
+        0.4607246646561274,
+        0.5283367478970044,
+        0.6168519292769115,
+        0.7585454361571576
       ]
     },
-    "mean_blend_weight": 0.93
+    "mean_blend_weight": 0.9400000000000001
   },
   "feature_importance": [
     {
       "feature": "elo_home",
-      "importance": 498
+      "importance": 544
     },
     {
       "feature": "elo_away",
-      "importance": 359
+      "importance": 494
     },
     {
       "feature": "form_gd_away_5",
-      "importance": 351
+      "importance": 442
     },
     {
       "feature": "elo_diff",
-      "importance": 343
+      "importance": 403
     },
     {
       "feature": "gd_away",
-      "importance": 290
+      "importance": 373
     },
     {
       "feature": "gd_home",
-      "importance": 250
-    },
-    {
-      "feature": "scorer_depth_home",
-      "importance": 246
-    },
-    {
-      "feature": "h2h_home_win_rate",
-      "importance": 240
-    },
-    {
-      "feature": "form_pts_home_5",
-      "importance": 226
-    },
-    {
-      "feature": "form_pts_home_10",
-      "importance": 221
-    },
-    {
-      "feature": "form_gd_home_5",
-      "importance": 218
-    },
-    {
-      "feature": "rest_days_home",
-      "importance": 214
+      "importance": 358
     },
     {
       "feature": "pts_away",
-      "importance": 212
-    },
-    {
-      "feature": "squad_goals_away_5",
-      "importance": 204
-    },
-    {
-      "feature": "away_form_away_5",
-      "importance": 198
-    },
-    {
-      "feature": "player_strength_diff",
-      "importance": 196
-    },
-    {
-      "feature": "squad_goals_home_5",
-      "importance": 194
+      "importance": 328
     },
     {
       "feature": "form_pts_away_10",
-      "importance": 193
+      "importance": 314
     },
     {
-      "feature": "scorer_depth_away",
-      "importance": 187
+      "feature": "away_form_away_5",
+      "importance": 302
     },
     {
-      "feature": "home_form_home_5",
-      "importance": 183
+      "feature": "form_pts_home_10",
+      "importance": 290
+    },
+    {
+      "feature": "h2h_home_win_rate",
+      "importance": 277
+    },
+    {
+      "feature": "form_gd_home_5",
+      "importance": 257
     },
     {
       "feature": "pts_home",
-      "importance": 181
+      "importance": 254
     },
     {
-      "feature": "top_scorer_goals_home",
-      "importance": 170
+      "feature": "home_form_home_5",
+      "importance": 241
     },
     {
-      "feature": "pts_diff",
-      "importance": 169
+      "feature": "form_pts_home_5",
+      "importance": 232
     },
     {
-      "feature": "h2h_games",
-      "importance": 167
-    },
-    {
-      "feature": "rank_home",
-      "importance": 159
+      "feature": "rest_days_home",
+      "importance": 211
     },
     {
       "feature": "form_pts_away_5",
-      "importance": 148
+      "importance": 203
     },
     {
-      "feature": "top_scorer_goals_away",
-      "importance": 134
+      "feature": "pts_diff",
+      "importance": 201
+    },
+    {
+      "feature": "h2h_games",
+      "importance": 179
+    },
+    {
+      "feature": "rank_home",
+      "importance": 163
     },
     {
       "feature": "rank_diff",
-      "importance": 127
-    },
-    {
-      "feature": "rest_days_away",
-      "importance": 97
+      "importance": 158
     },
     {
       "feature": "rank_away",
-      "importance": 82
+      "importance": 120
+    },
+    {
+      "feature": "rest_days_away",
+      "importance": 89
     },
     {
       "feature": "rest_diff",
-      "importance": 77
+      "importance": 80
     }
   ],
   "feature_cols": [
@@ -359,9 +331,6 @@
     "form_pts_away_10",
     "home_form_home_5",
     "away_form_away_5",
-    "elo_home",
-    "elo_away",
-    "elo_diff",
     "rank_home",
     "rank_away",
     "pts_home",
@@ -370,15 +339,11 @@
     "gd_away",
     "rank_diff",
     "pts_diff",
-    "squad_goals_home_5",
-    "squad_goals_away_5",
-    "top_scorer_goals_home",
-    "top_scorer_goals_away",
-    "scorer_depth_home",
-    "scorer_depth_away",
-    "player_strength_diff"
+    "elo_home",
+    "elo_away",
+    "elo_diff"
   ],
-  "blend_weight": 0.9500000000000001,
+  "blend_weight": 1.0,
   "n_train": 2223,
   "notes": "LightGBM trains on non-odds features only; final probabilities are a learned blend with bookmaker implied odds to preserve market calibration."
 }
