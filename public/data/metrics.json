@@ -3,17 +3,17 @@
     {
       "name": "blend_2022",
       "n": 306,
-      "log_loss": 0.9951173773137892,
-      "brier": 0.5943140556009003,
-      "accuracy": 0.5261437908496732,
+      "log_loss": 0.9959418771351647,
+      "brier": 0.5944976890319831,
+      "accuracy": 0.5294117647058824,
       "season": 2022,
-      "blend_w": 0.9500000000000001
+      "blend_w": 1.0
     },
     {
       "name": "lgbm_2022",
       "n": 306,
-      "log_loss": 1.0413162865766759,
-      "brier": 0.6259674367147338,
+      "log_loss": 1.0406968867603417,
+      "brier": 0.6254559039419267,
       "accuracy": 0.47058823529411764,
       "season": 2022
     },
@@ -36,8 +36,8 @@
     {
       "name": "blend_2023",
       "n": 306,
-      "log_loss": 0.9469444387182196,
-      "brier": 0.5601316038337691,
+      "log_loss": 0.9471537017393362,
+      "brier": 0.5601801468558631,
       "accuracy": 0.545751633986928,
       "season": 2023,
       "blend_w": 0.8500000000000001
@@ -45,9 +45,9 @@
     {
       "name": "lgbm_2023",
       "n": 306,
-      "log_loss": 1.0001904954032352,
-      "brier": 0.5932374749613399,
-      "accuracy": 0.5196078431372549,
+      "log_loss": 1.0020963007773707,
+      "brier": 0.5930529648695737,
+      "accuracy": 0.5359477124183006,
       "season": 2023
     },
     {
@@ -69,18 +69,18 @@
     {
       "name": "blend_2024",
       "n": 306,
-      "log_loss": 0.9913724630952409,
-      "brier": 0.5921451893571468,
-      "accuracy": 0.5065359477124183,
+      "log_loss": 0.99047473984415,
+      "brier": 0.5915429559808002,
+      "accuracy": 0.5163398692810458,
       "season": 2024,
-      "blend_w": 0.9
+      "blend_w": 0.9500000000000001
     },
     {
       "name": "lgbm_2024",
       "n": 306,
-      "log_loss": 1.058000983765831,
-      "brier": 0.6320889730431294,
-      "accuracy": 0.4869281045751634,
+      "log_loss": 1.0554296640456051,
+      "brier": 0.6302997117573862,
+      "accuracy": 0.47058823529411764,
       "season": 2024
     },
     {
@@ -111,9 +111,9 @@
     {
       "name": "lgbm_2025",
       "n": 306,
-      "log_loss": 1.0096416454379646,
-      "brier": 0.5961276332274957,
-      "accuracy": 0.5,
+      "log_loss": 1.0125506023853867,
+      "brier": 0.5974168822222339,
+      "accuracy": 0.5032679738562091,
       "season": 2025
     },
     {
@@ -144,9 +144,9 @@
     {
       "name": "lgbm_2026",
       "n": 81,
-      "log_loss": 1.0180133337516757,
-      "brier": 0.6088394779385125,
-      "accuracy": 0.4691358024691358,
+      "log_loss": 1.0100075826055634,
+      "brier": 0.6057175637361054,
+      "accuracy": 0.4567901234567901,
       "season": 2026
     },
     {
@@ -170,15 +170,15 @@
     "model": {
       "name": "blend_oof",
       "n": 1305,
-      "log_loss": 0.9712736335399775,
-      "brier": 0.5771898176175714,
-      "accuracy": 0.5340996168582376
+      "log_loss": 0.971305532478651,
+      "brier": 0.5771030456493799,
+      "accuracy": 0.5371647509578544
     },
     "lgbm_only": {
       "name": "lgbm_oof",
       "n": 1305,
-      "log_loss": 1.0267117240276629,
-      "brier": 0.6116681855974784,
+      "log_loss": 1.0265956253681796,
+      "brier": 0.6111939573001589,
       "accuracy": 0.49272030651341
     },
     "elo": {
@@ -197,124 +197,124 @@
     },
     "calibration_home": {
       "fraction_positives": [
-        0.14634146341463414,
-        0.22699386503067484,
+        0.1402439024390244,
+        0.2392638036809816,
         0.32515337423312884,
-        0.3987730061349693,
-        0.4662576687116564,
-        0.558282208588957,
+        0.38650306748466257,
+        0.4785276073619632,
+        0.5521472392638037,
         0.588957055214724,
         0.7975460122699386
       ],
       "mean_predicted": [
-        0.1766356390980158,
-        0.2961124091195628,
-        0.3586947495028496,
-        0.4103114511626461,
-        0.4607246646561274,
-        0.5283367478970044,
-        0.6168519292769115,
-        0.7585454361571576
+        0.1746985065476928,
+        0.29537909051489014,
+        0.35805707480106996,
+        0.4101741918233971,
+        0.46119771550081134,
+        0.5281302365930127,
+        0.6160160119569854,
+        0.7593087850789717
       ]
     },
-    "mean_blend_weight": 0.9400000000000001
+    "mean_blend_weight": 0.9600000000000002
   },
   "feature_importance": [
     {
       "feature": "elo_home",
-      "importance": 544
+      "importance": 552
     },
     {
       "feature": "elo_away",
-      "importance": 494
+      "importance": 499
     },
     {
       "feature": "form_gd_away_5",
-      "importance": 442
+      "importance": 468
     },
     {
       "feature": "elo_diff",
-      "importance": 403
+      "importance": 430
     },
     {
       "feature": "gd_away",
-      "importance": 373
+      "importance": 352
     },
     {
       "feature": "gd_home",
-      "importance": 358
+      "importance": 344
     },
     {
       "feature": "pts_away",
-      "importance": 328
+      "importance": 340
     },
     {
       "feature": "form_pts_away_10",
-      "importance": 314
-    },
-    {
-      "feature": "away_form_away_5",
       "importance": 302
     },
     {
       "feature": "form_pts_home_10",
-      "importance": 290
+      "importance": 292
     },
     {
       "feature": "h2h_home_win_rate",
-      "importance": 277
+      "importance": 290
     },
     {
       "feature": "form_gd_home_5",
-      "importance": 257
+      "importance": 277
+    },
+    {
+      "feature": "away_form_away_5",
+      "importance": 272
     },
     {
       "feature": "pts_home",
-      "importance": 254
-    },
-    {
-      "feature": "home_form_home_5",
-      "importance": 241
+      "importance": 266
     },
     {
       "feature": "form_pts_home_5",
-      "importance": 232
+      "importance": 265
     },
     {
-      "feature": "rest_days_home",
-      "importance": 211
+      "feature": "home_form_home_5",
+      "importance": 243
     },
     {
       "feature": "form_pts_away_5",
-      "importance": 203
+      "importance": 207
     },
     {
       "feature": "pts_diff",
-      "importance": 201
+      "importance": 199
+    },
+    {
+      "feature": "rest_days_home",
+      "importance": 194
     },
     {
       "feature": "h2h_games",
-      "importance": 179
-    },
-    {
-      "feature": "rank_home",
-      "importance": 163
+      "importance": 193
     },
     {
       "feature": "rank_diff",
-      "importance": 158
+      "importance": 180
+    },
+    {
+      "feature": "rank_home",
+      "importance": 175
     },
     {
       "feature": "rank_away",
-      "importance": 120
+      "importance": 123
     },
     {
       "feature": "rest_days_away",
-      "importance": 89
+      "importance": 93
     },
     {
       "feature": "rest_diff",
-      "importance": 80
+      "importance": 87
     }
   ],
   "feature_cols": [
@@ -331,6 +331,9 @@
     "form_pts_away_10",
     "home_form_home_5",
     "away_form_away_5",
+    "elo_home",
+    "elo_away",
+    "elo_diff",
     "rank_home",
     "rank_away",
     "pts_home",
@@ -338,12 +341,9 @@
     "gd_home",
     "gd_away",
     "rank_diff",
-    "pts_diff",
-    "elo_home",
-    "elo_away",
-    "elo_diff"
+    "pts_diff"
   ],
-  "blend_weight": 1.0,
+  "blend_weight": 0.9,
   "n_train": 2223,
   "notes": "LightGBM trains on non-odds features only; final probabilities are a learned blend with bookmaker implied odds to preserve market calibration."
 }

@@ -1,19 +1,19 @@
 {
-  "finished_at": "2026-11-10T13:25:06.844218+00:00",
-  "elapsed_sec": 77.4,
+  "finished_at": "2026-11-16T14:14:34.777054+00:00",
+  "elapsed_sec": 91.9,
   "metrics": {
     "model": {
       "name": "blend_oof",
       "n": 1305,
-      "log_loss": 0.9712736335399775,
-      "brier": 0.5771898176175714,
-      "accuracy": 0.5340996168582376
+      "log_loss": 0.971305532478651,
+      "brier": 0.5771030456493799,
+      "accuracy": 0.5371647509578544
     },
     "lgbm_only": {
       "name": "lgbm_oof",
       "n": 1305,
-      "log_loss": 1.0267117240276629,
-      "brier": 0.6116681855974784,
+      "log_loss": 1.0265956253681796,
+      "brier": 0.6111939573001589,
       "accuracy": 0.49272030651341
     },
     "elo": {
@@ -32,43 +32,43 @@
     },
     "calibration_home": {
       "fraction_positives": [
-        0.14634146341463414,
-        0.22699386503067484,
+        0.1402439024390244,
+        0.2392638036809816,
         0.32515337423312884,
-        0.3987730061349693,
-        0.4662576687116564,
-        0.558282208588957,
+        0.38650306748466257,
+        0.4785276073619632,
+        0.5521472392638037,
         0.588957055214724,
         0.7975460122699386
       ],
       "mean_predicted": [
-        0.1766356390980158,
-        0.2961124091195628,
-        0.3586947495028496,
-        0.4103114511626461,
-        0.4607246646561274,
-        0.5283367478970044,
-        0.6168519292769115,
-        0.7585454361571576
+        0.1746985065476928,
+        0.29537909051489014,
+        0.35805707480106996,
+        0.4101741918233971,
+        0.46119771550081134,
+        0.5281302365930127,
+        0.6160160119569854,
+        0.7593087850789717
       ]
     },
-    "mean_blend_weight": 0.9400000000000001
+    "mean_blend_weight": 0.9600000000000002
   },
   "selected_groups": [
     "rest_h2h",
     "form",
-    "table",
-    "elo"
+    "elo",
+    "table"
   ],
   "findings": [
     {
       "group": "odds",
-      "delta_log_loss_when_removed": 0.008026891866833807,
+      "delta_log_loss_when_removed": 0.009389684714593782,
       "useful": true,
       "leave_one_out": {
-        "log_loss": 1.0262747239582302,
-        "brier": 0.6091736321271387,
-        "accuracy": 0.5019157088122606,
+        "log_loss": 1.0267782355193327,
+        "brier": 0.6090987049529866,
+        "accuracy": 0.5003831417624521,
         "n": 1305,
         "removed": [
           "odds_home",
@@ -96,12 +96,12 @@
     },
     {
       "group": "rest_h2h",
-      "delta_log_loss_when_removed": 0.002249016714501062,
+      "delta_log_loss_when_removed": 0.0024898493889702333,
       "useful": true,
       "leave_one_out": {
-        "log_loss": 1.0204968488058974,
-        "brier": 0.606006694769197,
-        "accuracy": 0.5065134099616858,
+        "log_loss": 1.0198784001937091,
+        "brier": 0.6058509764486405,
+        "accuracy": 0.5080459770114942,
         "n": 1305,
         "removed": [
           "rest_days_home",
@@ -127,12 +127,12 @@
     },
     {
       "group": "form",
-      "delta_log_loss_when_removed": 0.0017927706611398087,
+      "delta_log_loss_when_removed": 0.0014591050764583002,
       "useful": true,
       "leave_one_out": {
-        "log_loss": 1.0200406027525362,
-        "brier": 0.6058777170805881,
-        "accuracy": 0.4942528735632184,
+        "log_loss": 1.0188476558811972,
+        "brier": 0.6046739353352003,
+        "accuracy": 0.5003831417624521,
         "n": 1305,
         "removed": [
           "form_pts_home_5",
@@ -163,13 +163,77 @@
       }
     },
     {
-      "group": "players",
-      "delta_log_loss_when_removed": -0.0003483142163873687,
+      "group": "elo",
+      "delta_log_loss_when_removed": 0.0005722386270796687,
       "useful": false,
       "leave_one_out": {
-        "log_loss": 1.017899517875009,
-        "brier": 0.6047212882123991,
-        "accuracy": 0.5026819923371647,
+        "log_loss": 1.0179607894318186,
+        "brier": 0.6032363398481554,
+        "accuracy": 0.5172413793103449,
+        "n": 1305,
+        "removed": [
+          "elo_home",
+          "elo_away",
+          "elo_diff"
+        ]
+      },
+      "alone": {
+        "log_loss": 1.0242618034782027,
+        "brier": 0.612853321974686,
+        "accuracy": 0.4896551724137931,
+        "n": 1305,
+        "features": [
+          "elo_home",
+          "elo_away",
+          "elo_diff"
+        ]
+      }
+    },
+    {
+      "group": "table",
+      "delta_log_loss_when_removed": 0.0001698475764639884,
+      "useful": false,
+      "leave_one_out": {
+        "log_loss": 1.0175583983812029,
+        "brier": 0.6043581306297724,
+        "accuracy": 0.5049808429118774,
+        "n": 1305,
+        "removed": [
+          "rank_home",
+          "rank_away",
+          "pts_home",
+          "pts_away",
+          "gd_home",
+          "gd_away",
+          "rank_diff",
+          "pts_diff"
+        ]
+      },
+      "alone": {
+        "log_loss": 1.0423399288243536,
+        "brier": 0.6238710503181548,
+        "accuracy": 0.48582375478927203,
+        "n": 1305,
+        "features": [
+          "rank_home",
+          "rank_away",
+          "pts_home",
+          "pts_away",
+          "gd_home",
+          "gd_away",
+          "rank_diff",
+          "pts_diff"
+        ]
+      }
+    },
+    {
+      "group": "players",
+      "delta_log_loss_when_removed": -0.00020195321068916527,
+      "useful": false,
+      "leave_one_out": {
+        "log_loss": 1.0171865975940497,
+        "brier": 0.6041606842433845,
+        "accuracy": 0.5080459770114942,
         "n": 1305,
         "removed": [
           "squad_goals_home_5",
@@ -198,77 +262,13 @@
       }
     },
     {
-      "group": "table",
-      "delta_log_loss_when_removed": -0.0006894337101934767,
-      "useful": false,
-      "leave_one_out": {
-        "log_loss": 1.0175583983812029,
-        "brier": 0.6043581306297724,
-        "accuracy": 0.5049808429118774,
-        "n": 1305,
-        "removed": [
-          "rank_home",
-          "rank_away",
-          "pts_home",
-          "pts_away",
-          "gd_home",
-          "gd_away",
-          "rank_diff",
-          "pts_diff"
-        ]
-      },
-      "alone": {
-        "log_loss": 1.0440194628011703,
-        "brier": 0.6251318160244408,
-        "accuracy": 0.48659003831417624,
-        "n": 1305,
-        "features": [
-          "rank_home",
-          "rank_away",
-          "pts_home",
-          "pts_away",
-          "gd_home",
-          "gd_away",
-          "rank_diff",
-          "pts_diff"
-        ]
-      }
-    },
-    {
-      "group": "elo",
-      "delta_log_loss_when_removed": -0.0012514580965898858,
-      "useful": false,
-      "leave_one_out": {
-        "log_loss": 1.0169963739948065,
-        "brier": 0.6028804254488871,
-        "accuracy": 0.5095785440613027,
-        "n": 1305,
-        "removed": [
-          "elo_home",
-          "elo_away",
-          "elo_diff"
-        ]
-      },
-      "alone": {
-        "log_loss": 1.0242618034782027,
-        "brier": 0.612853321974686,
-        "accuracy": 0.4896551724137931,
-        "n": 1305,
-        "features": [
-          "elo_home",
-          "elo_away",
-          "elo_diff"
-        ]
-      }
-    },
-    {
       "group": "shots_xg",
-      "delta_log_loss_when_removed": -0.0047467935971972075,
+      "delta_log_loss_when_removed": -0.005503137303175087,
       "useful": false,
       "leave_one_out": {
-        "log_loss": 1.0135010384941991,
-        "brier": 0.6038844260906938,
-        "accuracy": 0.5126436781609195,
+        "log_loss": 1.0118854135015638,
+        "brier": 0.6026647121418458,
+        "accuracy": 0.5088122605363985,
         "n": 1305,
         "removed": [
           "roll_hs_for_5",
@@ -309,9 +309,7 @@
   ],
   "db": {
     "skipped": false,
-    "migrations": [
-      "001_init.sql"
-    ],
+    "migrations": [],
     "upserted": {
       "forecasts": 225,
       "model_runs": 1,
