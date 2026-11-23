@@ -2,100 +2,80 @@
   "features": [
     {
       "feature": "elo_diff",
-      "mean_abs_shap": 0.20164876047028857
+      "mean_abs_shap": 0.21452318664609474
     },
     {
       "feature": "elo_home",
-      "mean_abs_shap": 0.09342908968762766
+      "mean_abs_shap": 0.11138980683285367
     },
     {
       "feature": "form_gd_away_5",
-      "mean_abs_shap": 0.07426297122123407
-    },
-    {
-      "feature": "h2h_home_win_rate",
-      "mean_abs_shap": 0.06811252654546446
+      "mean_abs_shap": 0.07885348338850041
     },
     {
       "feature": "pts_home",
-      "mean_abs_shap": 0.060120780415368134
+      "mean_abs_shap": 0.06814060141265255
     },
     {
       "feature": "form_gd_home_5",
-      "mean_abs_shap": 0.05217214765961782
+      "mean_abs_shap": 0.05995088854214017
     },
     {
       "feature": "elo_away",
-      "mean_abs_shap": 0.046398169167616014
+      "mean_abs_shap": 0.05131108421984467
     },
     {
       "feature": "gd_home",
-      "mean_abs_shap": 0.04550168667093269
+      "mean_abs_shap": 0.04739653012599301
     },
     {
       "feature": "home_form_home_5",
-      "mean_abs_shap": 0.04531548114643734
+      "mean_abs_shap": 0.04738324431327208
     },
     {
       "feature": "form_pts_home_5",
-      "mean_abs_shap": 0.04181750716297687
+      "mean_abs_shap": 0.045548077599208966
     },
     {
       "feature": "away_form_away_5",
-      "mean_abs_shap": 0.03881862756944161
+      "mean_abs_shap": 0.03780192784636328
     },
     {
       "feature": "form_pts_home_10",
-      "mean_abs_shap": 0.03428655421351092
-    },
-    {
-      "feature": "gd_away",
-      "mean_abs_shap": 0.03133483008187782
-    },
-    {
-      "feature": "h2h_games",
-      "mean_abs_shap": 0.03075935168396428
-    },
-    {
-      "feature": "pts_away",
-      "mean_abs_shap": 0.030048962915370445
-    },
-    {
-      "feature": "rest_days_home",
-      "mean_abs_shap": 0.029983370301780568
+      "mean_abs_shap": 0.035957323606679845
     },
     {
       "feature": "rank_diff",
-      "mean_abs_shap": 0.028789893756539866
-    },
-    {
-      "feature": "form_pts_away_10",
-      "mean_abs_shap": 0.02814736704924579
+      "mean_abs_shap": 0.03570411990706357
     },
     {
       "feature": "form_pts_away_5",
-      "mean_abs_shap": 0.025987646459470895
+      "mean_abs_shap": 0.0343811322650208
     },
     {
-      "feature": "rest_diff",
-      "mean_abs_shap": 0.019378567570666912
+      "feature": "gd_away",
+      "mean_abs_shap": 0.030201973071151814
     },
     {
-      "feature": "rank_home",
-      "mean_abs_shap": 0.01855706231371668
+      "feature": "pts_away",
+      "mean_abs_shap": 0.026921512220141813
     },
     {
-      "feature": "rank_away",
-      "mean_abs_shap": 0.017797342324065074
+      "feature": "form_pts_away_10",
+      "mean_abs_shap": 0.025742591652139973
     },
     {
       "feature": "pts_diff",
-      "mean_abs_shap": 0.017073558496589532
+      "mean_abs_shap": 0.022893369542734077
     },
     {
-      "feature": "rest_days_away",
-      "mean_abs_shap": 0.01398035848556268
+      "feature": "rank_home",
+      "mean_abs_shap": 0.018373589955503467
+    },
+    {
+      "feature": "rank_away",
+      "mean_abs_shap": 0.016870382722253316
     }
   ],
-  "n_samples": 81
+  "n_samples": 90
 }

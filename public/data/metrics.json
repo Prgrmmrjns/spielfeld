@@ -3,7 +3,7 @@
     {
       "name": "blend_2022",
       "n": 306,
-      "log_loss": 0.9959418771351647,
+      "log_loss": 0.9959418771351645,
       "brier": 0.5944976890319831,
       "accuracy": 0.5294117647058824,
       "season": 2022,
@@ -12,15 +12,15 @@
     {
       "name": "lgbm_2022",
       "n": 306,
-      "log_loss": 1.0406968867603417,
-      "brier": 0.6254559039419267,
-      "accuracy": 0.47058823529411764,
+      "log_loss": 1.0392375448883902,
+      "brier": 0.6261828241179691,
+      "accuracy": 0.4934640522875817,
       "season": 2022
     },
     {
       "name": "book_2022",
       "n": 306,
-      "log_loss": 0.9959418771351647,
+      "log_loss": 0.9959418771351645,
       "brier": 0.5944976890319831,
       "accuracy": 0.5294117647058824,
       "season": 2022
@@ -36,18 +36,18 @@
     {
       "name": "blend_2023",
       "n": 306,
-      "log_loss": 0.9471537017393362,
-      "brier": 0.5601801468558631,
-      "accuracy": 0.545751633986928,
+      "log_loss": 0.9462014426489984,
+      "brier": 0.559730719452223,
+      "accuracy": 0.5424836601307189,
       "season": 2023,
       "blend_w": 0.8500000000000001
     },
     {
       "name": "lgbm_2023",
       "n": 306,
-      "log_loss": 1.0020963007773707,
-      "brier": 0.5930529648695737,
-      "accuracy": 0.5359477124183006,
+      "log_loss": 0.992828822249437,
+      "brier": 0.5890875688538493,
+      "accuracy": 0.5163398692810458,
       "season": 2023
     },
     {
@@ -69,24 +69,24 @@
     {
       "name": "blend_2024",
       "n": 306,
-      "log_loss": 0.99047473984415,
-      "brier": 0.5915429559808002,
+      "log_loss": 0.9905308614188482,
+      "brier": 0.591771820721003,
       "accuracy": 0.5163398692810458,
       "season": 2024,
-      "blend_w": 0.9500000000000001
+      "blend_w": 0.9
     },
     {
       "name": "lgbm_2024",
       "n": 306,
-      "log_loss": 1.0554296640456051,
-      "brier": 0.6302997117573862,
-      "accuracy": 0.47058823529411764,
+      "log_loss": 1.0434749439799043,
+      "brier": 0.6255240064580163,
+      "accuracy": 0.48366013071895425,
       "season": 2024
     },
     {
       "name": "book_2024",
       "n": 306,
-      "log_loss": 0.9900288585781899,
+      "log_loss": 0.9900288585781897,
       "brier": 0.5912994385243137,
       "accuracy": 0.5196078431372549,
       "season": 2024
@@ -94,7 +94,7 @@
     {
       "name": "elo_2024",
       "n": 306,
-      "log_loss": 1.02302650977182,
+      "log_loss": 1.0230265097718199,
       "brier": 0.6138499965356107,
       "accuracy": 0.4803921568627451,
       "season": 2024
@@ -102,8 +102,8 @@
     {
       "name": "blend_2025",
       "n": 306,
-      "log_loss": 0.9532538441548539,
-      "brier": 0.562948393057698,
+      "log_loss": 0.953253844154854,
+      "brier": 0.5629483930576981,
       "accuracy": 0.5490196078431373,
       "season": 2025,
       "blend_w": 1.0
@@ -111,15 +111,15 @@
     {
       "name": "lgbm_2025",
       "n": 306,
-      "log_loss": 1.0125506023853867,
-      "brier": 0.5974168822222339,
-      "accuracy": 0.5032679738562091,
+      "log_loss": 1.0079114167458543,
+      "brier": 0.5931540191864926,
+      "accuracy": 0.5163398692810458,
       "season": 2025
     },
     {
       "name": "book_2025",
       "n": 306,
-      "log_loss": 0.9532538441548539,
+      "log_loss": 0.953253844154854,
       "brier": 0.5629483930576981,
       "accuracy": 0.5490196078431373,
       "season": 2025
@@ -134,195 +134,170 @@
     },
     {
       "name": "blend_2026",
-      "n": 81,
-      "log_loss": 0.9652534079672473,
-      "brier": 0.5742432590738193,
-      "accuracy": 0.5679012345679012,
+      "n": 90,
+      "log_loss": 0.9641078403059822,
+      "brier": 0.5721749240743509,
+      "accuracy": 0.5777777777777777,
       "season": 2026,
       "blend_w": 1.0
     },
     {
       "name": "lgbm_2026",
-      "n": 81,
-      "log_loss": 1.0100075826055634,
-      "brier": 0.6057175637361054,
-      "accuracy": 0.4567901234567901,
+      "n": 90,
+      "log_loss": 0.9856257704937941,
+      "brier": 0.589978525665851,
+      "accuracy": 0.5444444444444444,
       "season": 2026
     },
     {
       "name": "book_2026",
-      "n": 81,
-      "log_loss": 0.9652534079672473,
-      "brier": 0.5742432590738193,
-      "accuracy": 0.5679012345679012,
+      "n": 90,
+      "log_loss": 0.9641078403059822,
+      "brier": 0.5721749240743509,
+      "accuracy": 0.5777777777777777,
       "season": 2026
     },
     {
       "name": "elo_2026",
-      "n": 81,
-      "log_loss": 0.9574619939540272,
-      "brier": 0.5711549702917958,
-      "accuracy": 0.5555555555555556,
+      "n": 90,
+      "log_loss": 0.9501739650352025,
+      "brier": 0.5679047239281694,
+      "accuracy": 0.5777777777777777,
       "season": 2026
     }
   ],
   "overall": {
     "model": {
       "name": "blend_oof",
-      "n": 1305,
-      "log_loss": 0.971305532478651,
-      "brier": 0.5771030456493799,
-      "accuracy": 0.5371647509578544
+      "n": 1314,
+      "log_loss": 0.9709769264741592,
+      "brier": 0.576890427381386,
+      "accuracy": 0.5372907153729072
     },
     "lgbm_only": {
       "name": "lgbm_oof",
-      "n": 1305,
-      "log_loss": 1.0265956253681796,
-      "brier": 0.6111939573001589,
-      "accuracy": 0.49272030651341
+      "n": 1314,
+      "log_loss": 1.018449660632191,
+      "brier": 0.607219393764477,
+      "accuracy": 0.5053272450532724
     },
     "elo": {
       "name": "elo_oof",
-      "n": 1305,
-      "log_loss": 0.9978689229138163,
-      "brier": 0.5964810577427344,
-      "accuracy": 0.5118773946360153
+      "n": 1314,
+      "log_loss": 0.9970929830634873,
+      "brier": 0.5960849717763838,
+      "accuracy": 0.5136986301369864
     },
     "bookmaker": {
       "name": "book_oof",
-      "n": 1305,
-      "log_loss": 0.9711621702195571,
-      "brier": 0.5770035452650121,
-      "accuracy": 0.5371647509578544
+      "n": 1314,
+      "log_loss": 0.9710432357067834,
+      "brier": 0.576842972414424,
+      "accuracy": 0.5380517503805176
     },
     "calibration_home": {
       "fraction_positives": [
-        0.1402439024390244,
-        0.2392638036809816,
-        0.32515337423312884,
-        0.38650306748466257,
-        0.4785276073619632,
-        0.5521472392638037,
-        0.588957055214724,
-        0.7975460122699386
+        0.13333333333333333,
+        0.23780487804878048,
+        0.31097560975609756,
+        0.4146341463414634,
+        0.4695121951219512,
+        0.5487804878048781,
+        0.5975609756097561,
+        0.793939393939394
       ],
       "mean_predicted": [
-        0.1746985065476928,
-        0.29537909051489014,
-        0.35805707480106996,
-        0.4101741918233971,
-        0.46119771550081134,
-        0.5281302365930127,
-        0.6160160119569854,
-        0.7593087850789717
+        0.17480209187907023,
+        0.29412172861932545,
+        0.3565728867677053,
+        0.40943387883750143,
+        0.45965469300391654,
+        0.5269647394119301,
+        0.6164282611240457,
+        0.7597236906641869
       ]
     },
-    "mean_blend_weight": 0.9600000000000002
+    "mean_blend_weight": 0.95
   },
   "feature_importance": [
     {
       "feature": "elo_home",
-      "importance": 552
+      "importance": 639
     },
     {
       "feature": "elo_away",
-      "importance": 499
-    },
-    {
-      "feature": "form_gd_away_5",
-      "importance": 468
+      "importance": 625
     },
     {
       "feature": "elo_diff",
-      "importance": 430
+      "importance": 539
+    },
+    {
+      "feature": "form_gd_away_5",
+      "importance": 456
     },
     {
       "feature": "gd_away",
-      "importance": 352
+      "importance": 403
     },
     {
       "feature": "gd_home",
-      "importance": 344
+      "importance": 356
     },
     {
       "feature": "pts_away",
-      "importance": 340
+      "importance": 351
     },
     {
       "feature": "form_pts_away_10",
-      "importance": 302
-    },
-    {
-      "feature": "form_pts_home_10",
-      "importance": 292
-    },
-    {
-      "feature": "h2h_home_win_rate",
-      "importance": 290
+      "importance": 333
     },
     {
       "feature": "form_gd_home_5",
-      "importance": 277
+      "importance": 324
     },
     {
-      "feature": "away_form_away_5",
-      "importance": 272
+      "feature": "form_pts_home_10",
+      "importance": 311
     },
     {
       "feature": "pts_home",
-      "importance": 266
+      "importance": 310
     },
     {
-      "feature": "form_pts_home_5",
-      "importance": 265
-    },
-    {
-      "feature": "home_form_home_5",
-      "importance": 243
-    },
-    {
-      "feature": "form_pts_away_5",
-      "importance": 207
+      "feature": "away_form_away_5",
+      "importance": 283
     },
     {
       "feature": "pts_diff",
-      "importance": 199
+      "importance": 259
     },
     {
-      "feature": "rest_days_home",
-      "importance": 194
+      "feature": "form_pts_home_5",
+      "importance": 251
     },
     {
-      "feature": "h2h_games",
-      "importance": 193
+      "feature": "form_pts_away_5",
+      "importance": 247
+    },
+    {
+      "feature": "home_form_home_5",
+      "importance": 245
     },
     {
       "feature": "rank_diff",
-      "importance": 180
+      "importance": 177
     },
     {
       "feature": "rank_home",
-      "importance": 175
+      "importance": 169
     },
     {
       "feature": "rank_away",
-      "importance": 123
-    },
-    {
-      "feature": "rest_days_away",
-      "importance": 93
-    },
-    {
-      "feature": "rest_diff",
-      "importance": 87
+      "importance": 168
     }
   ],
   "feature_cols": [
-    "rest_days_home",
-    "rest_days_away",
-    "rest_diff",
-    "h2h_home_win_rate",
-    "h2h_games",
     "form_pts_home_5",
     "form_pts_away_5",
     "form_gd_home_5",
@@ -331,9 +306,6 @@
     "form_pts_away_10",
     "home_form_home_5",
     "away_form_away_5",
-    "elo_home",
-    "elo_away",
-    "elo_diff",
     "rank_home",
     "rank_away",
     "pts_home",
@@ -341,9 +313,12 @@
     "gd_home",
     "gd_away",
     "rank_diff",
-    "pts_diff"
+    "pts_diff",
+    "elo_home",
+    "elo_away",
+    "elo_diff"
   ],
-  "blend_weight": 0.9,
-  "n_train": 2223,
+  "blend_weight": 0.75,
+  "n_train": 2232,
   "notes": "LightGBM trains on non-odds features only; final probabilities are a learned blend with bookmaker implied odds to preserve market calibration."
 }

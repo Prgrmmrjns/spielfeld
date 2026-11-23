@@ -1,13 +1,13 @@
 # Feature findings
 
-Full model log loss: **1.0174**
+Full model log loss: **1.0168**
 
 | Group | Δ log loss if removed | Useful | Alone log loss |
 |---|---:|:---:|---:|
-| odds | 0.0094 | yes | 1.0031 |
-| rest_h2h | 0.0025 | yes | 1.0641 |
-| form | 0.0015 | yes | 1.0401 |
-| elo | 0.0006 | no | 1.0243 |
-| table | 0.0002 | no | 1.0423 |
-| players | -0.0002 | no | 1.0574 |
-| shots_xg | -0.0055 | no | 1.0528 |
+| odds | 0.0084 | yes | 1.0022 |
+| form | 0.0031 | yes | 1.0404 |
+| rest_h2h | 0.0010 | no | 1.0653 |
+| players | 0.0001 | no | 1.0570 |
+| table | -0.0005 | no | 1.0426 |
+| elo | -0.0024 | no | 1.0237 |
+| shots_xg | -0.0029 | no | 1.0520 |
